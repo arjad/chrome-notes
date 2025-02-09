@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+  <script src="settings.js" defer></script>
+  <style>
+    :root {
+      --primary-color: #684993;
+    }
+    body {
+      padding: 1rem;
+    }
+    .dark-mode {
+      background-color: #1e242d;
+      color: white;
+    }
+    .review-btn{
+      width:100px;
+      background-color: var(--primary-color);
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="container py-4 mx-5 bg-transparent">
+    <div class="shadow-sm p-4">
+      <h3 class="mb-3">
+        <img src="../note.png" width="24" height="24" class="mr-2">
+        Settings
+      </h3>
+      <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" id="dark-mode-toggle">
+        <label class="form-check-label" for="dark-mode-toggle">Enable Dark Mode</label>
+      </div>
+      <hr>
+      <div class="mt-3">
+        <h5>About Us</h5>
+        <p>Boost your productivity with <strong>Quick Notes</strong>, a simple and efficient Chrome extension that lets you manage notes effortlessly.</p>
+        <ul>
+            <li><strong>➕ Add & Delete Notes</strong> – Easily create, edit, and remove notes as needed.</li>
+            <li><strong>📝 One-Click Copy</strong> – Instantly copy notes to your clipboard.</li>
+            <li><strong>🌙 Dark & Light Mode</strong> – Customize your experience with a theme that suits your preference.</li>
+        </ul>
+        <p>We are working on it to improve it.</p>
+      </div>
+      <a href="https://chrome.google.com/webstore" target="_blank" class="btn my-3 review-btn">Review Us</a>
+      <p>You can suggest features and report bugs. It will help us improve the extension.</p>
+    </div>
+  </div>
+</body>
+</html>

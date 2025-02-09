@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>I Notes</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container-fluid p-0">
+    <nav class="notes-nav d-flex justify-content-between">
+      <h3>
+        <img src="note.png" width="24" height="24" class="mr-2">
+        <i class="i-notes">i </i>
+        <span> Notes</span>
+      </h3>
+      <i class="fa-solid fa-gear" id="settings-icon" style="cursor: pointer;"></i>
+    </nav>
+    <div id="notes-list" class="mb-3"></div>
+    <textarea id="note-input" class="form-control bg-transparent" rows="4" placeholder="Enter your note here..."></textarea>
+
+    <div>
+      <div class="error-msg my-2">
+        <i class="fa-solid fa-circle-info me-1"></i>
+        <span>Please enter a note.</span>
+      </div>
+      <button id="save-btn" class="btn btn-primary rounded-pill px-3 my-2">
+        Save Note
+      </button>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
