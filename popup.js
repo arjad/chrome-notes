@@ -6,6 +6,105 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Load existing notes
   loadNotes();
+  // Advanced Search Options: Adding search by category, priority, etc.
+searchInput.addEventListener('input', function() {
+  loadNotes(searchInput.value); 
+});
+  // Save note with priority
+const priority = document.getElementById('priority-select').value;
+const newNote = {
+  id: Date.now(),
+  text: noteText,
+  category: category,
+  priority: priority, 
+  date: new Date().toLocaleDateString(),
+  pinned: false,
+};
+  // Note Sharing: Implement share button and copy note to clipboard
+document.querySelectorAll('.share-icon').forEach(icon => {
+  icon.addEventListener('click', function() {
+    const noteId = parseInt(this.getAttribute('data-id'));
+    const note = notes.find(n => n.id === noteId);
+    if (note) {
+      navigator.clipboard.writeText(note.text).then(() => {
+        console.log("Note shared!");
+      }).catch(err => console.error('Share failed:', err));
+    }
+  });
+});
+// Reminder/Notifications: Set reminders for notes
+chrome.alarms.create(noteId.toString(), { when: reminderTime }); // Create a reminder alarm
+
+chrome.alarms.onAlarm.addListener(function(alarm) {
+  chrome.notifications.create({
+    type: 'basic',
+    iconUrl: 'note.png',
+    title: 'Reminder',
+    message: `Reminder for note: ${noteText}`
+  });
+});
+// Export Notes
+function exportNotes() {
+  chrome.storage.sync.get(['notes'], function(result) {
+    const notes = result.notes || [];
+    const blob = new Blob([JSON.stringify(notes)], { type: 'application/json' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'notes_backup.json';
+    link.click();
+  });
+}
+
+// Add an "Export Notes" button in popup.html
+<button id="export-btn">Export Notes</button>
+// Handle theme change
+document.getElementById('theme-select').addEventListener('change', function() {
+  const theme = this.value;
+  chrome.storage.sync.set({ theme: theme });
+  document.body.className = theme;
+});
+// Autosave functionality
+let saveTimeout;
+noteInput.addEventListener('input', function() {
+  clearTimeout(saveTimeout);
+  saveTimeout = setTimeout(function() {
+    saveNote();
+  }, 5000); // 
+});
+// Initialize Quill.js editor
+var quill = new Quill('#editor', {
+  theme: 'snow',
+  modules: {
+    toolbar: [
+      [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      ['bold', 'italic', 'underline'],
+      ['link'],
+      ['blockquote']
+    ]
+  }
+});
+// Drag-and-Drop: Reorder notes with drag-and-drop
+const sortable = new Sortable(notesList, {
+  onEnd(evt) {
+    const order = sortable.toArray(); // Get the new order
+    chrome.storage.sync.set({ notes: order }, function() {
+      loadNotes();
+    });
+  }
+});
+// Backup Notes
+function backupNotes() {
+  chrome.storage.sync.get(['notes'], function(result) {
+    const notes = result.notes || [];
+    const backup = JSON.stringify(notes);
+    localStorage.setItem('notes_backup', backup);  // Local backup
+  });
+}
+
+// Add "Backup" button to HTML
+<button id="backup-btn">Backup Notes</button>
+
 
   // Save note
   saveBtn.addEventListener('click', function() {
@@ -75,7 +174,7 @@ document.addEventListener('DOMContentLoaded', function() {
               
               // Optional: Show visual feedback that text was copied
               const originalColor = this.style.color;
-              this.style.color = '#28a745'; // Change to green
+              this.style.color = '#28a745'; /
               setTimeout(() => {
                 this.style.color = originalColor;
               }, 1000);
