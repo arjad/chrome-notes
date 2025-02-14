@@ -3,13 +3,16 @@ Boost your productivity with Quick Notes, a simple and efficient Chrome extensio
 
 Load the Extension in Chrome
 
-    Open Chrome and go to:
+    1. Open Chrome and go to:
     👉 chrome://extensions/
 
-    Enable Developer Mode:
+    2. Enable Developer Mode:
         Toggle the switch at the top right corner.
 
-    Load the Extension:
+    3. Load the Extension:
         Click "Load unpacked".
         Select the folder where your extension files are stored.
         The extension will now be added to Chrome.
+
+Video Guide:
+    `https://www.loom.com/share/7d3a2d9d4be84c80ae62a9985b36fc4a`
