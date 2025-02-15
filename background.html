@@ -1,0 +1,18 @@
+chrome.alarms.onAlarm.addListener(function (alarm) {
+    if (alarm.name.startsWith("reminder-")) {
+        chrome.storage.sync.get(['notes'], function (result) {
+            const notes = result.notes || [];
+            const noteId = parseInt(alarm.name.split('-')[1]);
+            const note = notes.find(n => n.id === noteId);
+
+            if (note) {
+                chrome.notifications.create({
+                    type: "basic",
+                    iconUrl: "note.png",
+                    title: "Reminder!",
+                    message: note.text
+                });
+            }
+        });
+    }
+});
