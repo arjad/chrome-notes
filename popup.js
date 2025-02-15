@@ -60,7 +60,10 @@ document.addEventListener('DOMContentLoaded', function() {
       document.querySelectorAll('.delete-icon').forEach(icon => {
         icon.addEventListener('click', function() {
           const noteId = parseInt(this.getAttribute('data-id'));
-          deleteNote(noteId);
+              // Show confirmation popup
+    if (confirm("Are you sure you want to delete this note?")) {
+      deleteNote(noteId);
+    }
         });
       });
 
