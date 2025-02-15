@@ -99,11 +99,13 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     });
   }
-});
 
-// dark mode
-document.addEventListener('DOMContentLoaded', function() {
+  // open settings
   const settingsIcon = document.querySelector('.fa-gear');
+  // Open settings page when gear icon is clicked
+  settingsIcon.addEventListener('click', function() {
+    chrome.tabs.create({ url: 'setting/settings.html' });
+  });
 
   // Check for dark mode setting
   chrome.storage.sync.get('darkMode', function (data) {
@@ -112,9 +114,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // Open settings page when gear icon is clicked
-  settingsIcon.addEventListener('click', function() {
-    chrome.tabs.create({ url: 'setting/settings.html' });
+  // search notes
+  document.getElementById('search-input').addEventListener('input', function () {
+    const searchText = this.value.toLowerCase();
+    document.querySelectorAll('.note-item').forEach(note => {
+      const noteText = note.querySelector('.note-text').textContent.toLowerCase();
+      note.style.display = noteText.includes(searchText) ? 'block' : 'none';
+    });
   });
 
 });

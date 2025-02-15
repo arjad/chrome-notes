@@ -12,21 +12,25 @@ document.addEventListener('DOMContentLoaded', function () {
   // Toggle dark mode
   darkModeToggle.addEventListener('change', function () {
     const isDarkMode = darkModeToggle.checked;
-    const noteInput = document.getElementById('note-input')
+    const noteInput = document.querySelectorAll('.input-tag')
     // Save setting
     chrome.storage.sync.set({ darkMode: isDarkMode });
-  
+    console.log("negth = " + noteInput.length)
+
     if (isDarkMode) {
       document.body.classList.add('dark-mode');
       if (noteInput) {
-        document.getElementById('note-input').classList.add('text-white');
-        document.getElementById('note-input').classList.remove('text-dark');
+        console.log("dark mode on ")
+        document.querySelectorAll('.input-tag').forEach(element => {
+          element.classList.remove('text-dark');
+        });
       }
     } else {
       document.body.classList.remove('dark-mode');
       if (noteInput) {
-        document.getElementById('note-input').classList.add('text-dark');
-        document.getElementById('note-input').classList.remove('text-white');
+        document.querySelectorAll('.input-tag').forEach(element => {
+          element.classList.remove('text-white');
+        });
       }
     }
   });
