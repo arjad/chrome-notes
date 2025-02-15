@@ -16,8 +16,15 @@
       </h3>
       <i class="fa-solid fa-gear" id="settings-icon" style="cursor: pointer;"></i>
     </nav>
+    <input type="text" id="search-input" class="form-control my-2" placeholder="Search notes..." />
     <div id="notes-list" class="mb-3"></div>
     <textarea id="note-input" class="form-control bg-transparent" rows="4" placeholder="Enter your note here..."></textarea>
+    <select id="category-select" class="form-control my-2">
+      <option value="">Select Category</option>
+      <option value="Work">Work</option>
+      <option value="Personal">Personal</option>
+      <option value="Ideas">Ideas</option>
+    </select>
 
     <div>
       <div class="error-msg my-2">
