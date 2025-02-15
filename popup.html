@@ -8,23 +8,27 @@
 </head>
 <body>
   <div class="container-fluid p-0">
-    <nav class="notes-nav d-flex justify-content-between">
-      <h3>
-        <img src="note.png" width="24" height="24" class="mr-2">
-        <i class="i-notes">i </i>
-        <span> Notes</span>
-      </h3>
-      <i class="fa-solid fa-gear" id="settings-icon" style="cursor: pointer;"></i>
+    <nav class="notes-nav d-flex align-items-center justify-content-between">
+      <div class="notes-nav d-flex align-items-center">
+        <h3 class="notes-nav d-flex align-items-center">
+          <img src="note.png" width="24" height="24">
+          
+          <span> 
+            <i class="i-notes ml-3"> i </i>
+            Notes
+          </span>
+        </h3>
+      </div>
+      <div class="w-50 d-flex align-items-center">
+        <input type="text" id="search-input" class="form-control form-control-sm input-tag" placeholder="Search notes..." />
+        <i class="fa-solid fa-gear ms-2" id="settings-icon" style="cursor: pointer;"></i>
+      </div>
+      
+     
     </nav>
-    <input type="text" id="search-input" class="form-control my-2" placeholder="Search notes..." />
+
     <div id="notes-list" class="mb-3"></div>
-    <textarea id="note-input" class="form-control bg-transparent" rows="4" placeholder="Enter your note here..."></textarea>
-    <select id="category-select" class="form-control my-2">
-      <option value="">Select Category</option>
-      <option value="Work">Work</option>
-      <option value="Personal">Personal</option>
-      <option value="Ideas">Ideas</option>
-    </select>
+    <textarea id="note-input" class="form-control bg-transparent input-tag" rows="4" placeholder="Enter your note here..."></textarea>
 
     <div>
       <div class="error-msg my-2">

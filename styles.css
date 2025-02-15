@@ -3,7 +3,7 @@
 }
 
 body {
-  width: 300px;
+  width: 20rem;
   padding: 0.7rem;
   color: black;
 }
@@ -124,7 +124,7 @@ body {
   background-color: #1e242d !important;
   color: white !important;
 }
-.dark-mode #note-input {
+.dark-mode .input-tag {
   background-color: transparent !important;
   color: white !important;
 }
