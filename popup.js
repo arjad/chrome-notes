@@ -53,6 +53,14 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
           </span>
         </div>`;
+    // Highlight notes with approaching deadlines (within 24 hours)
+const noteDate = new Date(note.date);
+if (!isNaN(noteDate.getTime())) { // Ensure it's a valid date
+  const timeDifference = noteDate.getTime() - Date.now();
+  if (timeDifference > 0 && timeDifference <= 24 * 60 * 60 * 1000) {
+    noteElement.style.backgroundColor = 'yellow';
+  }
+}
         notesList.appendChild(noteElement);
       });
 
