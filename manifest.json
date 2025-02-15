@@ -3,7 +3,10 @@
   "name": "I Notes",
   "version": "1.0",
   "description": "A simple extension to take notes / develpoer commands / passwords / etc",
-  "permissions": ["storage"],
+  "permissions": ["storage", "notifications", "alarms"],
+    "background": {
+    "service_worker": "background.js"
+  },
   "action": {
     "default_popup": "popup.html"
   },
