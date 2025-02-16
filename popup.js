@@ -1,126 +1,48 @@
-document.addEventListener('DOMContentLoaded', function() {
-  const noteInput = document.getElementById('note-input');
-  const saveBtn = document.getElementById('save-btn');
-  const notesList = document.getElementById('notes-list');
-  const errorMsg = document.getElementsByClassName('error-msg')[0];
+function loadNotes() {
+  chrome.storage.sync.get(['notes'], function (result) {
+    const notes = result.notes || [];
+    notesList.innerHTML = '';
 
-  // Load existing notes
-  loadNotes();
+    notes.sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0));
 
-  // Save note
-  saveBtn.addEventListener('click', function() {
-    const noteText = noteInput.value.trim();
-    if (noteText) {
-      errorMsg.style.display = "none";
-      chrome.storage.sync.get(['notes'], function(result) {
-        const notes = result.notes || [];
-        const newNote = {
-          id: Date.now(),
-          text: noteText,
-          date: new Date().toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-          })
-        };
-        notes.push(newNote);
-        chrome.storage.sync.set({ notes: notes }, function() {
-          noteInput.value = '';
-          loadNotes();
-        });
-      });
-    } else {
-      errorMsg.style.display = "block";
-    }
-  });
+    notes.reverse().forEach(function (note) {
+      const noteElement = document.createElement('div');
+      noteElement.className = 'note-item' + (note.pinned ? ' pinned' : '');
 
-  // Load and display notes
-  function loadNotes() {
-    chrome.storage.sync.get(['notes'], function(result) {
-      const notes = result.notes || [];
-      notesList.innerHTML = '';
-     
-      notes.reverse().forEach(function(note) {
-        const noteElement = document.createElement('div');
-        noteElement.className = 'note-item';
-        noteElement.innerHTML = `<div>
+      noteElement.innerHTML = `
+        <div>
           <div class="note-text">${note.text}</div>
-          <span class="options" data-id="${note.id}">
-            <small class="date">${note.date}</small>
-            <div class="icons">
-              <i class="fas fa-trash delete-icon" data-id="${note.id}"></i>
-              <i class="fa-solid fa-copy copy-icon" data-id="${note.id}"></i>
-            </div>
-          </span>
+          <small class="date">${note.date}</small>
+          <div class="icons">
+            <i class="fas fa-thumbtack pin-icon" data-id="${note.id}" style="color: ${note.pinned ? 'red' : 'black'}"></i>
+            <i class="fas fa-trash delete-icon" data-id="${note.id}"></i>
+            <i class="fa-solid fa-copy copy-icon" data-id="${note.id}"></i>
+          </div>
         </div>`;
-        notesList.appendChild(noteElement);
-      });
+      notesList.appendChild(noteElement);
+    });
 
-      // Add delete functionality
-      document.querySelectorAll('.delete-icon').forEach(icon => {
-        icon.addEventListener('click', function() {
-          const noteId = parseInt(this.getAttribute('data-id'));
-          deleteNote(noteId);
-        });
-      });
-
-      // Add copy functionality
-      document.querySelectorAll('.copy-icon').forEach(icon => {
-        icon.addEventListener('click', async function() {
-          const noteId = parseInt(this.getAttribute('data-id'));
-          const note = notes.find(n => n.id === noteId);
-          if (note) {
-            try {
-              await navigator.clipboard.writeText(note.text);
-              
-              // Optional: Show visual feedback that text was copied
-              const originalColor = this.style.color;
-              this.style.color = '#28a745'; // Change to green
-              setTimeout(() => {
-                this.style.color = originalColor;
-              }, 1000);
-              
-            } catch (err) {
-              console.error('Failed to copy text: ', err);
-            }
-          }
-        });
+    document.querySelectorAll('.pin-icon').forEach(icon => {
+      icon.addEventListener('click', function () {
+        const noteId = parseInt(this.dataset.id);
+        togglePin(noteId);
       });
     });
-  }
 
-  // Delete note
-  function deleteNote(noteId) {
-    chrome.storage.sync.get(['notes'], function(result) {
-      const notes = result.notes || [];
-      const filteredNotes = notes.filter(note => note.id !== noteId);
-      chrome.storage.sync.set({ notes: filteredNotes }, function() {
-        loadNotes();
+    document.querySelectorAll('.delete-icon').forEach(icon => {
+      icon.addEventListener('click', function () {
+        const noteId = parseInt(this.dataset.id);
+        confirmDelete(noteId);
       });
     });
-  }
 
-  // open settings
-  const settingsIcon = document.querySelector('.fa-gear');
-  // Open settings page when gear icon is clicked
-  settingsIcon.addEventListener('click', function() {
-    chrome.tabs.create({ url: 'setting/settings.html' });
-  });
-
-  // Check for dark mode setting
-  chrome.storage.sync.get('darkMode', function (data) {
-    if (data.darkMode) {
-      document.body.classList.add('dark-mode');
-    }
-  });
-
-  // search notes
-  document.getElementById('search-input').addEventListener('input', function () {
-    const searchText = this.value.toLowerCase();
-    document.querySelectorAll('.note-item').forEach(note => {
-      const noteText = note.querySelector('.note-text').textContent.toLowerCase();
-      note.style.display = noteText.includes(searchText) ? 'block' : 'none';
+    document.querySelectorAll('.copy-icon').forEach(icon => {
+      icon.addEventListener('click', function () {
+        const noteText = notes.find(n => n.id == this.dataset.id).text;
+        navigator.clipboard.writeText(noteText);
+      });
     });
   });
+}
 
-});
+loadNotes();
