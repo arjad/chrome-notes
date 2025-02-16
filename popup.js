@@ -17,11 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const newNote = {
           id: Date.now(),
           text: noteText,
-          date: new Date().toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-          })
+          date: new Date().toISOString() // Store in ISO format
         };
         notes.push(newNote);
         chrome.storage.sync.set({ notes: notes }, function() {
@@ -39,20 +35,35 @@ document.addEventListener('DOMContentLoaded', function() {
     chrome.storage.sync.get(['notes'], function(result) {
       const notes = result.notes || [];
       notesList.innerHTML = '';
-     
+
+      const currentDate = new Date();
+
       notes.reverse().forEach(function(note) {
         const noteElement = document.createElement('div');
         noteElement.className = 'note-item';
-        noteElement.innerHTML = `<div>
-          <div class="note-text">${note.text}</div>
-          <span class="options" data-id="${note.id}">
-            <small class="date">${note.date}</small>
-            <div class="icons">
-              <i class="fas fa-trash delete-icon" data-id="${note.id}"></i>
-              <i class="fa-solid fa-copy copy-icon" data-id="${note.id}"></i>
-            </div>
-          </span>
-        </div>`;
+
+        // Convert stored date to a Date object
+        const noteDate = new Date(note.date);
+        const timeDiff = noteDate - currentDate;
+        const hoursLeft = timeDiff / (1000 * 60 * 60);
+
+        // Apply yellow highlight if the note is due within 24 hours
+        if (hoursLeft > 0 && hoursLeft <= 24) {
+          noteElement.style.backgroundColor = 'yellow';
+        }
+
+        noteElement.innerHTML = `
+          <div>
+            <div class="note-text">${note.text}</div>
+            <span class="options" data-id="${note.id}">
+              <small class="date">${noteDate.toLocaleDateString()}</small>
+              <div class="icons">
+                <i class="fas fa-trash delete-icon" data-id="${note.id}"></i>
+                <i class="fa-solid fa-copy copy-icon" data-id="${note.id}"></i>
+              </div>
+            </span>
+          </div>
+        `;
         notesList.appendChild(noteElement);
       });
 
@@ -72,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function() {
           if (note) {
             try {
               await navigator.clipboard.writeText(note.text);
-              
+
               // Optional: Show visual feedback that text was copied
               const originalColor = this.style.color;
               this.style.color = '#28a745'; // Change to green
@@ -100,10 +111,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // open settings
-  const settingsIcon = document.querySelector('.fa-gear');
   // Open settings page when gear icon is clicked
-  settingsIcon.addEventListener('click', function() {
+  document.getElementById('settings-icon').addEventListener('click', function() {
     chrome.tabs.create({ url: 'setting/settings.html' });
   });
 
@@ -114,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // search notes
+  // Search notes
   document.getElementById('search-input').addEventListener('input', function () {
     const searchText = this.value.toLowerCase();
     document.querySelectorAll('.note-item').forEach(note => {
@@ -124,3 +133,4 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
 });
+
