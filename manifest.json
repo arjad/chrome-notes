@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "I Notes",
   "version": "1.0",
-  "description": "A simple extension to take notes / develpoer commands / passwords / etc",
-  "permissions": ["storage"],
+  "description": "A simple extension to take notes / developer commands / passwords / etc",
+  "permissions": ["storage", "notifications"],
   "action": {
     "default_popup": "popup.html"
   },
@@ -12,5 +12,5 @@
     "128": "note.png"
   },
   "options_page": "setting/settings.html"
-
 }
+
