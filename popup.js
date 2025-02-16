@@ -1,32 +1,34 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   const noteInput = document.getElementById('note-input');
   const saveBtn = document.getElementById('save-btn');
   const notesList = document.getElementById('notes-list');
   const errorMsg = document.getElementsByClassName('error-msg')[0];
+  const reminderInput = document.getElementById('reminder-time');
 
-  // Load existing notes
   loadNotes();
 
-  // Save note
-  saveBtn.addEventListener('click', function() {
+  saveBtn.addEventListener('click', function () {
     const noteText = noteInput.value.trim();
+    const reminderTime = reminderInput.value;
+
     if (noteText) {
       errorMsg.style.display = "none";
-      chrome.storage.sync.get(['notes'], function(result) {
+
+      chrome.storage.sync.get(['notes'], function (result) {
         const notes = result.notes || [];
         const newNote = {
           id: Date.now(),
           text: noteText,
-          date: new Date().toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-          })
+          date: new Date().toLocaleDateString('en-US'),
+          reminder: reminderTime ? new Date(reminderTime).getTime() : null
         };
         notes.push(newNote);
-        chrome.storage.sync.set({ notes: notes }, function() {
+
+        chrome.storage.sync.set({ notes: notes }, function () {
           noteInput.value = '';
+          reminderInput.value = '';
           loadNotes();
+          if (newNote.reminder) scheduleReminder(newNote);
         });
       });
     } else {
@@ -34,52 +36,48 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // Load and display notes
   function loadNotes() {
-    chrome.storage.sync.get(['notes'], function(result) {
+    chrome.storage.sync.get(['notes'], function (result) {
       const notes = result.notes || [];
       notesList.innerHTML = '';
-     
-      notes.reverse().forEach(function(note) {
+
+      notes.reverse().forEach(function (note) {
         const noteElement = document.createElement('div');
         noteElement.className = 'note-item';
-        noteElement.innerHTML = `<div>
-          <div class="note-text">${note.text}</div>
-          <span class="options" data-id="${note.id}">
+
+        if (note.reminder && note.reminder - Date.now() < 24 * 60 * 60 * 1000) {
+          noteElement.style.backgroundColor = 'yellow';
+        }
+
+        noteElement.innerHTML = `
+          <div>
+            <div class="note-text">${note.text}</div>
             <small class="date">${note.date}</small>
+            ${note.reminder ? `<small class="reminder">Reminder: ${new Date(note.reminder).toLocaleString()}</small>` : ''}
             <div class="icons">
               <i class="fas fa-trash delete-icon" data-id="${note.id}"></i>
               <i class="fa-solid fa-copy copy-icon" data-id="${note.id}"></i>
             </div>
-          </span>
-        </div>`;
+          </div>`;
         notesList.appendChild(noteElement);
       });
 
-      // Add delete functionality
       document.querySelectorAll('.delete-icon').forEach(icon => {
-        icon.addEventListener('click', function() {
+        icon.addEventListener('click', function () {
           const noteId = parseInt(this.getAttribute('data-id'));
           deleteNote(noteId);
         });
       });
 
-      // Add copy functionality
       document.querySelectorAll('.copy-icon').forEach(icon => {
-        icon.addEventListener('click', async function() {
+        icon.addEventListener('click', async function () {
           const noteId = parseInt(this.getAttribute('data-id'));
           const note = notes.find(n => n.id === noteId);
           if (note) {
             try {
               await navigator.clipboard.writeText(note.text);
-              
-              // Optional: Show visual feedback that text was copied
-              const originalColor = this.style.color;
-              this.style.color = '#28a745'; // Change to green
-              setTimeout(() => {
-                this.style.color = originalColor;
-              }, 1000);
-              
+              this.style.color = '#28a745';
+              setTimeout(() => { this.style.color = ''; }, 1000);
             } catch (err) {
               console.error('Failed to copy text: ', err);
             }
@@ -89,38 +87,36 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // Delete note
+  function scheduleReminder(note) {
+    const now = Date.now();
+    if (note.reminder > now) {
+      setTimeout(() => {
+        chrome.notifications.create({
+          type: 'basic',
+          iconUrl: 'note.png',
+          title: 'Reminder: I Notes',
+          message: `Reminder for note: "${note.text}"`,
+          priority: 2
+        });
+      }, note.reminder - now);
+    }
+  }
+
   function deleteNote(noteId) {
-    chrome.storage.sync.get(['notes'], function(result) {
+    chrome.storage.sync.get(['notes'], function (result) {
       const notes = result.notes || [];
       const filteredNotes = notes.filter(note => note.id !== noteId);
-      chrome.storage.sync.set({ notes: filteredNotes }, function() {
+      chrome.storage.sync.set({ notes: filteredNotes }, function () {
         loadNotes();
       });
     });
   }
 
-  // open settings
-  const settingsIcon = document.querySelector('.fa-gear');
-  // Open settings page when gear icon is clicked
-  settingsIcon.addEventListener('click', function() {
-    chrome.tabs.create({ url: 'setting/settings.html' });
-  });
-
-  // Check for dark mode setting
-  chrome.storage.sync.get('darkMode', function (data) {
-    if (data.darkMode) {
-      document.body.classList.add('dark-mode');
-    }
-  });
-
-  // search notes
-  document.getElementById('search-input').addEventListener('input', function () {
-    const searchText = this.value.toLowerCase();
-    document.querySelectorAll('.note-item').forEach(note => {
-      const noteText = note.querySelector('.note-text').textContent.toLowerCase();
-      note.style.display = noteText.includes(searchText) ? 'block' : 'none';
+  chrome.storage.sync.get('notes', function (result) {
+    const notes = result.notes || [];
+    notes.forEach(note => {
+      if (note.reminder) scheduleReminder(note);
     });
   });
-
 });
+
