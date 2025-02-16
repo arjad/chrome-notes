@@ -2,15 +2,17 @@
   "manifest_version": 3,
   "name": "I Notes",
   "version": "1.0",
-  "description": "A simple extension to take notes / develpoer commands / passwords / etc",
-  "permissions": ["storage"],
+  "permissions": ["storage", "contextMenus"],
+  "background": {
+    "service_worker": "background.js"
+  },
   "action": {
-    "default_popup": "popup.html"
-  },
-  "icons": {
-    "48": "note.png",
-    "128": "note.png"
-  },
-  "options_page": "setting/settings.html"
-
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "note.png",
+      "48": "note.png",
+      "128": "note.png"
+    }
+  }
 }
+
