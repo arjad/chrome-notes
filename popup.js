@@ -3,6 +3,10 @@ document.addEventListener('DOMContentLoaded', function() {
   const saveBtn = document.getElementById('save-btn');
   const notesList = document.getElementById('notes-list');
   const errorMsg = document.getElementsByClassName('error-msg')[0];
+  const deleteModal = document.getElementById('delete-modal'); // Custom delete modal
+  const confirmDeleteBtn = document.getElementById('confirm-delete'); // Confirm delete button
+  const cancelDeleteBtn = document.getElementById('cancel-delete'); // Cancel delete button
+  let noteIdToDelete = null; // Store the note ID to delete
 
   // Load existing notes
   loadNotes();
@@ -39,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
     chrome.storage.sync.get(['notes'], function(result) {
       const notes = result.notes || [];
       notesList.innerHTML = '';
-     
+
       notes.reverse().forEach(function(note) {
         const noteElement = document.createElement('div');
         noteElement.className = 'note-item';
@@ -59,8 +63,9 @@ document.addEventListener('DOMContentLoaded', function() {
       // Add delete functionality
       document.querySelectorAll('.delete-icon').forEach(icon => {
         icon.addEventListener('click', function() {
-          const noteId = parseInt(this.getAttribute('data-id'));
-          deleteNote(noteId);
+          noteIdToDelete = parseInt(this.getAttribute('data-id'));
+          // Open custom modal to confirm deletion
+          deleteModal.style.display = 'flex';
         });
       });
 
@@ -72,14 +77,11 @@ document.addEventListener('DOMContentLoaded', function() {
           if (note) {
             try {
               await navigator.clipboard.writeText(note.text);
-              
-              // Optional: Show visual feedback that text was copied
               const originalColor = this.style.color;
               this.style.color = '#28a745'; // Change to green
               setTimeout(() => {
                 this.style.color = originalColor;
               }, 1000);
-              
             } catch (err) {
               console.error('Failed to copy text: ', err);
             }
@@ -90,19 +92,33 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // Delete note
-  function deleteNote(noteId) {
+  function deleteNote() {
     chrome.storage.sync.get(['notes'], function(result) {
       const notes = result.notes || [];
-      const filteredNotes = notes.filter(note => note.id !== noteId);
+      const filteredNotes = notes.filter(note => note.id !== noteIdToDelete);
       chrome.storage.sync.set({ notes: filteredNotes }, function() {
         loadNotes();
+        // Close the modal after deletion
+        deleteModal.style.display = 'none';
+        // Hide the error notification after successful deletion
+        errorMsg.style.display = "none"; // Ensures no notification shows
       });
     });
   }
 
+  // Handle modal actions
+  confirmDeleteBtn.addEventListener('click', function() {
+    deleteNote();
+  });
+
+  cancelDeleteBtn.addEventListener('click', function() {
+    // Close modal without deleting and hide notification
+    deleteModal.style.display = 'none';
+    errorMsg.style.display = "none"; // Hide error notification if cancelled
+  });
+
   // open settings
   const settingsIcon = document.querySelector('.fa-gear');
-  // Open settings page when gear icon is clicked
   settingsIcon.addEventListener('click', function() {
     chrome.tabs.create({ url: 'setting/settings.html' });
   });
@@ -114,7 +130,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // search notes
+  // Search notes
   document.getElementById('search-input').addEventListener('input', function () {
     const searchText = this.value.toLowerCase();
     document.querySelectorAll('.note-item').forEach(note => {
@@ -122,5 +138,4 @@ document.addEventListener('DOMContentLoaded', function() {
       note.style.display = noteText.includes(searchText) ? 'block' : 'none';
     });
   });
-
 });
