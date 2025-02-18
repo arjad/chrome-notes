@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>I Notes</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
@@ -8,39 +10,72 @@
 </head>
 <body>
   <div class="container-fluid p-0">
-    <nav class="notes-nav d-flex align-items-center justify-content-between">
-      <div class="notes-nav d-flex align-items-center">
-        <h3 class="notes-nav d-flex align-items-center">
-          <img src="note.png" width="24" height="24">
-          
-          <span> 
-            <i class="i-notes ml-3"> i </i>
-            Notes
-          </span>
-        </h3>
-      </div>
-      <div class="w-50 d-flex align-items-center">
-        <input type="text" id="search-input" class="form-control form-control-sm input-tag" placeholder="Search notes..." />
-        <i class="fa-solid fa-gear ms-2" id="settings-icon" style="cursor: pointer;"></i>
-      </div>
-      
-     
+    <!-- Header Section -->
+    <nav class="notes-nav d-flex justify-content-between">
+      <h3>
+        <img src="note.png" width="24" height="24" class="mr-2">
+        <i class="i-notes">i </i>
+        <span> Notes</span>
+      </h3>
+      <i class="fa-solid fa-gear" id="settings-icon" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#settingsModal"></i>
     </nav>
 
+    <!-- Notes List Section -->
     <div id="notes-list" class="mb-3"></div>
-    <textarea id="note-input" class="form-control bg-transparent input-tag" rows="4" placeholder="Enter your note here..."></textarea>
 
+    <!-- Note Input Section -->
+    <textarea id="note-input" class="form-control bg-transparent" rows="4" placeholder="Enter your note here..."></textarea>
+
+    <!-- Error Message Section -->
     <div>
       <div class="error-msg my-2">
         <i class="fa-solid fa-circle-info me-1"></i>
         <span>Please enter a note.</span>
       </div>
+
+      <!-- Save Button Section -->
       <button id="save-btn" class="btn btn-primary rounded-pill px-3 my-2">
         Save Note
       </button>
     </div>
+
+    <!-- Settings Modal for Theme and Priority -->
+    <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="settingsModalLabel">Settings</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <!-- Theme Selection -->
+            <label for="theme-select">Select Theme:</label>
+            <select id="theme-select" class="form-control mb-3">
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+            </select>
+
+            <!-- Priority Selection -->
+            <label for="priority-select">Select Priority:</label>
+            <select id="priority-select" class="form-control mb-3">
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" id="save-settings-btn">Save Settings</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
+  <!-- Scripts -->
   <script src="popup.js"></script>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
