@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
+  // dark mode logic
   const darkModeToggle = document.getElementById('dark-mode-toggle');
-
-  // Load the stored dark mode preference
   chrome.storage.sync.get('darkMode', function (data) {
     if (data.darkMode) {
       darkModeToggle.checked = true;
@@ -9,7 +8,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  // Toggle dark mode
   darkModeToggle.addEventListener('change', function () {
     const isDarkMode = darkModeToggle.checked;
     const noteInput = document.querySelectorAll('.input-tag')
@@ -33,5 +31,11 @@ document.addEventListener('DOMContentLoaded', function () {
         });
       }
     }
+  });
+
+  // sorting logic
+  const sorting_options = document.getElementById('sort-options');
+  sorting_options.addEventListener('change', function () {
+    chrome.storage.sync.set({ sort_value: sorting_options.value });
   });
 });
