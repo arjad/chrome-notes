@@ -17,8 +17,8 @@
       background-color: #1e242d;
       color: white;
     }
-    .review-btn{
-      width:100px;
+    .review-btn {
+      width: 100px;
       background-color: var(--primary-color);
       color: white;
     }
@@ -31,24 +31,38 @@
         <img src="../note.png" width="24" height="24" class="mr-2">
         Settings
       </h3>
+      <hr>
+
       <div class="form-check form-switch">
         <input class="form-check-input" type="checkbox" id="dark-mode-toggle">
         <label class="form-check-label" for="dark-mode-toggle">Enable Dark Mode</label>
       </div>
+      
+      <div class="mt-3">
+        <p>Sort Notes</p>
+        <select id="sort-options" class="form-select w-25">
+          <option value="date-asc">Sort by Date (Oldest to Newest)</option>
+          <option value="date-desc">Sort by Date (Newest to Oldest)</option>
+          <option value="alpha-asc">Sort by Alphabet (A-Z)</option>
+          <option value="alpha-desc">Sort by Alphabet (Z-A)</option>
+        </select>
+      </div>
       <hr>
       <div class="mt-3">
         <h5>About Us</h5>
-        <p>Boost your productivity with <strong>Quick Notes</strong>, a simple and efficient Chrome extension that lets you manage notes effortlessly.</p>
+        <p>Boost your productivity with <strong>i Notes</strong>, a simple and efficient Chrome extension that lets you manage notes effortlessly.</p>
         <ul>
-            <li><strong>➕ Add & Delete Notes</strong> – Easily create, edit, and remove notes as needed.</li>
-            <li><strong>📝 One-Click Copy</strong> – Instantly copy notes to your clipboard.</li>
-            <li><strong>➕ Search Notes</strong> – Filter notes from the list. </li>
-            <li><strong>🌙 Dark & Light Mode</strong> – Customize your experience with a theme that suits your preference.</li>
+          <li><strong>➕ Add & Delete Notes</strong> – Easily create, edit, and remove notes as needed.</li>
+          <li><strong>📝 One-Click Copy</strong> – Instantly copy notes to your clipboard.</li>
+          <li><strong>➕ Sort Notes</strong> – Sort notes. </li>
+          <li><strong>➕ Search Notes</strong> – Filter notes from the list. </li>
+          <li><strong>🌙 Dark & Light Mode</strong> – Customize your experience with a theme that suits your preference.</li>
         </ul>
         <p>We are working on it to improve it.</p>
       </div>
-      <a href="https://chrome.google.com/webstore" target="_blank" class="btn my-3 review-btn">Review Us</a>
-      <p>You can suggest features and report bugs. It will help us improve the extension.</p>
+
+      
+      <p>You can suggest features and report bugs. It will help us improve the extension. <a href="https://chrome.google.com/webstore" target="_blank">Review Us</a></p>
     </div>
   </div>
 </body>
