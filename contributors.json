@@ -1,9 +1,15 @@
 {
   "repository": "https://github.com/arjad/chrome-notes",
+  "project": {
+    "name": "i Notes",
+    "version": "1.0",
+    "logo": "../note.png",
+    "description": "A simple and efficient Chrome extension for managing notes"
+  },
   "contributors": [
     {
       "name": "Arjad",
-      "role": "Lead Developer",
+      "role": "Developer",
       "avatar": "https://github.com/arjad.png",
       "github": "https://github.com/arjad",
       "email": "arjad@example.com"
