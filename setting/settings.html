@@ -30,21 +30,33 @@
         grid-template-columns: 280px minmax(500px, 800px);
         gap: 24px;
         max-width: 1000px;
-        margin: 60px auto;
+        margin: 24px auto;
         padding: 0 16px;
       }
 
       .page-header {
         max-width: 1000px;
-        margin: 0 auto;
+        margin: 0 auto 24px;
         padding: 0 16px;
-        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
       }
 
       .page-title {
         font-size: 24px;
-        font-weight: 500;
-        color: #1a1a1a;
+        font-weight: 600;
+        color: rgba(0, 0, 0, 0.9);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .page-title img {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
       }
 
       .left-sidebar {
@@ -138,17 +150,28 @@
         .form-select {
           width: 100%;
         }
+
+        .page-header {
+          padding: 0 12px;
+        }
+
+        .page-title {
+          font-size: 20px;
+        }
       }
 
       /* Update dark mode for header */
       body.dark-mode .page-title {
-        color: #ffffff;
+        color: rgba(255, 255, 255, 0.9);
       }
     </style>
   </head>
   <body>
     <div class="page-header">
-      <h1 class="page-title">Settings</h1>
+      <h1 class="page-title">
+        <img src="../note.png" alt="Profile" />
+        Settings
+      </h1>
     </div>
 
     <div class="settings-layout">
