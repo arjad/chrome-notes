@@ -2,8 +2,15 @@
   "repository": "https://github.com/arjad/chrome-notes",
   "contributors": [
     {
-      "name": "John Doe",
+      "name": "Arjad",
       "role": "Lead Developer",
+      "avatar": "https://github.com/arjad.png",
+      "github": "https://github.com/arjad",
+      "email": "arjad@example.com"
+    },
+    {
+      "name": "John Doe",
+      "role": "Developer",
       "avatar": "https://github.com/identicons/jasonlong.png",
       "github": "https://github.com/johndoe",
       "email": "john.doe@example.com"
