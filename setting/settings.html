@@ -84,6 +84,7 @@
         gap: 10px;
         padding: 8px;
         border-radius: 4px;
+        margin-bottom: 8px;
       }
 
       .contributor-item:hover {
@@ -164,6 +165,29 @@
       body.dark-mode .page-title {
         color: rgba(255, 255, 255, 0.9);
       }
+
+      .contributor-info {
+        flex-grow: 1;
+      }
+
+      .contributor-links {
+        display: flex;
+        gap: 8px;
+        font-size: 14px;
+      }
+
+      .contributor-links a {
+        color: var(--primary-color);
+        text-decoration: none;
+      }
+
+      .contributor-links a:hover {
+        text-decoration: underline;
+      }
+
+      body.dark-mode .contributor-links a {
+        color: #9f74c7;
+      }
     </style>
   </head>
   <body>
@@ -210,16 +234,19 @@
         <!-- Contributors Section -->
         <div class="contributors-section">
           <h6 class="mb-3">Contributors</h6>
-          <div class="contributor-item">
-            <img
-              src="https://github.com/identicons/jasonlong.png"
-              alt="Contributor"
-              class="contributor-avatar"
-            />
-            <div>
-              <div class="fw-medium">Contributor Name</div>
-              <small class="text-muted">Developer</small>
-            </div>
+          <div id="contributors-list">
+            <!-- Contributors will be loaded here -->
+          </div>
+
+          <div class="mt-4 pt-3 border-top">
+            <a
+              href="https://github.com/yourusername/chrome-notes"
+              target="_blank"
+              class="d-flex align-items-center text-decoration-none mb-2"
+            >
+              <i class="fab fa-github me-2"></i>
+              <span>View on GitHub</span>
+            </a>
           </div>
         </div>
       </div>
@@ -273,5 +300,44 @@
         </div>
       </div>
     </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        fetch("contributors.json")
+          .then((response) => response.json())
+          .then((data) => {
+            const contributorsList =
+              document.getElementById("contributors-list");
+
+            data.contributors.forEach((contributor) => {
+              const contributorEl = document.createElement("div");
+              contributorEl.className = "contributor-item";
+              contributorEl.innerHTML = `
+              <img
+                src="${contributor.avatar}"
+                alt="${contributor.name}"
+                class="contributor-avatar"
+              />
+              <div class="contributor-info">
+                <div class="fw-medium">${contributor.name}</div>
+                <small class="text-muted">${contributor.role}</small>
+                <div class="contributor-links mt-1">
+                  <a href="${contributor.github}" target="_blank" title="GitHub">
+                    <i class="fab fa-github"></i>
+                  </a>
+                  <a href="mailto:${contributor.email}" title="Email">
+                    <i class="fas fa-envelope"></i>
+                  </a>
+                </div>
+              </div>
+            `;
+              contributorsList.appendChild(contributorEl);
+            });
+          })
+          .catch((error) => {
+            console.error("Error loading contributors:", error);
+          });
+      });
+    </script>
   </body>
 </html>

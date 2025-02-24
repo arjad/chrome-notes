@@ -1,0 +1,19 @@
+{
+  "repository": "https://github.com/yourusername/chrome-notes",
+  "contributors": [
+    {
+      "name": "John Doe",
+      "role": "Lead Developer",
+      "avatar": "https://github.com/identicons/jasonlong.png",
+      "github": "https://github.com/johndoe",
+      "email": "john.doe@example.com"
+    },
+    {
+      "name": "Jane Smith",
+      "role": "UI/UX Designer",
+      "avatar": "https://github.com/identicons/janesmith.png",
+      "github": "https://github.com/janesmith",
+      "email": "jane.smith@example.com"
+    }
+  ]
+}
