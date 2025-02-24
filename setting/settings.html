@@ -1,69 +1,254 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Settings</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
-  <script src="settings.js" defer></script>
-  <style>
-    :root {
-      --primary-color: #684993;
-    }
-    body {
-      padding: 1rem;
-    }
-    .dark-mode {
-      background-color: #1e242d;
-      color: white;
-    }
-    .review-btn {
-      width: 100px;
-      background-color: var(--primary-color);
-      color: white;
-    }
-  </style>
-</head>
-<body>
-  <div class="container py-4 mx-5 bg-transparent">
-    <div class="shadow-sm p-4">
-      <h3 class="mb-3">
-        <img src="../note.png" width="24" height="24" class="mr-2">
-        Settings
-      </h3>
-      <hr>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Settings</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+      rel="stylesheet"
+    />
+    <script src="settings.js" defer></script>
+    <style>
+      :root {
+        --primary-color: #684993;
+        --hover-bg: #f3f2ef;
+      }
 
-      <div class="form-check form-switch">
-        <input class="form-check-input" type="checkbox" id="dark-mode-toggle">
-        <label class="form-check-label" for="dark-mode-toggle">Enable Dark Mode</label>
-      </div>
-      
-      <div class="mt-3">
-        <p>Sort Notes</p>
-        <select id="sort-options" class="form-select w-25">
-          <option value="date-asc">Sort by Date (Oldest to Newest)</option>
-          <option value="date-desc">Sort by Date (Newest to Oldest)</option>
-          <option value="alpha-asc">Sort by Alphabet (A-Z)</option>
-          <option value="alpha-desc">Sort by Alphabet (Z-A)</option>
-        </select>
-      </div>
-      <hr>
-      <div class="mt-3">
-        <h5>About Us</h5>
-        <p>Boost your productivity with <strong>i Notes</strong>, a simple and efficient Chrome extension that lets you manage notes effortlessly.</p>
-        <ul>
-          <li><strong>➕ Add & Delete Notes</strong> – Easily create, edit, and remove notes as needed.</li>
-          <li><strong>📝 One-Click Copy</strong> – Instantly copy notes to your clipboard.</li>
-          <li><strong>➕ Sort Notes</strong> – Sort notes. </li>
-          <li><strong>➕ Search Notes</strong> – Filter notes from the list. </li>
-          <li><strong>🌙 Dark & Light Mode</strong> – Customize your experience with a theme that suits your preference.</li>
-        </ul>
-        <p>We are working on it to improve it.</p>
-      </div>
+      body {
+        background-color: #f3f2ef;
+        min-height: 100vh;
+        padding: 20px;
+      }
 
-      
-      <p>You can suggest features and report bugs. It will help us improve the extension. <a href="https://chrome.google.com/webstore" target="_blank">Review Us</a></p>
+      .settings-layout {
+        display: grid;
+        grid-template-columns: 280px minmax(500px, 800px);
+        gap: 24px;
+        max-width: 1000px;
+        margin: 60px auto;
+        padding: 0 16px;
+      }
+
+      .page-header {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 0 16px;
+        margin-bottom: 24px;
+      }
+
+      .page-title {
+        font-size: 24px;
+        font-weight: 500;
+        color: #1a1a1a;
+      }
+
+      .left-sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .about-section,
+      .contributors-section,
+      .main-settings {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
+        padding: 20px;
+      }
+
+      .contributors-section {
+        margin-top: auto;
+      }
+
+      .contributor-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px;
+        border-radius: 4px;
+      }
+
+      .contributor-item:hover {
+        background-color: var(--hover-bg);
+      }
+
+      .contributor-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+      }
+
+      .settings-section {
+        padding: 16px 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      }
+
+      .settings-section:last-child {
+        border-bottom: none;
+      }
+
+      /* Dark mode */
+      body.dark-mode {
+        background-color: #1e242d;
+        color: white;
+      }
+
+      body.dark-mode .about-section,
+      body.dark-mode .contributors-section,
+      body.dark-mode .main-settings {
+        background-color: #283142;
+        border-color: rgba(255, 255, 255, 0.08);
+      }
+
+      body.dark-mode .contributor-item:hover {
+        background-color: rgba(255, 255, 255, 0.08);
+      }
+
+      /* Update mobile responsive */
+      @media (max-width: 992px) {
+        body {
+          padding: 16px;
+        }
+
+        .settings-layout {
+          grid-template-columns: 1fr;
+          max-width: 600px;
+        }
+
+        .contributors-section {
+          margin-top: 20px;
+        }
+      }
+
+      @media (max-width: 576px) {
+        body {
+          padding: 12px;
+        }
+
+        .settings-layout {
+          padding: 0 12px;
+        }
+
+        .form-select {
+          width: 100%;
+        }
+      }
+
+      /* Update dark mode for header */
+      body.dark-mode .page-title {
+        color: #ffffff;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-header">
+      <h1 class="page-title">Settings</h1>
     </div>
-  </div>
-</body>
+
+    <div class="settings-layout">
+      <!-- Left Sidebar -->
+      <div class="left-sidebar">
+        <!-- About Section -->
+        <div class="about-section">
+          <div class="text-center mb-4">
+            <img src="../note.png" width="48" height="48" alt="i Notes Logo" />
+            <h5 class="mt-3">About i Notes</h5>
+          </div>
+          <p>
+            A simple and efficient Chrome extension that lets you manage notes
+            effortlessly.
+          </p>
+          <ul class="list-unstyled">
+            <li class="mb-2">
+              <i class="fas fa-plus-circle text-primary me-2"></i>
+              Add & Delete Notes
+            </li>
+            <li class="mb-2">
+              <i class="fas fa-copy text-primary me-2"></i>
+              One-Click Copy
+            </li>
+            <li class="mb-2">
+              <i class="fas fa-search text-primary me-2"></i>
+              Quick Search
+            </li>
+            <li class="mb-2">
+              <i class="fas fa-sort text-primary me-2"></i>
+              Smart Organization
+            </li>
+          </ul>
+        </div>
+
+        <!-- Contributors Section -->
+        <div class="contributors-section">
+          <h6 class="mb-3">Contributors</h6>
+          <div class="contributor-item">
+            <img
+              src="https://github.com/identicons/jasonlong.png"
+              alt="Contributor"
+              class="contributor-avatar"
+            />
+            <div>
+              <div class="fw-medium">Contributor Name</div>
+              <small class="text-muted">Developer</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Settings -->
+      <div class="main-settings">
+        <!-- Display Section -->
+        <div class="settings-section">
+          <h6 class="mb-3">Display</h6>
+          <div class="form-check form-switch">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="dark-mode-toggle"
+            />
+            <label class="form-check-label" for="dark-mode-toggle">
+              Enable Dark Mode
+            </label>
+          </div>
+        </div>
+
+        <!-- General Preferences -->
+        <div class="settings-section">
+          <h6 class="mb-3">General preferences</h6>
+          <div class="mb-3">
+            <label class="form-label">Sort Notes</label>
+            <select id="sort-options" class="form-select">
+              <option value="date-desc">Newest to Oldest</option>
+              <option value="date-asc">Oldest to Newest</option>
+              <option value="alpha-asc">A-Z</option>
+              <option value="alpha-desc">Z-A</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Review Section -->
+        <div class="settings-section">
+          <p class="mb-3">Help us improve! Your feedback matters.</p>
+          <a
+            href="https://chrome.google.com/webstore"
+            target="_blank"
+            class="btn btn-primary"
+            style="
+              background-color: var(--primary-color);
+              border-color: var(--primary-color);
+            "
+          >
+            <i class="fas fa-star me-2"></i>
+            Review Us
+          </a>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>
