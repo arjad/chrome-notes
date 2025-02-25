@@ -16,337 +16,200 @@
     <style>
       :root {
         --primary-color: #684993;
-        --hover-bg: #f3f2ef;
       }
 
       body {
         background-color: #f3f2ef;
-        min-height: 100vh;
-        padding: 20px;
       }
 
       .settings-layout {
-        display: grid;
-        grid-template-columns: 280px minmax(500px, 800px);
-        gap: 24px;
         max-width: 1000px;
-        margin: 24px auto;
-        padding: 0 16px;
       }
 
-      .page-header {
-        max-width: 1000px;
-        margin: 0 auto 24px;
-        padding: 0 16px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-      }
-
-      .page-title {
-        font-size: 24px;
-        font-weight: 600;
-        color: rgba(0, 0, 0, 0.9);
-        margin: 0;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-
-      .page-title img {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-      }
-
-      .left-sidebar {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-      }
-
-      .about-section,
-      .contributors-section,
-      .main-settings {
-        background: white;
-        border-radius: 8px;
+      .card {
+        border: none;
         box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
-        padding: 20px;
-      }
-
-      .contributors-section {
-        margin-top: auto;
-      }
-
-      .contributor-item {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 16px;
-        border-radius: 8px;
-        background: white;
-        margin-bottom: 8px;
       }
 
       .contributor-avatar {
         width: 40px;
         height: 40px;
         border-radius: 8px;
-        background-color: #e7f3ff;
       }
 
-      .contributor-info {
-        display: flex;
-        flex-direction: column;
-      }
-
-      .contributor-name {
-        font-weight: 500;
-        color: #1a1a1a;
-        margin-bottom: 2px;
-      }
-
-      .contributor-role {
-        font-size: 14px;
-        color: #666666;
-      }
-
-      .settings-section {
-        padding: 16px 0;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-      }
-
-      .settings-section:last-child {
-        border-bottom: none;
-      }
-
-      /* Dark mode */
+      /* Dark mode minimal styles */
       body.dark-mode {
         background-color: #1e242d;
-        color: white;
+        color: #fff;
       }
 
-      body.dark-mode .about-section,
-      body.dark-mode .contributors-section,
-      body.dark-mode .main-settings {
+      body.dark-mode .card {
         background-color: #283142;
-        border-color: rgba(255, 255, 255, 0.08);
       }
 
-      body.dark-mode .contributor-item {
-        background: #283142;
+      body.dark-mode .text-muted {
+        color: #a0a0a0 !important;
       }
 
-      body.dark-mode .contributor-name {
-        color: #ffffff;
+      body.dark-mode .border-top {
+        border-color: rgba(255, 255, 255, 0.1) !important;
       }
 
-      body.dark-mode .contributor-role {
-        color: #a0a0a0;
-      }
-
-      /* Update mobile responsive */
-      @media (max-width: 992px) {
-        body {
-          padding: 16px;
-        }
-
+      @media (max-width: 768px) {
         .settings-layout {
-          grid-template-columns: 1fr;
-          max-width: 600px;
+          margin: 0 1rem;
         }
-
-        .contributors-section {
-          margin-top: 20px;
-        }
-      }
-
-      @media (max-width: 576px) {
-        body {
-          padding: 12px;
-        }
-
-        .settings-layout {
-          padding: 0 12px;
-        }
-
-        .form-select {
-          width: 100%;
-        }
-
-        .page-header {
-          padding: 0 12px;
-        }
-
-        .page-title {
-          font-size: 20px;
-        }
-      }
-
-      /* Update dark mode for header */
-      body.dark-mode .page-title {
-        color: rgba(255, 255, 255, 0.9);
-      }
-
-      .contributor-info {
-        flex-grow: 1;
-      }
-
-      .contributor-links {
-        display: flex;
-        gap: 8px;
-        font-size: 14px;
-      }
-
-      .contributor-links a {
-        color: var(--primary-color);
-        text-decoration: none;
-      }
-
-      .contributor-links a:hover {
-        text-decoration: underline;
-      }
-
-      body.dark-mode .contributor-links a {
-        color: #9f74c7;
-      }
-
-      .badge {
-        font-weight: normal;
-        font-size: 11px;
-        padding: 4px 8px;
-        background-color: var(--hover-bg) !important;
-        color: var(--primary-color) !important;
-      }
-
-      body.dark-mode .badge {
-        background-color: rgba(255, 255, 255, 0.1) !important;
-        color: #fff !important;
       }
     </style>
   </head>
-  <body>
-    <div class="page-header">
-      <h1 class="page-title">
-        <img src="../note.png" alt="Profile" />
-        Settings
-      </h1>
+  <body class="py-4">
+    <!-- Header -->
+    <div class="container settings-layout mb-4">
+      <div class="d-flex align-items-center gap-2">
+        <img
+          src="../note.png"
+          alt="Profile"
+          width="32"
+          height="32"
+          class="rounded-circle"
+        />
+        <h4 class="mb-0">Settings</h4>
+      </div>
     </div>
 
-    <div class="settings-layout">
-      <!-- Left Sidebar -->
-      <div class="left-sidebar">
-        <!-- About Section -->
-        <div class="about-section">
-          <div class="text-center mb-4">
-            <img src="../note.png" width="48" height="48" alt="i Notes Logo" />
-            <h5 class="mt-3">About i Notes</h5>
-          </div>
-          <p>
-            A simple and efficient Chrome extension that lets you manage notes
-            effortlessly.
-          </p>
-          <ul class="list-unstyled">
-            <li class="mb-2">
-              <i class="fas fa-plus-circle text-primary me-2"></i>
-              Add & Delete Notes
-            </li>
-            <li class="mb-2">
-              <i class="fas fa-copy text-primary me-2"></i>
-              One-Click Copy
-            </li>
-            <li class="mb-2">
-              <i class="fas fa-search text-primary me-2"></i>
-              Quick Search
-            </li>
-            <li class="mb-2">
-              <i class="fas fa-sort text-primary me-2"></i>
-              Smart Organization
-            </li>
-          </ul>
-        </div>
-
-        <!-- Contributors Section -->
-        <div class="contributors-section">
-          <h6 class="mb-3">Contributors</h6>
-          <div id="contributors-list">
-            <!-- Contributors will be loaded here -->
-          </div>
-
-          <div class="mt-4 pt-3 border-top">
-            <!-- Add contributors stats -->
-            <div class="contributors-stats mb-3">
-              <div class="d-flex align-items-center mb-2">
-                <i class="fas fa-users me-2 text-primary"></i>
-                <span id="contributors-count">3 contributors</span>
-              </div>
-              <div class="contributors-roles small text-muted">
-                <!-- Roles will be loaded here -->
+    <!-- Main Content -->
+    <div class="container settings-layout">
+      <div class="row g-4">
+        <!-- Left Sidebar -->
+        <div class="col-12 col-lg-4">
+          <!-- About Section -->
+          <div class="card mb-4">
+            <div class="card-body text-center">
+              <img
+                src="../note.png"
+                width="48"
+                height="48"
+                alt="i Notes Logo"
+                class="mb-3"
+              />
+              <h5>About i Notes</h5>
+              <p class="text-muted">
+                A simple and efficient Chrome extension that lets you manage
+                notes effortlessly.
+              </p>
+              <div class="list-group list-group-flush text-start">
+                <div class="list-group-item border-0">
+                  <i class="fas fa-plus-circle text-primary me-2"></i>
+                  Add & Delete Notes
+                </div>
+                <div class="list-group-item border-0">
+                  <i class="fas fa-copy text-primary me-2"></i>
+                  One-Click Copy
+                </div>
+                <div class="list-group-item border-0">
+                  <i class="fas fa-search text-primary me-2"></i>
+                  Quick Search
+                </div>
+                <div class="list-group-item border-0">
+                  <i class="fas fa-sort text-primary me-2"></i>
+                  Smart Organization
+                </div>
               </div>
             </div>
-
-            <a
-              href="https://github.com/arjad/chrome-notes"
-              target="_blank"
-              class="d-flex align-items-center text-decoration-none mb-2"
-            >
-              <i class="fab fa-github me-2"></i>
-              <span>View on GitHub</span>
-            </a>
           </div>
-        </div>
-      </div>
 
-      <!-- Main Settings -->
-      <div class="main-settings">
-        <!-- Display Section -->
-        <div class="settings-section">
-          <h6 class="mb-3">Display</h6>
-          <div class="form-check form-switch">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              id="dark-mode-toggle"
-            />
-            <label class="form-check-label" for="dark-mode-toggle">
-              Enable Dark Mode
-            </label>
-          </div>
-        </div>
+          <!-- Contributors Section -->
+          <div class="card">
+            <div class="card-body">
+              <h6 class="mb-3">Contributors</h6>
+              <div id="contributors-list">
+                <!-- Contributors loaded via JS -->
+              </div>
 
-        <!-- General Preferences -->
-        <div class="settings-section">
-          <h6 class="mb-3">General preferences</h6>
-          <div class="mb-3">
-            <label class="form-label">Sort Notes</label>
-            <select id="sort-options" class="form-select">
-              <option value="date-desc">Newest to Oldest</option>
-              <option value="date-asc">Oldest to Newest</option>
-              <option value="alpha-asc">A-Z</option>
-              <option value="alpha-desc">Z-A</option>
-            </select>
+              <div class="pt-3 border-top mt-3">
+                <div class="mb-3">
+                  <div class="d-flex align-items-center mb-2">
+                    <i class="fas fa-users text-primary me-2"></i>
+                    <span id="contributors-count">3 contributors</span>
+                  </div>
+                  <div class="contributors-roles small text-muted"></div>
+                </div>
+
+                <a
+                  href="https://github.com/arjad/chrome-notes"
+                  target="_blank"
+                  class="btn btn-outline-secondary btn-sm w-100"
+                >
+                  <i class="fab fa-github me-2"></i>
+                  View on GitHub
+                </a>
+              </div>
+            </div>
           </div>
         </div>
 
-        <!-- Review Section -->
-        <div class="settings-section">
-          <p class="mb-3">Help us improve! Your feedback matters.</p>
-          <a
-            href="https://chrome.google.com/webstore"
-            target="_blank"
-            class="btn btn-primary"
-            style="
-              background-color: var(--primary-color);
-              border-color: var(--primary-color);
-            "
-          >
-            <i class="fas fa-star me-2"></i>
-            Review Us
-          </a>
+        <!-- Main Settings -->
+        <div class="col-12 col-lg-8">
+          <div class="card">
+            <div class="card-body">
+              <!-- Display Section -->
+              <div class="mb-4">
+                <h6 class="mb-3">Display</h6>
+                <div class="form-check form-switch">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="dark-mode-toggle"
+                  />
+                  <label class="form-check-label" for="dark-mode-toggle">
+                    Enable Dark Mode
+                  </label>
+                </div>
+              </div>
+
+              <hr />
+
+              <!-- General Preferences -->
+              <div class="mb-4">
+                <h6 class="mb-3">General preferences</h6>
+                <div class="mb-3">
+                  <label class="form-label">Sort Notes</label>
+                  <select id="sort-options" class="form-select">
+                    <option value="date-desc">Newest to Oldest</option>
+                    <option value="date-asc">Oldest to Newest</option>
+                    <option value="alpha-asc">A-Z</option>
+                    <option value="alpha-desc">Z-A</option>
+                  </select>
+                </div>
+              </div>
+
+              <hr />
+
+              <!-- Review Section -->
+              <div>
+                <p class="text-muted mb-3">
+                  Help us improve! Your feedback matters.
+                </p>
+                <a
+                  href="https://chrome.google.com/webstore"
+                  target="_blank"
+                  class="btn btn-primary"
+                  style="
+                    background-color: var(--primary-color);
+                    border-color: var(--primary-color);
+                  "
+                >
+                  <i class="fas fa-star me-2"></i>
+                  Review Us
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
+    <!-- Keep the existing JavaScript for contributors -->
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         fetch("contributors.json")
@@ -377,12 +240,13 @@
             // Render contributors list
             data.contributors.forEach((contributor) => {
               const contributorEl = document.createElement("div");
-              contributorEl.className = "contributor-item";
+              contributorEl.className =
+                "list-group-item border-0 d-flex align-items-center";
               contributorEl.innerHTML = `
                 <img
                   src="${contributor.avatar}"
                   alt="${contributor.name}"
-                  class="contributor-avatar"
+                  class="contributor-avatar me-3"
                 />
                 <div class="contributor-info">
                   <div class="contributor-name">${contributor.name}</div>
