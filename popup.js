@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const deleteModal = document.getElementById("delete-modal");
   const confirmDeleteBtn = document.getElementById("confirm-delete");
   const cancelDeleteBtn = document.getElementById("cancel-delete");
+
   let noteIdToDelete = null;
 
   // Load existing notes
