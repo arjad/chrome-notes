@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "I Notes",
   "version": "1.0",
-  "description": "A simple extension to take notes / develpoer commands / passwords / etc",
+  "description": "A simple extension to take notes / developer commands / passwords / etc",
   "permissions": ["storage"],
   "action": {
     "default_popup": "popup.html"
