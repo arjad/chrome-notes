@@ -42,6 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Load and display notes
   function loadNotes() {
+main
     chrome.storage.sync.get(['notes', 'sort_value'], function(result) {
       const notes = result.notes || [];
       const sort_val = result.sort_value || 'date-desc';
@@ -85,6 +86,39 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>`;
         notesList.appendChild(noteElement);
       });
+    chrome.storage.sync.get(['notes', 'sort_value'], function(result) {
+      const notes = result.notes || [];
+      const sort_val = result.sort_value || 'date-desc'; // Default sorting if not set
+      console.log('Stored sorting value:', sort_val);
+
+        let sortedNotes = [...notes]; // Create a copy to avoid modifying the original
+        if (sort_val === "alpha-asc") {
+            sortedNotes.sort((a, b) => a.text.localeCompare(b.text)); // A-Z
+        } else if (sort_val === "alpha-desc") {
+            sortedNotes.sort((a, b) => b.text.localeCompare(a.text)); // Z-A
+        } else if (sort_val === "date-asc") {
+            sortedNotes.sort((a, b) => new Date(a.date) - new Date(b.date)); // Oldest to Newest
+        } else if (sort_val === "date-desc") {
+            sortedNotes.sort((a, b) => new Date(b.date) - new Date(a.date)); // Newest to Oldest
+        }
+
+        notesList.innerHTML = '';
+        sortedNotes.forEach(function(note) {
+          const noteElement = document.createElement('div');
+          noteElement.className = 'note-item';
+          noteElement.innerHTML = `<div>
+            <div class="note-text">${note.text}</div>
+              <span class="options" data-id="${note.id}">
+                <small class="date">${note.date}</small>
+                <div class="icons">
+                  <i class="fas fa-trash delete-icon" data-id="${note.id}"></i>
+                  <i class="fa-solid fa-copy copy-icon" data-id="${note.id}"></i>
+                </div>
+              </span>
+            </div>`;
+          notesList.appendChild(noteElement);
+        });
+main
 
       // Add pin functionality
       document.querySelectorAll('.pin-icon').forEach(icon => {
