@@ -1,0 +1,32 @@
+{
+  "repository": "https://github.com/arjad/chrome-notes",
+  "project": {
+    "name": "i Notes",
+    "version": "1.0",
+    "logo": "../note.png",
+    "description": "A simple and efficient Chrome extension for managing notes"
+  },
+  "contributors": [
+    {
+      "name": "Arjad",
+      "role": "Developer",
+      "avatar": "https://github.com/arjad.png",
+      "github": "https://github.com/arjad",
+      "email": "arjad@example.com"
+    },
+    {
+      "name": "John Doe",
+      "role": "Developer",
+      "avatar": "https://github.com/identicons/jasonlong.png",
+      "github": "https://github.com/johndoe",
+      "email": "john.doe@example.com"
+    },
+    {
+      "name": "Jane Smith",
+      "role": "UI/UX Designer",
+      "avatar": "https://github.com/identicons/janesmith.png",
+      "github": "https://github.com/janesmith",
+      "email": "jane.smith@example.com"
+    }
+  ]
+}
