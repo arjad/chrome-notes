@@ -8,51 +8,40 @@
   --font-md: 0.9rem;
   --space: 0.7rem;
 }
-
 body {
   width: 20rem;
   padding: 0.7rem;
   color: black;
 }
-
 .i-notes {
   color: var(--primary);
   font-weight: bold;
 }
-
-/* Notes List */
 #notes-list {
   max-height: 60vh;
   overflow-y: auto;
 }
-
 #notes-list::-webkit-scrollbar {
   width: 8px;
   border-radius: 4px;
 }
-
 #notes-list::-webkit-scrollbar-track {
   background: #f1f1f1;
   border-radius: 4px;
 }
-
 #notes-list::-webkit-scrollbar-thumb {
   background: var(--primary);
   border-radius: 4px;
 }
-
-/* Note Items */
 .note-item {
   border-bottom: 1px solid var(--border);
   padding: 10px 0;
 }
-
 .note-text {
   word-wrap: break-word;
   overflow-wrap: break-word;
   font-size: 0.9rem;
 }
-
 .date {
   font-size: 0.5rem;
   color: var(--gray);
@@ -61,14 +50,11 @@ body {
   padding: 1px 8px;
   display: inline-block;
 }
-
-/* Icons */
 .options {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-
 .options .icons i {
   font-size: 0.6rem;
   border-radius: 50%;
@@ -76,51 +62,40 @@ body {
   margin-right: 0.3rem;
   cursor: pointer;
 }
-
 .copy-icon {
   border: 1px solid #3545f9;
   color: #3545f9;
 }
-
 .delete-icon {
   border: 1px solid var(--danger);
   color: var(--danger);
 }
-
 .copy-icon:hover,
 .delete-icon:hover {
   color: white;
 }
-
 .copy-icon:hover {
   background-color: #3545f9;
 }
 .delete-icon:hover {
   background-color: var(--danger);
 }
-
-/* Save Button */
 #save-btn {
   font-size: 0.7rem;
   background-color: var(--primary);
   border-color: var(--primary);
   color: white;
 }
-
 #save-btn:hover {
   background-color: white;
   color: var(--primary);
   border: 1px solid var(--primary);
 }
-
-/* Error Message */
 .error-msg {
   display: none;
   color: var(--danger);
   font-size: 0.875rem;
 }
-
-/* Modal */
 .delete-modal {
   position: fixed;
   inset: 0;
@@ -130,7 +105,6 @@ body {
   align-items: center;
   z-index: 1000;
 }
-
 .modal-content {
   background-color: white;
   padding: 15px;
@@ -138,36 +112,29 @@ body {
   text-align: center;
   width: 250px;
 }
-
 .modal-content h3 {
   font-size: 10px;
   color: #333;
   margin-bottom: 10px;
 }
-
 .modal-buttons {
   margin-top: 15px;
   display: flex;
   justify-content: center;
   gap: 5px;
 }
-
-/* Dark Mode */
 .dark-mode {
   background-color: var(--dark) !important;
   color: white !important;
 }
-
 .dark-mode .input-tag {
   background-color: transparent !important;
   color: white !important;
 }
-
 .dark-mode .modal-content {
   background-color: var(--dark);
   color: white;
 }
-
 .dark-mode .date {
   border-color: white;
   color: white;
