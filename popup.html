@@ -1,54 +1,87 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>I Notes</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <div class="container-fluid p-0">
-    <nav class="notes-nav d-flex align-items-center justify-content-between">
-      <div class="notes-nav d-flex align-items-center">
-        <h3 class="notes-nav d-flex align-items-center">
-          <img src="note.png" width="24" height="24">
-          <span> 
-            <i class="i-notes ml-3"> i </i>
-            Notes
-          </span>
-        </h3>
-      </div>
-      <div class="w-50 d-flex align-items-center">
-        <input type="text" id="search-input" class="form-control form-control-sm input-tag" placeholder="Search notes..." />
-        <i class="fa-solid fa-gear ms-2" id="settings-icon" style="cursor: pointer;"></i>
-      </div>
-    </nav>
+  <head>
+    <title>I Notes</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container-fluid p-0">
+      <!-- Header -->
+      <nav class="d-flex align-items-center justify-content-between mb-3">
+        <div class="d-flex align-items-center">
+          <h3 class="d-flex align-items-center mb-0">
+            <img src="note.png" width="24" height="24" />
+            <span>
+              <i class="i-notes ms-2"> i </i>
+              Notes
+            </span>
+          </h3>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <input
+            type="text"
+            id="search-input"
+            class="form-control form-control-sm input-tag"
+            placeholder="Search notes..."
+          />
+          <i
+            class="fa-solid fa-gear"
+            id="settings-icon"
+            style="cursor: pointer"
+          ></i>
+        </div>
+      </nav>
 
-    <div id="notes-list" class="mb-3"></div>
-    <textarea id="note-input" class="form-control bg-transparent input-tag" rows="4" placeholder="Enter your note here..."></textarea>
+      <!-- Notes List -->
+      <div id="notes-list" class="mb-3"></div>
 
-    <div>
-      <div class="error-msg my-2">
-        <i class="fa-solid fa-circle-info me-1"></i>
-        <span>Please enter a note.</span>
+      <!-- Note Input -->
+      <textarea
+        id="note-input"
+        class="form-control bg-transparent input-tag mb-2"
+        rows="4"
+        placeholder="Enter your note here..."
+      ></textarea>
+
+      <!-- Save Button Area -->
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="error-msg text-danger small d-none">
+          <i class="fa-solid fa-circle-info me-1"></i>
+          <span>Please enter a note.</span>
+        </div>
+        <button
+          id="save-btn"
+          class="btn btn-sm rounded-pill px-3"
+          style="background-color: var(--primary); color: white; border: none"
+        >
+          Save Note
+        </button>
       </div>
-      <button id="save-btn" class="btn btn-primary rounded-pill px-3 my-2">
-        Save Note
-      </button>
     </div>
-  </div>
 
-  <!-- Custom Modal (Delete Confirmation) -->
-  <div id="delete-modal" class="delete-modal">
-    <div class="modal-content">
-      <h3>Are you sure you want to delete this note?</h3>
-      <div class="modal-buttons">
-        <button id="confirm-delete" class="confirm-delete-btn">Delete</button>
-        <button id="cancel-delete" class="cancel-delete-btn">Cancel</button>
+    <!-- Delete Modal -->
+    <div id="delete-modal" class="delete-modal">
+      <div class="modal-content p-3">
+        <h3 class="fs-6 mb-3">Are you sure you want to delete this note?</h3>
+        <div class="d-flex justify-content-center gap-2">
+          <button id="confirm-delete" class="btn btn-sm btn-danger">
+            Delete
+          </button>
+          <button id="cancel-delete" class="btn btn-sm btn-secondary">
+            Cancel
+          </button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <script src="popup.js"></script>
-</body>
+    <script src="popup.js"></script>
+  </body>
 </html>
