@@ -17,3 +17,6 @@ Load the Extension in Chrome
 
 Video Guide:
 `https://www.loom.com/share/7d3a2d9d4be84c80ae62a9985b36fc4a`
+
+Review us:
+arjadgohar14@gmail.com
