@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
   saveBtn.addEventListener("click", () => {
     const noteText = noteInput.value.trim();
     if (!noteText) {
-      errorMsg.style.display = "block";
+      errorMsg.style.display = "inline";
       return;
     }
     errorMsg.style.display = "none";

@@ -8,8 +8,8 @@
     "default_popup": "popup.html"
   },
   "icons": {
-    "48": "note.png",
-    "128": "note.png"
+    "48": "assets/note.png",
+    "128": "assets/note.png"
   },
   "options_page": "setting/settings.html"
 

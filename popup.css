@@ -15,7 +15,6 @@ body {
 }
 .i-notes {
   color: var(--primary);
-  font-weight: bold;
 }
 #notes-list {
   max-height: 60vh;
@@ -26,7 +25,6 @@ body {
   border-radius: 4px;
 }
 #notes-list::-webkit-scrollbar-track {
-  background: #f1f1f1;
   border-radius: 4px;
 }
 #notes-list::-webkit-scrollbar-thumb {
@@ -81,15 +79,13 @@ body {
   background-color: var(--danger);
 }
 #save-btn {
-  font-size: 0.7rem;
   background-color: var(--primary);
-  border-color: var(--primary);
-  color: white;
+  border: 2px solid var(--primary);
 }
 #save-btn:hover {
-  background-color: white;
-  color: var(--primary);
-  border: 1px solid var(--primary);
+  background-color: transparent;
+  color: var(--primary) !important;
+  border: 2px solid var(--primary);
 }
 .error-msg {
   display: none;

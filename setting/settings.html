@@ -4,14 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Settings</title>
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
-      rel="stylesheet"
-    />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet"/>
     <script src="settings.js" defer></script>
     <style>
       :root {
@@ -165,7 +159,7 @@
     <div class="container settings-layout mb-4">
       <div class="d-flex align-items-center gap-2">
         <img
-          src="../note.png"
+          src="../assets/note.png"
           alt="Profile"
           width="32"
           height="32"
@@ -184,7 +178,7 @@
           <div class="card mb-4">
             <div class="card-body text-center">
               <img
-                src="../note.png"
+                src="../assets/note.png"
                 width="48"
                 height="48"
                 alt="i Notes Logo"
@@ -220,28 +214,11 @@
           <div class="card">
             <div class="card-body">
               <h6 class="mb-3">Contributors</h6>
-              <div id="contributors-list">
-                <!-- Contributors loaded via JS -->
-              </div>
-
-              <div class="pt-3 border-top mt-3">
-                <div class="mb-3">
-                  <div class="d-flex align-items-center mb-2">
-                    <i class="fas fa-users text-primary me-2"></i>
-                    <span id="text-primary me-2">3 contributors</span>
-                  </div>
-                  <div class="contributors-roles small text-muted"></div>
-                </div>
-
-                <a
-                  href="https://github.com/arjad/chrome-notes"
-                  target="_blank"
-                  class="btn btn-outline-secondary btn-sm w-100"
-                >
-                  <i class="fab fa-github me-2"></i>
-                  View on GitHub
-                </a>
-              </div>
+              <div id="contributors-list"></div>
+              <a href="https://github.com/arjad/chrome-notes" target="_blank" class="btn btn-outline-secondary btn-sm w-100">
+                <i class="fab fa-github me-2"></i>
+                View on GitHub
+              </a>
             </div>
           </div>
         </div>
@@ -289,7 +266,7 @@
                   Help us improve! Your feedback matters.
                 </p>
                 <a
-                  href="https://chrome.google.com/webstore"
+                  href="https://docs.google.com/forms/d/e/1FAIpQLSf_257jhT9AKWnVRDjT9EUgUpqgF3Qr2o_V3YchvwshOfXhfA/viewform?usp=sharing"
                   target="_blank"
                   class="btn btn-primary"
                   style="
@@ -306,58 +283,5 @@
         </div>
       </div>
     </div>
-
-    <!-- Keep the existing JavaScript for contributors -->
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        fetch("contributors.json")
-          .then((response) => response.json())
-          .then((data) => {
-            const contributorsList =
-              document.getElementById("contributors-list");
-            const contributorsCount =
-              document.getElementById("contributors-count");
-            const contributorsRoles = document.querySelector(
-              ".contributors-roles"
-            );
-
-            // Update contributors count
-            contributorsCount.textContent = `${data.contributors.length} contributors`;
-
-            // Get unique roles and their counts
-            const roles = data.contributors.reduce((acc, curr) => {
-              acc[curr.role] = (acc[curr.role] || 0) + 1;
-              return acc;
-            }, {});
-
-            // Display roles summary
-            contributorsRoles.innerHTML = Object.entries(roles)
-              .map(([role, count]) => `${count} ${role}${count > 1 ? "s" : ""}`)
-              .join(" • ");
-
-            // Render contributors list
-            data.contributors.forEach((contributor) => {
-              const contributorEl = document.createElement("div");
-              contributorEl.className =
-                "list-group-item border-0 d-flex align-items-center";
-              contributorEl.innerHTML = `
-                <img
-                  src="${contributor.avatar}"
-                  alt="${contributor.name}"
-                  class="contributor-avatar me-3"
-                />
-                <div class="contributor-info">
-                  <div class="contributor-name">${contributor.name}</div>
-                  <div class="contributor-role">${contributor.role}</div>
-                </div>
-              `;
-              contributorsList.appendChild(contributorEl);
-            });
-          })
-          .catch((error) => {
-            console.error("Error loading contributors:", error);
-          });
-      });
-    </script>
   </body>
 </html>

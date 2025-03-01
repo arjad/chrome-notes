@@ -2,28 +2,22 @@
 <html>
   <head>
     <title>I Notes</title>
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="styles.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="popup.css" />
   </head>
   <body>
     <div class="container-fluid p-0">
       <!-- Header -->
       <nav class="d-flex align-items-center justify-content-between mb-3">
         <div class="d-flex align-items-center">
-          <h3 class="d-flex align-items-center mb-0">
-            <img src="note.png" width="24" height="24" />
+          <h6 class="d-flex align-items-center mb-0">
+            <img src="assets/note.png" width="22" height="22" />
             <span>
-              <i class="i-notes ms-2"> i </i>
+              <i class="i-notes bold mx-1"> i </i>
               Notes
             </span>
-          </h3>
+          </h6>
         </div>
         <div class="d-flex align-items-center gap-2">
           <input
@@ -52,20 +46,16 @@
       ></textarea>
 
       <!-- Save Button Area -->
-      <div class="d-flex justify-content-between align-items-center">
-        <div class="error-msg text-danger small d-none">
+      <div class="position-relative py-2 my-2">
+        <div class="error-msg text-danger small">
           <i class="fa-solid fa-circle-info me-1"></i>
           <span>Please enter a note.</span>
         </div>
-        <button
-          id="save-btn"
-          class="btn btn-sm rounded-pill px-3"
-          style="background-color: var(--primary); color: white; border: none"
-        >
+        <button id="save-btn" class="btn btn-sm rounded-pill px-3 text-white position-absolute end-0">
           Save Note
         </button>
+        <br>
       </div>
-    </div>
 
     <!-- Delete Modal -->
     <div id="delete-modal" class="delete-modal">
