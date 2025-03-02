@@ -15,9 +15,20 @@ Load the Extension in Chrome
         Select the folder where your extension files are stored.
         The extension will now be added to Chrome.
 
-Video Guide:<br>
+
+## Features:
+1. Copy selected content in notes
+2. make a story of the selected number of notes from different sources. The story is built using the Free LLM AI model.
+3. Export your notes in Word, Excel, PowerPoint, or simple Txt
+
+Best for researchers and information scrapers who collect information from different sources and write content on the selected information. 
+
+
+## Video Guide:<br>
 https://www.loom.com/share/7d3a2d9d4be84c80ae62a9985b36fc4a
 
 Review us:
 arjadgohar14@gmail.com
-Updated by Haffi Irfan
+Updated and contributed by
+1.    Haffi Irfan
+2.    [Mubashir Iqbal](https://github.com/Mubshr07/) 
