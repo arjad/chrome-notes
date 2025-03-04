@@ -1,41 +1,64 @@
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener("DOMContentLoaded", function () {
   // dark mode logic
-  const darkModeToggle = document.getElementById('dark-mode-toggle');
-  chrome.storage.sync.get('darkMode', function (data) {
+  const darkModeToggle = document.getElementById("dark-mode-toggle");
+
+  // Check and apply dark mode setting on load
+  chrome.storage.sync.get("darkMode", function (data) {
     if (data.darkMode) {
       darkModeToggle.checked = true;
-      document.body.classList.add('dark-mode');
+      document.body.classList.add("dark-mode");
     }
   });
 
-  darkModeToggle.addEventListener('change', function () {
+  // Handle dark mode toggle
+  darkModeToggle.addEventListener("change", function () {
     const isDarkMode = darkModeToggle.checked;
-    const noteInput = document.querySelectorAll('.input-tag')
+
     // Save setting
     chrome.storage.sync.set({ darkMode: isDarkMode });
-    console.log("negth = " + noteInput.length)
 
+    // Apply dark mode
     if (isDarkMode) {
-      document.body.classList.add('dark-mode');
-      if (noteInput) {
-        console.log("dark mode on ")
-        document.querySelectorAll('.input-tag').forEach(element => {
-          element.classList.remove('text-dark');
-        });
-      }
+      document.body.classList.add("dark-mode");
     } else {
-      document.body.classList.remove('dark-mode');
-      if (noteInput) {
-        document.querySelectorAll('.input-tag').forEach(element => {
-          element.classList.remove('text-white');
-        });
-      }
+      document.body.classList.remove("dark-mode");
     }
   });
 
   // sorting logic
-  const sorting_options = document.getElementById('sort-options');
-  sorting_options.addEventListener('change', function () {
+  const sorting_options = document.getElementById("sort-options");
+
+  // Load saved sort preference
+  chrome.storage.sync.get("sort_value", function (data) {
+    if (data.sort_value) {
+      sorting_options.value = data.sort_value;
+    }
+  });
+
+  sorting_options.addEventListener("change", function () {
     chrome.storage.sync.set({ sort_value: sorting_options.value });
   });
+
+  fetch("../assets/contributors.json")
+    .then((response) => response.json())
+    .then((data) => {
+      const contributorsList = document.getElementById("contributors-list");
+      const contributorsRoles = document.querySelector(".contributors-roles");
+
+      data.contributors.forEach((contributor) => {
+        const contributorItem = document.createElement("div");
+        contributorItem.className = "d-flex align-items-center mb-2";
+
+        contributorItem.innerHTML = `
+          <img src="${contributor.avatar}" alt="${contributor.name}" class="rounded-circle me-2" width="30" height="30">
+          <div>
+            <a href="${contributor.github}" target="_blank" class="fw-bold">${contributor.name}</a>
+            <div class="small text-muted">${contributor.role}</div>
+          </div>
+        `;
+
+        contributorsList.appendChild(contributorItem);
+      });
+    })
+    .catch((error) => console.error("Error fetching contributors:" + error));
 });
