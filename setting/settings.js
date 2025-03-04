@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // dark mode logic
+  // Dark mode logic
   const darkModeToggle = document.getElementById("dark-mode-toggle");
 
   // Check and apply dark mode setting on load
@@ -25,20 +25,40 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // sorting logic
-  const sorting_options = document.getElementById("sort-options");
+  // Sorting logic
+  const sortingOptions = document.getElementById("sort-options");
 
   // Load saved sort preference
   chrome.storage.sync.get("sort_value", function (data) {
     if (data.sort_value) {
-      sorting_options.value = data.sort_value;
+      sortingOptions.value = data.sort_value;
     }
   });
 
-  sorting_options.addEventListener("change", function () {
-    chrome.storage.sync.set({ sort_value: sorting_options.value });
+  sortingOptions.addEventListener("change", function () {
+    chrome.storage.sync.set({ sort_value: sortingOptions.value });
   });
 
+  // Popup size logic
+  const popupSizeSelect = document.getElementById("popup-size");
+
+  // Load saved popup size
+  chrome.storage.sync.get("popupSize", function (data) {
+    if (data.popupSize) {
+      popupSizeSelect.value = data.popupSize;
+    }
+  });
+
+  // Handle popup size change
+  popupSizeSelect.addEventListener("change", function () {
+    const selectedSize = popupSizeSelect.value;
+    chrome.storage.sync.set({ popupSize: selectedSize }, function () {
+      // Notify the popup to resize itself
+      chrome.runtime.sendMessage({ action: "resizePopup", size: selectedSize });
+    });
+  });
+
+  // Fetch contributors
   fetch("../assets/contributors.json")
     .then((response) => response.json())
     .then((data) => {

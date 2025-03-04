@@ -80,7 +80,8 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
           </span>
         </div>
-      </div>`;
+      </div>
+    `;
   }
 
   // Attach Event Listeners
@@ -142,14 +143,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Open Settings Page
   document.querySelector(".fa-gear").addEventListener("click", () => {
-    chrome.tabs.create({ url: "setting/settings.html" });
+    chrome.tabs.create({ url: "settings.html" });
   });
 
   // Apply Dark Mode
   chrome.storage.sync.get("darkMode", (data) => {
     if (data.darkMode) document.body.classList.add("dark-mode");
   });
-
+ // Resize Popup
+ chrome.storage.sync.get("popupSize", (data) => {
+  if (data.popupSize) {
+    document.body.setAttribute("data-size", data.popupSize);
+  }
+});
   // Search Notes
   document.getElementById("search-input").addEventListener("input", (e) => {
     const searchText = e.target.value.toLowerCase();
@@ -158,5 +164,13 @@ document.addEventListener("DOMContentLoaded", () => {
         ? "block"
         : "none";
     });
+  });
+
+
+  // Listen for resize messages
+  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.action === "resizePopup") {
+      document.body.setAttribute("data-size", message.size);
+    }
   });
 });
