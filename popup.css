@@ -135,3 +135,10 @@ body {
   border-color: white;
   color: white;
 }
+.dark-mode ::placeholder {
+  color: white;
+  opacity: 1; /* Firefox */
+}
+.dark-mode ::-ms-input-placeholder { /* Edge 12 -18 */
+  color: white;
+}
