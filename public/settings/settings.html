@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Settings</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet"/>
+    <script src="settings.js" defer></script>
+    <style>
+      :root {
+        --primary-color: #684993;
+        --bg-light: #f3f2ef;
+        --bg-dark: #1e242d;
+        --card-light: #ffffff;
+        --card-dark: #283142;
+        --text-light: #2d2d2d;
+        --text-muted-light: #666666;
+        --text-dark: #ffffff;
+        --text-muted-dark: #a0a0a0;
+        --border-light: rgba(0, 0, 0, 0.08);
+        --border-dark: rgba(255, 255, 255, 0.08);
+      }
+
+      body {
+        background-color: var(--bg-light);
+        color: var(--text-light);
+      }
+
+      .settings-layout {
+        max-width: 1000px;
+        margin: 24px auto;
+        padding: 0 16px;
+      }
+
+      .card {
+        background-color: var(--card-light);
+        border: none;
+        box-shadow: 0 0 0 1px var(--border-light);
+      }
+
+      .text-muted {
+        color: var(--text-muted-light) !important;
+      }
+
+      .list-group-item {
+        background-color: transparent;
+        border-color: var(--border-light);
+      }
+
+      .border-top {
+        border-color: var(--border-light) !important;
+      }
+
+      /* Dark mode styles */
+      body.dark-mode {
+        background-color: var(--bg-dark);
+        color: var(--text-dark);
+      }
+
+      body.dark-mode .card {
+        background-color: var(--card-dark);
+        box-shadow: 0 0 0 1px var(--border-dark);
+      }
+
+      body.dark-mode .text-muted {
+        color: var(--text-muted-dark) !important;
+      }
+
+      body.dark-mode .list-group-item {
+        border-color: var(--border-dark);
+      }
+
+      body.dark-mode .border-top {
+        border-color: var(--border-dark) !important;
+      }
+
+      body.dark-mode .form-control,
+      body.dark-mode .form-select {
+        background-color: var(--card-dark);
+        border-color: var(--border-dark);
+        color: var(--text-dark);
+      }
+
+      body.dark-mode .form-control:focus,
+      body.dark-mode .form-select:focus {
+        background-color: var(--card-dark);
+        color: var(--text-dark);
+      }
+
+      body.dark-mode .btn-outline-secondary {
+        color: var(--text-dark);
+        border-color: var(--border-dark);
+      }
+
+      body.dark-mode .btn-outline-secondary:hover {
+        background-color: var(--border-dark);
+        color: var(--text-dark);
+      }
+
+      .contributor-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+      }
+
+      @media (max-width: 768px) {
+        .settings-layout {
+          margin: 16px;
+          padding: 0;
+        }
+      }
+
+      /* Fix text colors in dark mode */
+      body.dark-mode .contributor-name,
+      body.dark-mode .form-check-label,
+      body.dark-mode .form-label,
+      body.dark-mode h4,
+      body.dark-mode h5,
+      body.dark-mode h6 {
+        color: var(--text-dark);
+      }
+
+      body.dark-mode .list-group-item {
+        color: var(--text-dark);
+      }
+
+      body.dark-mode .form-check-input:checked {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+      }
+
+      body.dark-mode hr {
+        border-color: var(--border-dark);
+      }
+
+      /* Improve contrast for icons in dark mode */
+      body.dark-mode .text-primary {
+        color: #9f74c7 !important;
+      }
+
+      /* Fix hover states in dark mode */
+      body.dark-mode .list-group-item:hover {
+        background-color: var(--border-dark);
+      }
+
+      /* Fix form switch in dark mode */
+      body.dark-mode .form-switch .form-check-input {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
+      }
+
+      body.dark-mode .form-switch .form-check-input:focus {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
+      }
+    </style>
+  </head>
+  <body class="py-4">
+    <!-- Header -->
+    <div class="container settings-layout mb-4">
+      <div class="d-flex align-items-center gap-2">
+        <img
+          src="../assets/note.png"
+          alt="Profile"
+          width="32"
+          height="32"
+          class="rounded-circle"
+        />
+        <h4 class="mb-0">Settings</h4>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container settings-layout">
+      <div class="row g-4">
+        <!-- Left Sidebar -->
+        <div class="col-12 col-lg-4">
+          <!-- About Section -->
+          <div class="card mb-4">
+            <div class="card-body text-center">
+              <img
+                src="../assets/note.png"
+                width="48"
+                height="48"
+                alt="i Notes Logo"
+                class="mb-3"
+              />
+              <h5>About i Notes</h5>
+              <p class="text-muted">
+                A simple and efficient Chrome extension that lets you manage
+                notes effortlessly.
+              </p>
+              <div class="list-group list-group-flush text-start">
+                <div class="list-group-item border-0">
+                  <i class="fas fa-plus-circle text-primary me-2"></i>
+                  Add & Delete Notes
+                </div>
+                <div class="list-group-item border-0">
+                  <i class="fas fa-copy text-primary me-2"></i>
+                  One-Click Copy
+                </div>
+                <div class="list-group-item border-0">
+                  <i class="fas fa-search text-primary me-2"></i>
+                  Quick Search
+                </div>
+                <div class="list-group-item border-0">
+                  <i class="fas fa-sort text-primary me-2"></i>
+                  Smart Organization
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contributors Section -->
+          <div class="card">
+            <div class="card-body">
+              <h6 class="mb-3">Contributors</h6>
+              <div id="contributors-list"></div>
+              <a href="https://github.com/arjad/chrome-notes" target="_blank" class="btn btn-outline-secondary btn-sm w-100">
+                <i class="fab fa-github me-2"></i>
+                View on GitHub
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Settings -->
+        <div class="col-12 col-lg-8">
+          <div class="card">
+            <div class="card-body">
+              <!-- Display Section -->
+              <div class="mb-4">
+                <h6 class="mb-3">Display</h6>
+                <div class="form-check form-switch">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="dark-mode-toggle"
+                  />
+                  <label class="form-check-label" for="dark-mode-toggle">
+                    Enable Dark Mode
+                  </label>
+                </div>
+              </div>
+
+              <!-- Popup Size Option -->
+              <div class="mt-3">
+                <label class="form-label">Popup Size</label>
+                <select id="popup-size" class="form-select">
+                  <option value="small">Small</option>
+                  <option value="medium">Medium</option>
+                  <option value="large">Large</option>
+                </select>
+              </div>
+              <hr />
+
+              <!-- General Preferences -->
+              <div class="mb-4">
+                <h6 class="mb-3">General preferences</h6>
+                <div class="mb-3">
+                  <label class="form-label">Sort Notes</label>
+                  <select id="sort-options" class="form-select">
+                    <option value="date-desc">Newest to Oldest</option>
+                    <option value="date-asc">Oldest to Newest</option>
+                    <option value="alpha-asc">A-Z</option>
+                    <option value="alpha-desc">Z-A</option>
+                  </select>
+                </div>
+              </div>
+
+              <hr />
+
+              <!-- Review Section -->
+              <div>
+                <p class="text-muted mb-3">
+                  Help us improve! Your feedback matters.
+                </p>
+                <a
+                  href="https://docs.google.com/forms/d/e/1FAIpQLSf_257jhT9AKWnVRDjT9EUgUpqgF3Qr2o_V3YchvwshOfXhfA/viewform?usp=sharing"
+                  target="_blank"
+                  class="btn btn-primary"
+                  style="
+                    background-color: var(--primary-color);
+                    border-color: var(--primary-color);
+                  "
+                >
+                  <i class="fas fa-star me-2"></i>
+                  Review Us
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

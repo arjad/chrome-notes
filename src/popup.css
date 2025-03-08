@@ -1,0 +1,161 @@
+:root {
+  --primary: #684993;
+  --dark: #1e242d;
+  --danger: #dc3545;
+  --gray: #6c757d;
+  --border: #dee2e6;
+  --font-sm: 0.6rem;
+  --font-md: 0.9rem;
+  --space: 0.7rem;
+}
+body {
+  width: 20rem;
+  padding: 0.7rem;
+  color: black;
+}
+body[data-size="small"] {
+  width: 20rem;
+  height: 20rem;
+}
+body[data-size="medium"] {
+  width: 35rem;
+  height: 25rem;
+}
+body[data-size="large"] {
+  width: 50rem;
+  height: 30rem;
+}
+.i-notes {
+  color: var(--primary);
+}
+#notes-list {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+#notes-list::-webkit-scrollbar {
+  width: 8px;
+  border-radius: 4px;
+}
+#notes-list::-webkit-scrollbar-track {
+  border-radius: 4px;
+}
+#notes-list::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 4px;
+}
+.note-item {
+  border-bottom: 1px solid var(--border);
+  padding: 10px 0;
+}
+.note-text {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  font-size: 0.9rem;
+}
+.date {
+  font-size: 0.5rem;
+  color: var(--gray);
+  border: 1px solid var(--gray);
+  border-radius: 12px;
+  padding: 1px 8px;
+  display: inline-block;
+}
+.options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.options .icons i {
+  font-size: 0.6rem;
+  border-radius: 50%;
+  padding: 0.3rem;
+  margin-right: 0.3rem;
+  cursor: pointer;
+}
+.copy-icon {
+  border: 1px solid #3545f9;
+  color: #3545f9;
+}
+.copy-icon-green {
+  border: 1px solid green !important;
+  background-color: white !important;
+  color: green !important;
+}
+.delete-icon {
+  border: 1px solid var(--danger);
+  color: var(--danger);
+}
+.copy-icon:hover,
+.delete-icon:hover {
+  color: white;
+}
+.copy-icon:hover {
+  background-color: #3545f9;
+}
+.delete-icon:hover {
+  background-color: var(--danger);
+}
+#save-btn {
+  background-color: var(--primary);
+  border: 2px solid var(--primary);
+}
+#save-btn:hover {
+  background-color: transparent;
+  color: var(--primary) !important;
+  border: 2px solid var(--primary);
+}
+.error-msg {
+  display: none;
+  color: var(--danger);
+  font-size: 0.875rem;
+}
+.delete-modal {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.modal-content {
+  background-color: white;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+  width: 250px;
+}
+.modal-content h3 {
+  font-size: 10px;
+  color: #333;
+  margin-bottom: 10px;
+}
+.modal-buttons {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+}
+.dark-mode {
+  background-color: var(--dark) !important;
+  color: white !important;
+}
+.dark-mode .input-tag {
+  background-color: transparent !important;
+  color: white !important;
+}
+.dark-mode .modal-content {
+  background-color: var(--dark);
+  color: white;
+}
+.dark-mode .date {
+  border-color: white;
+  color: white;
+}
+.dark-mode ::placeholder {
+  color: white;
+  opacity: 1; /* Firefox */
+}
+.dark-mode ::-ms-input-placeholder { /* Edge 12 -18 */
+  color: white;
+}
