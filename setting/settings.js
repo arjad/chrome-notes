@@ -61,4 +61,18 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     })
     .catch((error) => console.error("Error fetching contributors:" + error));
+
+  // Popup size logic
+  const popupSizeSelect = document.getElementById("popup-size");
+  chrome.storage.sync.get("popupSize", function (data) {
+    if (data.popupSize) {
+      popupSizeSelect.value = data.popupSize;
+    }
+  });
+  popupSizeSelect.addEventListener("change", function () {
+    const selectedSize = popupSizeSelect.value;
+    chrome.storage.sync.set({ popupSize: selectedSize }, function () {
+      chrome.runtime.sendMessage({ action: "resizePopup", size: selectedSize });
+    });
+  });
 });

@@ -13,6 +13,18 @@ body {
   padding: 0.7rem;
   color: black;
 }
+body[data-size="small"] {
+  width: 20rem;
+  height: 20rem;
+}
+body[data-size="medium"] {
+  width: 35rem;
+  height: 25rem;
+}
+body[data-size="large"] {
+  width: 50rem;
+  height: 30rem;
+}
 .i-notes {
   color: var(--primary);
 }

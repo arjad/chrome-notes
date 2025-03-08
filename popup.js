@@ -159,4 +159,18 @@ document.addEventListener("DOMContentLoaded", () => {
         : "none";
     });
   });
+
+
+  // pop up resizing
+  chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+    if (message.action === "resizePopup") {
+      document.body.setAttribute("data-size", message.size);
+    }
+  });
+  chrome.storage.sync.get("popupSize", function (data) {
+    if (data.popupSize) {
+      document.body.setAttribute("data-size", data.popupSize);
+    }
+  });
+
 });
