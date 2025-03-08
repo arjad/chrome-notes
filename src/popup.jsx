@@ -7,6 +7,7 @@ function Popup() {
   const [notes, setNotes] = useState([]);
   const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [editingId, setEditingId] = useState(null);
 
   useEffect(() => {
     chrome.storage.local.get(["notes"], (result) => {
@@ -30,23 +31,43 @@ function Popup() {
     setSearchQuery(e.target.value.toLowerCase());
   };
 
+  const deleteNote = (id) => {
+    const updatedNotes = notes.filter((note) => note.id !== id);
+    setNotes(updatedNotes);
+    chrome.storage.local.set({ notes: updatedNotes });
+  };
+
+  const editNote = (id, text) => {
+    setEditingId(id);
+    setNote(text);
+  };
+  
   const saveNote = () => {
     if (note.trim() === "") {
       setError("Please enter a note.");
       return;
     }
   
-    const newNote = {
-      id: Date.now().toString(),
-      text: note,
-      date: new Date().toISOString(),
-      pinned: false,
-    };
+    if (editingId) {
+      const updatedNotes = notes.map((n) =>
+        n.id === editingId ? { ...n, text: note, date: new Date().toISOString() } : n
+      );
+      setNotes(updatedNotes);
+      chrome.storage.local.set({ notes: updatedNotes });
+      setEditingId(null);
+    } else {
+      const newNote = {
+        id: Date.now().toString(),
+        text: note,
+        date: new Date().toISOString(),
+        pinned: false,
+      };
   
-    const updatedNotes = [newNote, ...notes];
-    setNotes(updatedNotes);
+      const updatedNotes = [newNote, ...notes];
+      setNotes(updatedNotes);
+      chrome.storage.local.set({ notes: updatedNotes });
+    }
     setNote("");
-    chrome.storage.local.set({ notes: updatedNotes });
   };
 
   const formatDate = (dateString) => {
@@ -98,12 +119,12 @@ function Popup() {
                     <div>
                         <div class="note-text">{note.text}</div>
                         <span class="options" data-id="${note.id}">
-                            <small class="date">{formatDate(note.date)}</small>
-                            <div class="icons">
-                                <i class="fas fa-trash delete-icon" data-id="${note.id}"></i>
-                                <i className="fa-solid fa-copy copy-icon" data-id={note.id} 
-                                    onClick={(e) => handleCopy(e, note.text)}></i>
-                            </div>
+                          <small class="date">{formatDate(note.date)}</small>
+                          <div class="icons">
+                              <i className="fas fa-trash delete-icon" onClick={() => deleteNote(note.id)}></i>
+                              <i className="fas fa-solid fa-pen" onClick={() => editNote(note.id, note.text)}></i>
+                              <i className="fa-solid fa-copy copy-icon" data-id={note.id} onClick={(e) => handleCopy(e, note.text)}></i>
+                          </div>
                         </span>
                     </div>
                 </div>
@@ -119,7 +140,7 @@ function Popup() {
           onChange={handleInputChange}
         />
 
-        <div className="position-relative mt-2 mb-4">
+        <div className="position-relative pb-5 pt-2">
           {error && (
             <div className="error-msg text-danger small">
               <i className="fa-solid fa-circle-info me-1"></i>

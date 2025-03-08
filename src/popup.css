@@ -15,15 +15,12 @@ body {
 }
 body[data-size="small"] {
   width: 20rem;
-  height: 20rem;
 }
 body[data-size="medium"] {
   width: 35rem;
-  height: 25rem;
 }
 body[data-size="large"] {
   width: 50rem;
-  height: 30rem;
 }
 .i-notes {
   color: var(--primary);
@@ -72,28 +69,36 @@ body[data-size="large"] {
   margin-right: 0.3rem;
   cursor: pointer;
 }
+.options .icons .fa-pen {
+  border: 1px solid darkgreen;
+  color: darkgreen;
+}
 .copy-icon {
-  border: 1px solid #3545f9;
-  color: #3545f9;
+  border: 1px solid blue;
+  color: blue;
 }
 .copy-icon-green {
-  border: 1px solid green !important;
+  border: 1px solid darkgreen !important;
   background-color: white !important;
-  color: green !important;
+  color: darkgreen !important;
 }
 .delete-icon {
   border: 1px solid var(--danger);
   color: var(--danger);
 }
+.fa-pen:hover,
 .copy-icon:hover,
 .delete-icon:hover {
   color: white;
 }
 .copy-icon:hover {
-  background-color: #3545f9;
+  background-color: blue;
 }
 .delete-icon:hover {
   background-color: var(--danger);
+}
+.options .icons .fa-pen:hover {
+  background-color: darkgreen;
 }
 #save-btn {
   background-color: var(--primary);
