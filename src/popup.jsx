@@ -8,6 +8,9 @@ function Popup() {
   const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [editingId, setEditingId] = useState(null);
+  const [alarmNoteId, setAlarmNoteId] = useState(null);
+  const [alarmTime, setAlarmTime] = useState("");
+  const [isAlarmModalOpen, setIsAlarmModalOpen] = useState(false);
 
   useEffect(() => {
     chrome.storage.local.get(["notes"], (result) => {
@@ -17,12 +20,35 @@ function Popup() {
     });
   }, []);
 
+  const openAlarmModal = (id) => {
+    console.log("Opening modal for note ID:", id);
+    setAlarmNoteId(id);
+    setIsAlarmModalOpen(true);
+  };
+  
+  const closeAlarmModal = () => {
+    console.log("Closing modal");
+    setAlarmNoteId(null);
+    setAlarmTime("");
+    setIsAlarmModalOpen(false);
+  };
+
+  const setAlarm = () => {
+    if (!alarmTime) return;
+    const alarmName = `note-alarm-${alarmNoteId}`;
+    
+    chrome.alarms.create(alarmName, {
+      when: new Date(alarmTime).getTime(),
+    });
+    
+    closeAlarmModal();
+  };
+
   const openSettingsPage = () => {
     chrome.tabs.create({ url: chrome.runtime.getURL("settings/settings.html") });
   };
   
   const handleInputChange = (e) => {
-    console.log(e.target.value);
     setNote(e.target.value);
     setError("");
   };
@@ -74,6 +100,7 @@ function Popup() {
     const options = { year: "numeric", month: "long", day: "numeric" };
     return new Date(dateString).toLocaleDateString("en-US", options);
   };
+  
   const handleCopy = (event, text) => {
     navigator.clipboard.writeText(text)
     .then(() => {
@@ -85,6 +112,11 @@ function Popup() {
     })
     .catch(err => console.error("Error copying text: ", err));
   };
+
+  // Add this logging to check state changes
+  useEffect(() => {
+    console.log("Modal open state changed:", isAlarmModalOpen);
+  }, [isAlarmModalOpen]);
 
   return (
     <div style={{ width: "300px" }}>
@@ -107,7 +139,7 @@ function Popup() {
               className="form-control form-control-sm input-tag"
               placeholder="Search notes..."
             />
-            <i  className="fa-solid fa-gear" style={{ cursor: "pointer" }} onClick={openSettingsPage}></i>
+            <i className="fa-solid fa-gear" style={{ cursor: "pointer" }} onClick={openSettingsPage}></i>
           </div>
         </nav>
 
@@ -115,15 +147,20 @@ function Popup() {
             {notes
             .filter((note) => note.text.toLowerCase().includes(searchQuery))
             .map((note) => (
-                <div class="note-item">
+                <div className="note-item" key={note.id}>
                     <div>
-                        <div class="note-text">{note.text}</div>
-                        <span class="options" data-id="${note.id}">
-                          <small class="date">{formatDate(note.date)}</small>
-                          <div class="icons">
-                              <i className="fas fa-trash delete-icon" onClick={() => deleteNote(note.id)}></i>
-                              <i className="fas fa-solid fa-pen" onClick={() => editNote(note.id, note.text)}></i>
-                              <i className="fa-solid fa-copy copy-icon" data-id={note.id} onClick={(e) => handleCopy(e, note.text)}></i>
+                        <div className="note-text">{note.text}</div>
+                        <span className="options" data-id={note.id}>
+                          <small className="date">{formatDate(note.date)}</small>
+                          <div className="icons">
+                            <i 
+                              className="fa-solid fa-clock" 
+                              style={{ cursor: "pointer" }}
+                              onClick={() => openAlarmModal(note.id)}
+                            ></i>
+                            <i className="fas fa-trash delete-icon" onClick={() => deleteNote(note.id)}></i>
+                            <i className="fas fa-solid fa-pen" onClick={() => editNote(note.id, note.text)}></i>
+                            <i className="fa-solid fa-copy copy-icon" data-id={note.id} onClick={(e) => handleCopy(e, note.text)}></i>
                           </div>
                         </span>
                     </div>
@@ -133,14 +170,14 @@ function Popup() {
 
         <textarea
           id="note-input"
-          className="form-control bg-transparent input-tag mb-2"
+          className="form-control bg-transparent input-tag my-2"
           rows="4"
           placeholder="Enter your note here..."
           value={note}
           onChange={handleInputChange}
         />
 
-        <div className="position-relative pb-5 pt-2">
+        <div className="position-relative pb-4 mb-1 pt-2">
           {error && (
             <div className="error-msg text-danger small">
               <i className="fa-solid fa-circle-info me-1"></i>
@@ -156,19 +193,45 @@ function Popup() {
           </button>
         </div>
 
-        <div id="delete-modal" className="delete-modal d-none">
-          <div className="modal-content p-3">
-            <h3 className="fs-6 mb-3">Are you sure you want to delete this note?</h3>
-            <div className="d-flex justify-content-center gap-2">
-              <button id="confirm-delete" className="btn btn-sm btn-danger">
-                Delete
-              </button>
-              <button id="cancel-delete" className="btn btn-sm btn-secondary">
-                Cancel
-              </button>
+        {/* Modal displayed using absolute positioning for Chrome extension */}
+        {isAlarmModalOpen && (
+          <div 
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 1000
+            }}
+          >
+            <div 
+              style={{
+                backgroundColor: "#fff",
+                padding: "15px",
+                borderRadius: "8px",
+                width: "90%",
+                maxWidth: "280px"
+              }}
+            >
+              <h3 className="fs-6 mb-3">Set Alarm</h3>
+              <input 
+                type="datetime-local" 
+                className="form-control"
+                value={alarmTime}
+                onChange={(e) => setAlarmTime(e.target.value)}
+              />
+              <div className="d-flex justify-content-center gap-2 mt-3">
+                <button className="btn btn-sm btn-success" onClick={setAlarm}>Set</button>
+                <button className="btn btn-sm btn-secondary" onClick={closeAlarmModal}>Cancel</button>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
