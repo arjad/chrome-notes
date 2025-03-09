@@ -73,6 +73,10 @@ body[data-size="large"] {
   border: 1px solid darkgreen;
   color: darkgreen;
 }
+.options .icons .fa-clock {
+  border: 1px solid purple;
+  color: purple;
+}
 .copy-icon {
   border: 1px solid blue;
   color: blue;
@@ -86,7 +90,7 @@ body[data-size="large"] {
   border: 1px solid var(--danger);
   color: var(--danger);
 }
-.fa-pen:hover,
+.options .icons .fa-pen:hover,
 .copy-icon:hover,
 .delete-icon:hover {
   color: white;
