@@ -12,8 +12,11 @@ Load the Extension in Chrome
 
     3. Load the Extension:
         Click "Load unpacked".
-        Select the folder where your extension files are stored.
+        Select the dist folder in chrome-notes.
         The extension will now be added to Chrome.
+        
+    4. Load the Extension:
+        Pin it into the top in Chrome.
 
 
 ## Features:
