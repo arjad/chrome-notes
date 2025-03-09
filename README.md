@@ -23,6 +23,7 @@ Load the Extension in Chrome
 1. Copy selected content in notes
 2. make a story of the selected number of notes from different sources. The story is built using the Free LLM AI model.
 3. Export your notes in Word, Excel, PowerPoint, or simple Txt
+4. We can time note as well
 
 Best for researchers and information scrapers who collect information from different sources and write content on the selected information. 
 
