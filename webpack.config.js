@@ -40,10 +40,5 @@ module.exports = {
               { from: "public" },
             ],
         }),
-        new CopyWebpackPlugin({
-            patterns: [
-              { from: "public/settings/settings.html", to: "settings/settings.html" },
-            ],
-        }),
     ],
 };
