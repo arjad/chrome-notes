@@ -45,7 +45,7 @@ function Popup() {
   };
 
   const openSettingsPage = () => {
-    chrome.tabs.create({ url: chrome.runtime.getURL("settings/settings.html") });
+    chrome.tabs.create({ url: chrome.runtime.getURL("settings.html") });
   };
   
   const handleInputChange = (e) => {
