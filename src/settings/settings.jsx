@@ -11,7 +11,12 @@ function Settings() {
   // Fetch stored settings from Chrome local storage
   useEffect(() => {
     chrome.storage.local.get(["darkMode", "popupSize", "sortOption"], (result) => {
-      if (result.darkMode !== undefined) setDarkMode(result.darkMode);
+      if (result.darkMode !== undefined) {
+        setDarkMode(result.darkMode);
+        if (result.darkMode) {
+          document.body.classList.add("dark-mode");
+        }
+      }
       if (result.popupSize) setPopupSize(result.popupSize);
       if (result.sortOption) setSortOption(result.sortOption);
     });
@@ -22,6 +27,11 @@ function Settings() {
     const value = e.target.checked;
     setDarkMode(value);
     chrome.storage.local.set({ darkMode: value });
+    if (value) {
+      document.body.classList.add("dark-mode");
+    } else {
+      document.body.classList.remove("dark-mode");
+    }
   };
 
   const handlePopupSizeChange = (e) => {

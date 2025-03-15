@@ -11,6 +11,10 @@
     --border-light: rgba(0, 0, 0, 0.08);
     --border-dark: rgba(255, 255, 255, 0.08);
   }
+  .dark-mode {
+    background-color: var(--bg-dark) !important;
+    color: white !important;
+  }
 
   body {
     background-color: var(--bg-light);
