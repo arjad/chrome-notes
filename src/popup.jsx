@@ -246,6 +246,7 @@ function Popup() {
             }}
           >
             <h3 className="fs-6 mb-3">Set Alarm</h3>
+            <p>This feature will be added by the end of may</p>
             <input 
               type="datetime-local" 
               className="form-control"
