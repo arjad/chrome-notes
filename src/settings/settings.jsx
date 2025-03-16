@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import "./settings.css";
+import Contributrors from "../components/contributors.jsx";
+import jsPDF from "jspdf";
+import 'jspdf-autotable';
 
 function Settings() {
+  const [notes, setNotes] = useState([]);
   const [darkMode, setDarkMode] = useState(false);
   const [popupSize, setPopupSize] = useState("medium");
   const [sortOption, setSortOption] = useState("date-desc");
-  const [contributors, setContributors] = useState([]);
+  const [exportFormat, setExportFormat] = useState("csv");
 
-  // Fetch stored settings from Chrome local storage
   useEffect(() => {
-    chrome.storage.local.get(["darkMode", "popupSize", "sortOption"], (result) => {
+    chrome.storage.local.get(["notes", "darkMode", "popupSize", "sortOption"], (result) => {
       if (result.darkMode !== undefined) {
         setDarkMode(result.darkMode);
         if (result.darkMode) {
@@ -19,8 +22,10 @@ function Settings() {
       }
       if (result.popupSize) setPopupSize(result.popupSize);
       if (result.sortOption) setSortOption(result.sortOption);
+      if (result.notes) {
+        setNotes(result.notes);
+      }
     });
-    fetchContributors();
   }, []);
 
   const handleDarkModeChange = (e) => {
@@ -46,27 +51,102 @@ function Settings() {
     chrome.storage.local.set({ sortOption: value });
   };
 
+  const exportPDF = (e) => {
+    const pdf = new jsPDF();
+    pdf.text("Notes Export", 10, 10);
+    
+    const headers = ["ID", "Content", "Date"];
+    const data = notes.map(note => [
+      note.id.toString(), 
+      note.text,
+      formatDateForExport(note.date)
+    ]);
+    
+    const colWidths = [50, 100, 70];
+    
+    let y = 20;
+    pdf.setFont(undefined, 'bold');
+    let xPos = 10;
+    headers.forEach((header, i) => {
+      pdf.text(header, xPos, y);
+      xPos += colWidths[i];
+    });
+    pdf.setFont(undefined, 'normal');
+    y += 10;
+    
+    data.forEach(row => {
+      xPos = 10;
+      if (row[1].length > 30) {
+        const splitText = pdf.splitTextToSize(row[1], 90);
+        pdf.text(row[0], xPos, y);
+        xPos += colWidths[0];
+        pdf.text(splitText, xPos, y);
+        xPos += colWidths[1];
+        pdf.text(row[2], xPos, y);
+        y += Math.max(10, splitText.length * 7);
+      } else {
+        row.forEach((cell, i) => {
+          pdf.text(cell, xPos, y);
+          xPos += colWidths[i];
+        });
+        y += 10;
+      }
+      pdf.line(10, y - 5, 190, y - 5);
+      
+      if (y > 280) {
+        pdf.addPage();
+        y = 20;
+      }
+    });
+    
+    pdf.save("i_notes.pdf");
+  };
 
-  const fetchContributors = async () => {
-    const repoOwner = "arjad";
-    const repoName = "chrome-notes";
-    const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contributors`;
+  const exportNotes = () => {
+    let data = "";
+    const fileName = `i_notes.${exportFormat}`;
 
-    try {
-      const response = await fetch(apiUrl, {
-        headers: {
-          "Accept": "application/vnd.github.v3+json",
-          "User-Agent": "fetch-contributors-demo"
-        },
-      });
-
-      if (!response.ok) throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
-
-      const contributors = await response.json();
-      setContributors(contributors);
-    } catch (error) {
-      console.error("Error fetching contributors:", error);
+    if (exportFormat === "csv") {
+      data = "ID,Content,Date\n" + notes.map(note => `${note.id},${note.text},${formatDateForExport(note.date)}`).join("\n");
+    } else if (exportFormat === "html") {
+      data = `
+        <html><body>
+          <h1>Notes</h1>
+          <table border="1" cellspacing="0" cellpadding="5">
+            <thead>
+              <tr>
+                <th>#ID</th>
+                <th>Note</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${notes.map(note => `
+                <tr>
+                  <td>${note.id}</td>
+                  <td>${note.text}</td>
+                  <td>${formatDateForExport(note.date)}</td>
+                </tr>
+                `).join("")}
+            </tbody>
+          </table>
+        </body></html>`
+    } 
+    else if (exportFormat === "pdf") {
+      exportPDF();
+      return;
     }
+
+    const blob = new Blob([data], { type: "text/plain" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = fileName;
+    a.click();
+  };
+
+  const formatDateForExport = (dateString) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString('en-US', options);
   };
 
   return (
@@ -110,32 +190,7 @@ function Settings() {
               </div>
             </div>
 
-            <div className="card">
-              <div className="card-body">
-                <h6 className="mb-3">Contributors ( {contributors.length} )</h6>
-                <div id="contributors-list"></div>
-
-                <ul className="list-group">
-                  {contributors.length > 0 ? (
-                    contributors.map((contributor) => (
-                      <li key={contributor.id} className="list-group-item">
-                        <a href={contributor.html_url} target="_blank" rel="noopener noreferrer">
-                          <img src={contributor.avatar_url} alt={contributor.login} width="24" className="me-2 rounded-circle" />
-                          {contributor.login}
-                        </a>
-                      </li>
-                    ))
-                  ) : (
-                    <li className="list-group-item">Loading contributors...</li>
-                  )}
-                </ul>
-
-                <a href="https://github.com/arjad/chrome-notes" target="_blank" className="btn btn-outline-secondary btn-sm w-100">
-                  <i className="fab fa-github me-2"></i>
-                  View on GitHub
-                </a>
-              </div>
-            </div>
+            <Contributrors />
           </div>
 
           <div className="col-12 col-lg-8">
@@ -181,6 +236,20 @@ function Settings() {
                 </div>
 
                 <hr />
+                <div className="mb-4">
+                  <h6 className="mb-3">Export Notes</h6>
+                  <div className="mb-3">
+                    <label className="form-label">Choose Format</label>
+                    <div className="d-flex gap-2">
+                    <select className="form-select" value={exportFormat} onChange={(e) => setExportFormat(e.target.value)}>
+                      <option value="csv">CSV</option>
+                      <option value="html">HTML</option>
+                      <option value="pdf">PDF</option>
+                    </select>
+                    <button className="btn btn-primary" onClick={exportNotes}>Export</button>
+                    </div>
+                  </div>
+                </div>
 
                 <div>
                   <p className="text-muted mb-3">
