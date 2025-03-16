@@ -11,9 +11,27 @@ function Popup() {
   const [alarmNoteId, setAlarmNoteId] = useState(null);
   const [alarmTime, setAlarmTime] = useState("");
   const [isAlarmModalOpen, setIsAlarmModalOpen] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
+  const [popupSize, setpopupSize] = useState(false);
+  const [sortOption, setsortOption] = useState('date-desc');
 
   useEffect(() => {
-    chrome.storage.local.get(["notes"], (result) => {
+    chrome.storage.local.get(["notes", "darkMode", "popupSize", "sortOption"], (result) => {
+      if (result.darkMode !== undefined) {
+        setDarkMode(result.darkMode);
+        if (result.darkMode) {
+          document.body.classList.add("dark-mode");
+        }
+      }
+      if (result.popupSize !== undefined) {
+        setpopupSize(result.popupSize);
+        if (result.popupSize) {
+          document.body.setAttribute("data-size", result.popupSize);
+        }
+      }
+      if (result.sortOption !== undefined) {
+        setsortOption(result.sortOption);
+      }
       if (result.notes) {
         setNotes(result.notes);
       }
@@ -118,121 +136,129 @@ function Popup() {
     console.log("Modal open state changed:", isAlarmModalOpen);
   }, [isAlarmModalOpen]);
 
-  return (
-    <div style={{ width: "300px" }}>
-      <div className="container-fluid p-0">
-        <nav className="d-flex align-items-center justify-content-between mb-3">
-          <div className="d-flex align-items-center">
-            <h6 className="d-flex align-items-center mb-0">
-              <img src="assets/note.png" width="22" height="22" alt="Note Icon" />
-              <span>
-                <i className="i-notes bold mx-1 bold"> i </i>
-                Notes
-              </span>
-            </h6>
-          </div>
-          <div className="d-flex align-items-center gap-2">
-            <input
-              type="text"
-              id="search-input"
-              onChange={handleSearchChange}
-              className="form-control form-control-sm input-tag"
-              placeholder="Search notes..."
-            />
-            <i className="fa-solid fa-gear" style={{ cursor: "pointer" }} onClick={openSettingsPage}></i>
-          </div>
-        </nav>
-
-        <div id="notes-list">
-            {notes
-            .filter((note) => note.text.toLowerCase().includes(searchQuery))
-            .map((note) => (
-                <div className="note-item" key={note.id}>
-                    <div>
-                        <div className="note-text">{note.text}</div>
-                        <span className="options" data-id={note.id}>
-                          <small className="date">{formatDate(note.date)}</small>
-                          <div className="icons">
-                            <i 
-                              className="fa-solid fa-clock" 
-                              style={{ cursor: "pointer" }}
-                              onClick={() => openAlarmModal(note.id)}
-                            ></i>
-                            <i className="fas fa-trash delete-icon" onClick={() => deleteNote(note.id)}></i>
-                            <i className="fas fa-solid fa-pen" onClick={() => editNote(note.id, note.text)}></i>
-                            <i className="fa-solid fa-copy copy-icon" data-id={note.id} onClick={(e) => handleCopy(e, note.text)}></i>
-                          </div>
-                        </span>
-                    </div>
-                </div>
-            ))}
-        </div>
-
-        <textarea
-          id="note-input"
-          className="form-control bg-transparent input-tag my-2"
-          rows="4"
-          placeholder="Enter your note here..."
-          value={note}
-          onChange={handleInputChange}
-        />
-
-        <div className="position-relative pb-4 mb-1 pt-2">
-          {error && (
-            <div className="error-msg text-danger small">
-              <i className="fa-solid fa-circle-info me-1"></i>
-              <span>{error}</span>
-            </div>
-          )}
-          <button
-            id="save-btn"
-            className="btn btn-sm rounded-pill px-3 text-white position-absolute end-0 top-0"
-            onClick={saveNote}
-          >
-            Save Note
-          </button>
-        </div>
-
-        {/* Modal displayed using absolute positioning for Chrome extension */}
-        {isAlarmModalOpen && (
-          <div 
-            style={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundColor: "rgba(0, 0, 0, 0.5)",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              zIndex: 1000
-            }}
-          >
-            <div 
-              style={{
-                backgroundColor: "#fff",
-                padding: "15px",
-                borderRadius: "8px",
-                width: "90%",
-                maxWidth: "280px"
-              }}
-            >
-              <h3 className="fs-6 mb-3">Set Alarm</h3>
-              <input 
-                type="datetime-local" 
-                className="form-control"
-                value={alarmTime}
-                onChange={(e) => setAlarmTime(e.target.value)}
-              />
-              <div className="d-flex justify-content-center gap-2 mt-3">
-                <button className="btn btn-sm btn-success" onClick={setAlarm}>Set</button>
-                <button className="btn btn-sm btn-secondary" onClick={closeAlarmModal}>Cancel</button>
+  function renderNotes() {
+    return notes
+      .filter((note) => note.text.toLowerCase().includes(searchQuery))
+      .sort((a, b) => {
+        if (sortOption === 'date-desc') return new Date(b.date) - new Date(a.date);
+        if (sortOption === 'date-asc') return new Date(a.date) - new Date(b.date);
+        if (sortOption === 'alpha-asc') return a.text.localeCompare(b.text);
+        if (sortOption === 'alpha-desc') return b.text.localeCompare(a.text);
+        return 0;
+      })
+      .map((note) => (
+        <div className="note-item" key={note.id}>
+          <div>
+            <div className="note-text">{note.text}</div>
+            <span className="options" data-id={note.id}>
+              <small className="date">{formatDate(note.date)}</small>
+              <div className="icons">
+                <i 
+                  className="fa-solid fa-clock" 
+                  style={{ cursor: "pointer" }}
+                  onClick={() => openAlarmModal(note.id)}
+                ></i>
+                <i className="fas fa-trash delete-icon" onClick={() => deleteNote(note.id)}></i>
+                <i className="fas fa-solid fa-pen" onClick={() => editNote(note.id, note.text)}></i>
+                <i className="fa-solid fa-copy copy-icon" data-id={note.id} onClick={(e) => handleCopy(e, note.text)}></i>
               </div>
-            </div>
+            </span>
+          </div>
+        </div>
+      ));
+  }
+  
+  return (
+    <div className="container-fluid p-0">
+      <nav className="d-flex align-items-center justify-content-between mb-3">
+        <div className="d-flex align-items-center">
+          <h6 className="d-flex align-items-center mb-0">
+            <img src="assets/note.png" width="22" height="22" alt="Note Icon" />
+            <span>
+              <i className="i-notes bold mx-1 bold"> i </i>
+              Notes
+            </span>
+          </h6>
+        </div>
+        <div className="d-flex align-items-center gap-2">
+          <input
+            type="text"
+            id="search-input"
+            onChange={handleSearchChange}
+            className="form-control form-control-sm input-tag"
+            placeholder="Search notes..."
+          />
+          <i className="fa-solid fa-gear" style={{ cursor: "pointer" }} onClick={openSettingsPage}></i>
+        </div>
+      </nav>
+
+      <div id="notes-list">{renderNotes()}</div>
+
+
+      <textarea
+        id="note-input"
+        className="form-control bg-transparent input-tag my-2"
+        rows="4"
+        placeholder="Enter your note here..."
+        value={note}
+        onChange={handleInputChange}
+      />
+
+      <div className="position-relative pb-4 mb-1 pt-2">
+        {error && (
+          <div className="error-msg text-danger small">
+            <i className="fa-solid fa-circle-info me-1"></i>
+            <span>{error}</span>
           </div>
         )}
+        <button
+          id="save-btn"
+          className="btn btn-sm rounded-pill px-3 text-white position-absolute end-0 top-0"
+          onClick={saveNote}
+        >
+          Save Note
+        </button>
       </div>
+
+      {/* Modal displayed using absolute positioning for Chrome extension */}
+      {isAlarmModalOpen && (
+        <div 
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 1000
+          }}
+        >
+          <div 
+            style={{
+              backgroundColor: "#fff",
+              padding: "15px",
+              borderRadius: "8px",
+              width: "90%",
+              maxWidth: "280px"
+            }}
+          >
+            <h3 className="fs-6 mb-3">Set Alarm</h3>
+            <input 
+              type="datetime-local" 
+              className="form-control"
+              value={alarmTime}
+              onChange={(e) => setAlarmTime(e.target.value)}
+            />
+            <div className="d-flex justify-content-center gap-2 mt-3">
+              <button className="btn btn-sm btn-success" onClick={setAlarm}>Set</button>
+              <button className="btn btn-sm btn-secondary" onClick={closeAlarmModal}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
