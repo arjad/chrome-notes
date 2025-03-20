@@ -137,14 +137,17 @@ function Popup() {
   }, [isAlarmModalOpen]);
 
   function renderNotes() {
-    console.log(notes)
-    return notes
-      .filter((note) => note.text.toLowerCase().includes(searchQuery))
+    const filteredNotes = notes.filter((note) => note.text.toLowerCase().includes(searchQuery));
+    if (filteredNotes.length === 0) {
+      return <div className="text-center">No notes found</div>;
+    }
+  
+    return filteredNotes
       .sort((a, b) => {
-        if (sortOption === 'date-desc') return new Date(b.date) - new Date(a.date);
-        if (sortOption === 'date-asc') return new Date(a.date) - new Date(b.date);
-        if (sortOption === 'alpha-asc') return a.text.localeCompare(b.text);
-        if (sortOption === 'alpha-desc') return b.text.localeCompare(a.text);
+        if (sortOption === "date-desc") return new Date(b.date) - new Date(a.date);
+        if (sortOption === "date-asc") return new Date(a.date) - new Date(b.date);
+        if (sortOption === "alpha-asc") return a.text.localeCompare(b.text);
+        if (sortOption === "alpha-desc") return b.text.localeCompare(a.text);
         return 0;
       })
       .map((note) => (
@@ -154,8 +157,8 @@ function Popup() {
             <span className="options" data-id={note.id}>
               <small className="date">{formatDate(note.date)}</small>
               <div className="icons">
-                <i 
-                  className="fa-solid fa-clock" 
+                <i
+                  className="fa-solid fa-clock"
                   style={{ cursor: "pointer" }}
                   onClick={() => openAlarmModal(note.id)}
                 ></i>
@@ -167,7 +170,7 @@ function Popup() {
           </div>
         </div>
       ));
-}
+  }
 
   
   return (

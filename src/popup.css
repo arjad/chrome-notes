@@ -114,7 +114,6 @@ body[data-size="large"] {
   border: 2px solid var(--primary);
 }
 .error-msg {
-  display: none;
   color: var(--danger);
   font-size: 0.875rem;
 }
