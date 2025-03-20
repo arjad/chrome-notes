@@ -16,21 +16,21 @@ function Popup() {
   const [sortOption, setsortOption] = useState('date-desc');
 
   useEffect(() => {
-    chrome.storage.local.get(["notes", "darkMode", "popupSize", "sortOption"], (result) => {
-      if (result.darkMode !== undefined) {
-        setDarkMode(result.darkMode);
-        if (result.darkMode) {
+    chrome.storage.local.get(["notes", "settings", "popupSize", "sortOption"], (result) => {
+      if (result.settings !== undefined) {
+        setDarkMode(result.settings.darkMode);
+        if (result.settings.darkMode) {
           document.body.classList.add("dark-mode");
         }
       }
-      if (result.popupSize !== undefined) {
-        setpopupSize(result.popupSize);
-        if (result.popupSize) {
-          document.body.setAttribute("data-size", result.popupSize);
+      if (result.settings.popupSize !== undefined) {
+        setpopupSize(result.settings.popupSize);
+        if (result.settings.popupSize) {
+          document.body.setAttribute("data-size", result.settings.popupSize);
         }
       }
-      if (result.sortOption !== undefined) {
-        setsortOption(result.sortOption);
+      if (result.settings.sortOption !== undefined) {
+        setsortOption(result.settings.sortOption);
       }
       if (result.notes) {
         setNotes(result.notes);
@@ -137,6 +137,7 @@ function Popup() {
   }, [isAlarmModalOpen]);
 
   function renderNotes() {
+    console.log(notes)
     return notes
       .filter((note) => note.text.toLowerCase().includes(searchQuery))
       .sort((a, b) => {
@@ -166,7 +167,8 @@ function Popup() {
           </div>
         </div>
       ));
-  }
+}
+
   
   return (
     <div className="container-fluid p-0">

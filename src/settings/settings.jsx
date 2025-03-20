@@ -13,42 +13,50 @@ function Settings() {
   const [exportFormat, setExportFormat] = useState("csv");
 
   useEffect(() => {
-    chrome.storage.local.get(["notes", "darkMode", "popupSize", "sortOption"], (result) => {
-      if (result.darkMode !== undefined) {
+    chrome.storage.local.get(["notes", "settings", "popupSize", "sortOption"], (result) => {
+      if (result.settings !== undefined) {
         setDarkMode(result.darkMode);
-        if (result.darkMode) {
+        if (result.settings.darkMode) {
           document.body.classList.add("dark-mode");
         }
       }
-      if (result.popupSize) setPopupSize(result.popupSize);
-      if (result.sortOption) setSortOption(result.sortOption);
+      if (result.settings.popupSize) setPopupSize(result.settings.popupSize);
+      if (result.settings.sortOption) setSortOption(result.settings.sortOption);
       if (result.notes) {
         setNotes(result.notes);
       }
     });
   }, []);
-
   const handleDarkModeChange = (e) => {
     const value = e.target.checked;
     setDarkMode(value);
-    chrome.storage.local.set({ darkMode: value });
+    chrome.storage.local.get(["settings"], (result) => {
+      const updatedSettings = { ...result.settings, darkMode: value };
+      chrome.storage.local.set({ settings: updatedSettings });
+    });
+  
     if (value) {
       document.body.classList.add("dark-mode");
     } else {
       document.body.classList.remove("dark-mode");
     }
   };
-
   const handlePopupSizeChange = (e) => {
     const value = e.target.value;
     setPopupSize(value);
-    chrome.storage.local.set({ popupSize: value });
+    chrome.storage.local.get(["settings"], (result) => {
+      const updatedSettings = { ...result.settings, popupSize: value };
+      chrome.storage.local.set({ settings: updatedSettings });
+    });
   };
-
+  
   const handleSortOptionChange = (e) => {
     const value = e.target.value;
     setSortOption(value);
-    chrome.storage.local.set({ sortOption: value });
+    chrome.storage.local.get(["settings"], (result) => {
+      const updatedSettings = { ...result.settings, sortOption: value };
+      chrome.storage.local.set({ settings: updatedSettings });
+    });
   };
 
   const exportPDF = (e) => {
