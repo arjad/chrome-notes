@@ -131,7 +131,7 @@ function Popup() {
         }, 1000);
     })
     .catch(err => console.error("Error copying text: ", err));
-};
+  };
 
   useEffect(() => {
     console.log("Modal open state changed:", isAlarmModalOpen);
@@ -152,15 +152,15 @@ function Popup() {
       return plainText.includes(searchQuery.toLowerCase());
     });
     if (filteredNotes.length === 0) {
-      return <div className="text-center">No notes found</div>;
+      return <div className="text-center my-2"> No notes found. </div>;
     }
   
     return filteredNotes
       .sort((a, b) => {
         if (sortOption === "date-desc") return new Date(b.date) - new Date(a.date);
-        if (sortOption === "date-asc") return new Date(a.date) - new Date(b.date);
-        if (sortOption === "alpha-asc") return stripHtml(a.text).localeCompare(stripHtml(b.text));
-        if (sortOption === "alpha-desc") return stripHtml(b.text).localeCompare(stripHtml(a.text));
+        else if (sortOption === "date-asc") return new Date(a.date) - new Date(b.date);
+        else if (sortOption === "alpha-asc") return stripHtml(a.text).localeCompare(stripHtml(b.text));
+        else if (sortOption === "alpha-desc") return stripHtml(b.text).localeCompare(stripHtml(a.text));
         return 0;
       })
       .map((note) => (
