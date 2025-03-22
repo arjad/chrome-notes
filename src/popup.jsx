@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { createRoot } from "react-dom/client";
 import "./popup.css";
-
+import sanitizeHtml from "sanitize-html";
+  
 function Popup() {
   const [note, setNote] = useState("");
   const [notes, setNotes] = useState([]);
@@ -11,25 +12,18 @@ function Popup() {
   const [alarmNoteId, setAlarmNoteId] = useState(null);
   const [alarmTime, setAlarmTime] = useState("");
   const [isAlarmModalOpen, setIsAlarmModalOpen] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
-  const [popupSize, setpopupSize] = useState(false);
   const [sortOption, setsortOption] = useState('date-desc');
+  const editorRef = useRef(null);
 
   useEffect(() => {
-    chrome.storage.local.get(["notes", "settings", "popupSize", "sortOption"], (result) => {
+    chrome.storage.local.get(["notes", "settings"], (result) => {
       if (result.settings !== undefined) {
-        setDarkMode(result.settings.darkMode);
         if (result.settings.darkMode) {
           document.body.classList.add("dark-mode");
         }
-      }
-      if (result.settings.popupSize !== undefined) {
-        setpopupSize(result.settings.popupSize);
         if (result.settings.popupSize) {
           document.body.setAttribute("data-size", result.settings.popupSize);
         }
-      }
-      if (result.settings.sortOption !== undefined) {
         setsortOption(result.settings.sortOption);
       }
       if (result.notes) {
@@ -66,11 +60,6 @@ function Popup() {
     chrome.tabs.create({ url: chrome.runtime.getURL("settings.html") });
   };
   
-  const handleInputChange = (e) => {
-    setNote(e.target.value);
-    setError("");
-  };
-
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value.toLowerCase());
   };
@@ -84,17 +73,26 @@ function Popup() {
   const editNote = (id, text) => {
     setEditingId(id);
     setNote(text);
+    if (editorRef.current) {
+      editorRef.current.innerHTML = text;
+    }
   };
-  
+
   const saveNote = () => {
-    if (note.trim() === "") {
+    if (editorRef.current.innerHTML.trim() === "") {
       setError("Please enter a note.");
       return;
     }
+    setError("");
+  
+    const sanitizedHtml = sanitizeHtml(editorRef.current.innerHTML, {
+      allowedTags: ["b", "i", "u", "p", "br", "strong", "em", "ul", "ol", "li"],
+      allowedAttributes: {},
+    });
   
     if (editingId) {
       const updatedNotes = notes.map((n) =>
-        n.id === editingId ? { ...n, text: note, date: new Date().toISOString() } : n
+        n.id === editingId ? { ...n, text: sanitizedHtml, date: new Date().toISOString() } : n
       );
       setNotes(updatedNotes);
       chrome.storage.local.set({ notes: updatedNotes });
@@ -102,7 +100,7 @@ function Popup() {
     } else {
       const newNote = {
         id: Date.now().toString(),
-        text: note,
+        text: sanitizedHtml,
         date: new Date().toISOString(),
         pinned: false,
       };
@@ -111,7 +109,7 @@ function Popup() {
       setNotes(updatedNotes);
       chrome.storage.local.set({ notes: updatedNotes });
     }
-    setNote("");
+    editorRef.current.innerHTML = "";
   };
 
   const formatDate = (dateString) => {
@@ -120,7 +118,11 @@ function Popup() {
   };
   
   const handleCopy = (event, text) => {
-    navigator.clipboard.writeText(text)
+    const tempElement = document.createElement("div");
+    tempElement.innerHTML = text;
+    const plainText = tempElement.textContent || tempElement.innerText;
+
+    navigator.clipboard.writeText(plainText)
     .then(() => {
         const icon = event.target;
         icon.classList.add("copy-icon-green");
@@ -131,43 +133,61 @@ function Popup() {
     .catch(err => console.error("Error copying text: ", err));
   };
 
-  // Add this logging to check state changes
   useEffect(() => {
     console.log("Modal open state changed:", isAlarmModalOpen);
   }, [isAlarmModalOpen]);
 
+  const handleFormat = (command) => {
+    document.execCommand(command, false, null);
+  };
+
+  function stripHtml(html) {
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    return doc.body.textContent || "";
+  }
+  
   function renderNotes() {
-    console.log(notes)
-    return notes
-      .filter((note) => note.text.toLowerCase().includes(searchQuery))
+    const filteredNotes = notes.filter((note) => {
+      const plainText = stripHtml(note.text).toLowerCase(); 
+      return plainText.includes(searchQuery.toLowerCase());
+    });
+    if (filteredNotes.length === 0) {
+      return <div className="text-center my-2"> No notes found. </div>;
+    }
+  
+    return filteredNotes
       .sort((a, b) => {
-        if (sortOption === 'date-desc') return new Date(b.date) - new Date(a.date);
-        if (sortOption === 'date-asc') return new Date(a.date) - new Date(b.date);
-        if (sortOption === 'alpha-asc') return a.text.localeCompare(b.text);
-        if (sortOption === 'alpha-desc') return b.text.localeCompare(a.text);
+        if (sortOption === "date-desc") return new Date(b.date) - new Date(a.date);
+        else if (sortOption === "date-asc") return new Date(a.date) - new Date(b.date);
+        else if (sortOption === "alpha-asc") return stripHtml(a.text).localeCompare(stripHtml(b.text));
+        else if (sortOption === "alpha-desc") return stripHtml(b.text).localeCompare(stripHtml(a.text));
         return 0;
       })
       .map((note) => (
         <div className="note-item" key={note.id}>
           <div>
-            <div className="note-text">{note.text}</div>
+            <div className="note-text" dangerouslySetInnerHTML={{ __html: note.text }}></div>
             <span className="options" data-id={note.id}>
               <small className="date">{formatDate(note.date)}</small>
               <div className="icons">
-                <i 
-                  className="fa-solid fa-clock" 
+                <i
+                  className="fa-solid fa-clock"
                   style={{ cursor: "pointer" }}
                   onClick={() => openAlarmModal(note.id)}
                 ></i>
                 <i className="fas fa-trash delete-icon" onClick={() => deleteNote(note.id)}></i>
                 <i className="fas fa-solid fa-pen" onClick={() => editNote(note.id, note.text)}></i>
-                <i className="fa-solid fa-copy copy-icon" data-id={note.id} onClick={(e) => handleCopy(e, note.text)}></i>
+                <i
+                  className="fa-solid fa-copy copy-icon"
+                  data-id={note.id}
+                  onClick={(e) => handleCopy(e, note.text)}
+                ></i>
               </div>
             </span>
           </div>
         </div>
       ));
-}
+  }
 
   
   return (
@@ -197,14 +217,34 @@ function Popup() {
       <div id="notes-list">{renderNotes()}</div>
 
 
-      <textarea
-        id="note-input"
-        className="form-control bg-transparent input-tag my-2"
-        rows="4"
-        placeholder="Enter your note here..."
-        value={note}
-        onChange={handleInputChange}
-      />
+      <section className="border mb-2">
+        <nav className="flex w-100 border-bottom" aria-label="Text formatting options">
+          <button onClick={() => handleFormat("bold")} className="border">
+            <i class="fa-solid fa-bold"></i>
+          </button>
+          <button onClick={() => handleFormat("italic")} className="border">
+            <i class="fa-solid fa-italic"></i>
+          </button>
+          <button onClick={() => handleFormat("underline")} className="border">
+            <i class="fa-solid fa-underline"></i>
+          </button>
+          <button onClick={() => handleFormat("insertUnorderedList")} className="border">
+            <i className="fa-solid fa-list-ul"></i>
+          </button>
+          <button onClick={() => handleFormat("insertOrderedList")} className="border">
+            <i className="fa-solid fa-list-ol"></i>
+          </button>
+        </nav>
+        <div
+          ref={editorRef}
+          contentEditable
+          role="textbox"
+          aria-label="Rich text editor"
+          className="bg-transparent input-tag"
+          id="note-input"
+          placeholder="Enter your note here..."
+        ></div>
+      </section>
 
       <div className="position-relative pb-4 mb-1 pt-2">
         {error && (
