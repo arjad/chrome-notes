@@ -167,3 +167,7 @@ body[data-size="large"] {
 .dark-mode ::-ms-input-placeholder { /* Edge 12 -18 */
   color: white;
 }
+
+#note-input{
+  min-height: 5rem;
+}
