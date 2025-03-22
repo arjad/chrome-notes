@@ -1,0 +1,91 @@
+{
+  "name": "jspdf-autotable",
+  "version": "5.0.2",
+  "description": "Generate pdf tables with javascript (jsPDF plugin)",
+  "main": "dist/jspdf.plugin.autotable.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/jspdf.plugin.autotable.js",
+      "import": "./dist/jspdf.plugin.autotable.mjs"
+    },
+    "./es": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/jspdf.plugin.autotable.mjs"
+    }
+  },
+  "types": "dist/index",
+  "files": [
+    "dist/*"
+  ],
+  "browserslist": [
+    "last 2 versions",
+    "> 1%",
+    "IE 11"
+  ],
+  "directories": {
+    "example": "examples"
+  },
+  "peerDependencies": {
+    "jspdf": "^2 || ^3"
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.3.0",
+    "@eslint/js": "^9.21.0",
+    "@rollup/plugin-typescript": "^12.1.2",
+    "@types/mocha": "^10.0.2",
+    "@typescript-eslint/eslint-plugin": "^8.25.0",
+    "@typescript-eslint/parser": "^8.25.0",
+    "dts-bundle-generator": "^9.5.1",
+    "eslint": "^9.21.0",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-prettier": "^5.0.0",
+    "jsdom": "^26.0.0",
+    "jspdf": "^3.0.0",
+    "mocha": "^11.1.0",
+    "npm-check-updates": "^17.1.15",
+    "prettier": "^3.0.3",
+    "rollup": "^4.0.2",
+    "ts-loader": "^9.5.0",
+    "ts-node": "^10.9.1",
+    "tslib": "^2.6.2",
+    "typescript": "^5.2.2",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^5.2.0"
+  },
+  "scripts": {
+    "start": "webpack serve --config webpack.config.mjs --mode=development",
+    "checkout-pr": "git fetch origin pull/$PR/head:pr$PR && git checkout pr$PR",
+    "start-external": "webpack serve --config webpack.config.mjs --mode=development --host 0.0.0.0",
+    "build": "webpack --mode=production && webpack --mode=production --env minified && npm run buildes && npm run types",
+    "buildes": "rollup --config rollup.config.mjs",
+    "lint": "eslint --ext=.ts .",
+    "test": "mocha -r ts-node/register test/test*.ts",
+    "format": "prettier --write src",
+    "version": "npm test && npm run build && git add -A dist",
+    "hosting": "git push origin main:gh-pages -f",
+    "deploy": "git push --follow-tags && npm run hosting && npm publish",
+    "update-libs": "cd examples/nodejs && ncu -u && npm i && cd ../typescript && ncu -u && npm i && cd ../webpack && ncu -u && npm i",
+    "types": "dts-bundle-generator src/main.ts -o ./dist/index.d.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/simonbengtsson/jsPDF-AutoTable.git"
+  },
+  "keywords": [
+    "pdf",
+    "table",
+    "jspdf"
+  ],
+  "author": "Simon Bengtsson <dev@simonbengtsson.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/simonbengtsson/jsPDF-AutoTable/issues"
+  },
+  "homepage": "https://simonbengtsson.github.io/jsPDF-AutoTable"
+}
