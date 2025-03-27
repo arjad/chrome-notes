@@ -1,148 +1,225 @@
 :root {
-    --primary-color: #684993;
-    --bg-light: #f3f2ef;
-    --bg-dark: #1e242d;
-    --card-light: #ffffff;
-    --card-dark: #283142;
-    --text-light: #2d2d2d;
-    --text-muted-light: #666666;
-    --text-dark: #ffffff;
-    --text-muted-dark: #a0a0a0;
-    --border-light: rgba(0, 0, 0, 0.08);
-    --border-dark: rgba(255, 255, 255, 0.08);
-  }
-  .dark-mode {
-    background-color: var(--bg-dark) !important;
-    color: white !important;
-  }
+  --primary-color: #684993;
+  --bg-light: #f3f2ef;
+  --bg-dark: #1e242d;
+  --card-light: #ffffff;
+  --card-dark: #283142;
+  --text-light: #2d2d2d;
+  --text-muted-light: #666666;
+  --text-dark: #ffffff;
+  --text-muted-dark: #a0a0a0;
+  --border-light: rgba(0, 0, 0, 0.08);
+  --border-dark: rgba(255, 255, 255, 0.08);
+}
+.dark-mode {
+  background-color: var(--bg-dark) !important;
+  color: white !important;
+}
 
-  body {
-    background-color: var(--bg-light);
-    color: var(--text-light);
-  }
+body {
+  background-color: var(--bg-light);
+  color: var(--text-light);
+}
 
+.settings-layout {
+  max-width: 1000px;
+  margin: 24px auto;
+  padding: 0 16px;
+}
+
+.card {
+  background-color: var(--card-light);
+  border: none;
+  box-shadow: 0 0 0 1px var(--border-light);
+}
+
+.text-muted {
+  color: var(--text-muted-light) !important;
+}
+
+.list-group-item {
+  background-color: transparent;
+  border-color: var(--border-light);
+}
+
+.border-top {
+  border-color: var(--border-light) !important;
+}
+
+/* Dark mode styles */
+body.dark-mode {
+  background-color: var(--bg-dark);
+  color: var(--text-dark);
+}
+
+body.dark-mode .card {
+  background-color: var(--card-dark);
+  box-shadow: 0 0 0 1px var(--border-dark);
+}
+
+body.dark-mode .text-muted {
+  color: var(--text-muted-dark) !important;
+}
+
+body.dark-mode .list-group-item {
+  border-color: var(--border-dark);
+}
+
+body.dark-mode .border-top {
+  border-color: var(--border-dark) !important;
+}
+
+body.dark-mode .form-control,
+body.dark-mode .form-select {
+  background-color: var(--card-dark);
+  border-color: var(--border-dark);
+  color: var(--text-dark);
+}
+
+body.dark-mode .form-control:focus,
+body.dark-mode .form-select:focus {
+  background-color: var(--card-dark);
+  color: var(--text-dark);
+}
+
+body.dark-mode .btn-outline-secondary {
+  color: var(--text-dark);
+  border-color: var(--border-dark);
+}
+
+body.dark-mode .btn-outline-secondary:hover {
+  background-color: var(--border-dark);
+  color: var(--text-dark);
+}
+
+.contributor-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+}
+
+@media (max-width: 768px) {
   .settings-layout {
-    max-width: 1000px;
-    margin: 24px auto;
-    padding: 0 16px;
+    margin: 16px;
+    padding: 0;
   }
+}
 
-  .card {
-    background-color: var(--card-light);
-    border: none;
-    box-shadow: 0 0 0 1px var(--border-light);
-  }
+/* Fix text colors in dark mode */
+body.dark-mode .contributor-name,
+body.dark-mode .form-check-label,
+body.dark-mode .form-label,
+body.dark-mode h4,
+body.dark-mode h5,
+body.dark-mode h6 {
+  color: var(--text-dark);
+}
 
-  .text-muted {
-    color: var(--text-muted-light) !important;
-  }
+body.dark-mode .list-group-item {
+  color: var(--text-dark);
+}
 
-  .list-group-item {
-    background-color: transparent;
-    border-color: var(--border-light);
-  }
+body.dark-mode .form-check-input:checked {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
 
-  .border-top {
-    border-color: var(--border-light) !important;
-  }
+body.dark-mode hr {
+  border-color: var(--border-dark);
+}
 
-  /* Dark mode styles */
-  body.dark-mode {
-    background-color: var(--bg-dark);
-    color: var(--text-dark);
-  }
+/* Improve contrast for icons in dark mode */
+body.dark-mode .text-primary {
+  color: #9f74c7 !important;
+}
 
-  body.dark-mode .card {
-    background-color: var(--card-dark);
-    box-shadow: 0 0 0 1px var(--border-dark);
-  }
+/* Fix hover states in dark mode */
+body.dark-mode .list-group-item:hover {
+  background-color: var(--border-dark);
+}
 
-  body.dark-mode .text-muted {
-    color: var(--text-muted-dark) !important;
-  }
+/* Fix form switch in dark mode */
+body.dark-mode .form-switch .form-check-input {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
+}
 
-  body.dark-mode .list-group-item {
-    border-color: var(--border-dark);
-  }
+body.dark-mode .form-switch .form-check-input:focus {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
+}
 
-  body.dark-mode .border-top {
-    border-color: var(--border-dark) !important;
-  }
+/* Update Tab Navigation Styles */
+.settings-tabs {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background: var(--card-light);
+  padding: 2rem 0;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+  width: 240px;
+  display: flex;
+  flex-direction: column;
+}
 
-  body.dark-mode .form-control,
-  body.dark-mode .form-select {
-    background-color: var(--card-dark);
-    border-color: var(--border-dark);
-    color: var(--text-dark);
-  }
+.settings-tabs .nav-pills {
+  flex: 1;
+}
 
-  body.dark-mode .form-control:focus,
-  body.dark-mode .form-select:focus {
-    background-color: var(--card-dark);
-    color: var(--text-dark);
-  }
+.settings-tabs .nav-link {
+  color: var(--text-muted-light);
+  padding: 1rem 1.5rem;
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
+  text-align: left;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 
-  body.dark-mode .btn-outline-secondary {
-    color: var(--text-dark);
-    border-color: var(--border-dark);
-  }
+.settings-tabs .nav-link i {
+  font-size: 1.2rem;
+  width: 24px;
+  text-align: center;
+}
 
-  body.dark-mode .btn-outline-secondary:hover {
-    background-color: var(--border-dark);
-    color: var(--text-dark);
-  }
+.settings-tabs .nav-link.active {
+  color: var(--primary-color);
+  background-color: rgba(104, 73, 147, 0.1);
+  border-left: 3px solid var(--primary-color);
+}
 
-  .contributor-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
-  }
+.settings-tabs .nav-link:hover:not(.active) {
+  background-color: var(--bg-light);
+  color: var(--text-light);
+}
 
-  @media (max-width: 768px) {
-    .settings-layout {
-      margin: 16px;
-      padding: 0;
-    }
-  }
+/* Profile section at bottom of tabs */
+.settings-tabs .profile-section {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--border-light);
+  margin-top: auto;
+}
 
-  /* Fix text colors in dark mode */
-  body.dark-mode .contributor-name,
-  body.dark-mode .form-check-label,
-  body.dark-mode .form-label,
-  body.dark-mode h4,
-  body.dark-mode h5,
-  body.dark-mode h6 {
-    color: var(--text-dark);
-  }
+.settings-tabs .premium-badge {
+  background: linear-gradient(45deg, #ffd700, #ffa500);
+  color: #000;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
 
-  body.dark-mode .list-group-item {
-    color: var(--text-dark);
-  }
+/* Adjust main content margin */
+.settings-layout {
+  margin-left: 240px !important;
+}
 
-  body.dark-mode .form-check-input:checked {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
-  }
+/* Dark mode updates */
+body.dark-mode .settings-tabs .nav-link.active {
+  background-color: rgba(255, 255, 255, 0.1);
+}
 
-  body.dark-mode hr {
-    border-color: var(--border-dark);
-  }
-
-  /* Improve contrast for icons in dark mode */
-  body.dark-mode .text-primary {
-    color: #9f74c7 !important;
-  }
-
-  /* Fix hover states in dark mode */
-  body.dark-mode .list-group-item:hover {
-    background-color: var(--border-dark);
-  }
-
-  /* Fix form switch in dark mode */
-  body.dark-mode .form-switch .form-check-input {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
-  }
-
-  body.dark-mode .form-switch .form-check-input:focus {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
-  }
+body.dark-mode .settings-tabs .profile-section {
+  border-color: var(--border-dark);
+}
