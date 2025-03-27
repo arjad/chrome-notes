@@ -376,35 +376,44 @@ body.dark-mode .note-tags .badge {
   z-index: 100;
 }
 
-.notes-header .input-group-text,
-.notes-header .form-control {
-  border-color: var(--border-light);
+.search-bar {
+  min-width: 300px;
 }
 
-.notes-header .form-control:focus {
+.search-bar .input-group {
+  background: var(--bg-light);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.search-bar .form-control:focus {
   box-shadow: none;
+  background: var(--bg-light);
 }
 
-/* Notes Grid Layout */
+/* Modern Notes Grid */
 .notes-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.5rem;
+  padding: 1rem 0;
 }
 
 .note-card {
   background: var(--card-light);
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  transition: all 0.2s ease;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
   border: 1px solid var(--border-light);
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+  position: relative;
 }
 
 .note-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
 }
 
 .note-card-header {
@@ -413,60 +422,91 @@ body.dark-mode .note-tags .badge {
   justify-content: space-between;
   align-items: flex-start;
   border-bottom: 1px solid var(--border-light);
+  background: linear-gradient(
+    to right,
+    rgba(104, 73, 147, 0.03),
+    rgba(104, 73, 147, 0.01)
+  );
 }
 
-.note-title {
-  margin: 0;
-  font-weight: 500;
-  color: var(--text-light);
-}
-
-.btn-icon {
-  padding: 0.25rem;
-  color: var(--text-muted-light);
-  border: none;
-  background: transparent;
-}
-
-.note-content {
-  padding: 1rem;
-  flex: 1;
-  color: var(--text-muted-light);
-  font-size: 0.9rem;
-  line-height: 1.5;
-}
-
-.note-footer {
-  padding: 1rem;
-  border-top: 1px solid var(--border-light);
+.note-meta {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 0.5rem;
 }
 
 .note-date {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: var(--text-muted-light);
+  display: flex;
+  align-items: center;
+}
+
+.note-tags {
+  display: flex;
+  gap: 0.25rem;
+  flex-wrap: wrap;
 }
 
 .note-tag {
-  font-size: 0.75rem;
-  padding: 0.2rem 0.5rem;
-  border-radius: 4px;
+  font-size: 0.65rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 12px;
   background: rgba(104, 73, 147, 0.08);
   color: var(--primary-color);
-  margin-right: 0.5rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
 }
 
-/* Filters Panel */
-.filters-panel {
-  display: none;
+.note-title {
+  padding: 1rem 1rem 0.5rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--text-light);
 }
 
-.filters-panel.show {
-  display: block;
+.note-content {
+  padding: 0 1rem 1rem;
+  color: var(--text-muted-light);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+}
+
+.btn-icon {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  color: var(--text-muted-light);
+  background: transparent;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.btn-icon:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--text-light);
+}
+
+/* Empty State */
+.notes-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem 1rem;
+}
+
+.empty-illustration {
+  font-size: 4rem;
+  color: var(--text-muted-light);
+  opacity: 0.5;
+  margin-bottom: 1.5rem;
 }
 
 /* Dark Mode Adjustments */
@@ -475,35 +515,94 @@ body.dark-mode .note-card {
   border-color: var(--border-dark);
 }
 
-body.dark-mode .note-card-header,
-body.dark-mode .note-footer {
+body.dark-mode .note-card-header {
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.03),
+    rgba(255, 255, 255, 0.01)
+  );
   border-color: var(--border-dark);
 }
 
-body.dark-mode .note-title {
-  color: var(--text-dark);
+body.dark-mode .search-bar .input-group,
+body.dark-mode .search-bar .form-control,
+body.dark-mode .search-bar .input-group-text {
+  background: var(--card-dark);
 }
 
-body.dark-mode .note-content {
-  color: var(--text-muted-dark);
-}
-
-body.dark-mode .note-tag {
+body.dark-mode .btn-icon:hover {
   background: rgba(255, 255, 255, 0.1);
-  color: #fff;
 }
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
   .notes-grid {
     grid-template-columns: 1fr;
-  }
-
-  .notes-header .row {
     gap: 1rem;
   }
 
-  .notes-header .col-auto {
+  .search-bar {
     width: 100%;
+    min-width: auto;
   }
+}
+
+/* Button Styles */
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: #fff;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: #7b579e;
+  border-color: #7b579e;
+  color: #fff;
+}
+
+.btn-primary:active {
+  background-color: #573a6d !important;
+  border-color: #573a6d !important;
+}
+
+.btn-outline-primary {
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: #fff;
+}
+
+/* Dark mode button adjustments */
+body.dark-mode .btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+body.dark-mode .btn-primary:hover,
+body.dark-mode .btn-primary:focus {
+  background-color: #7b579e;
+  border-color: #7b579e;
+}
+
+body.dark-mode .btn-primary:active {
+  background-color: #573a6d !important;
+  border-color: #573a6d !important;
+}
+
+/* Button focus states */
+.btn:focus {
+  box-shadow: 0 0 0 0.25rem rgba(104, 73, 147, 0.25);
+}
+
+/* Button loading state */
+.btn-primary.disabled,
+.btn-primary:disabled {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  opacity: 0.65;
 }

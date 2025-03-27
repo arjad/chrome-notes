@@ -184,39 +184,33 @@ function Settings() {
       case "notes-detail":
         return (
           <div className="notes-view">
-            {/* Top Settings Bar */}
+            {/* Modern Header with Search and Actions */}
             <div className="notes-header card mb-4">
               <div className="card-body p-3">
-                <div className="row align-items-center">
-                  <div className="col-auto">
+                <div className="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                  <div className="search-bar">
                     <div className="input-group">
-                      <span className="input-group-text bg-transparent border-end-0">
+                      <span className="input-group-text border-0 bg-light">
                         <i className="fas fa-search text-muted"></i>
                       </span>
                       <input
                         type="text"
-                        className="form-control border-start-0 ps-0"
+                        className="form-control border-0 bg-light"
                         placeholder="Search notes..."
                         onChange={(e) => handleSearchChange(e.target.value)}
                       />
                     </div>
                   </div>
-                  <div className="col-auto">
+                  <div className="d-flex gap-2 align-items-center">
                     <select
-                      className="form-select form-select-sm"
+                      className="form-select form-select-sm bg-light border-0"
                       style={{ width: "140px" }}
                     >
-                      <option value="date-desc">Newest First</option>
-                      <option value="date-asc">Oldest First</option>
-                      <option value="alpha-asc">A-Z</option>
-                      <option value="alpha-desc">Z-A</option>
+                      <option value="date-desc">Latest first</option>
+                      <option value="date-asc">Oldest first</option>
+                      <option value="alpha-asc">A to Z</option>
+                      <option value="alpha-desc">Z to A</option>
                     </select>
-                  </div>
-                  <div className="col text-end">
-                    <button className="btn btn-outline-secondary btn-sm me-2">
-                      <i className="fas fa-filter me-2"></i>
-                      Filters
-                    </button>
                     <button className="btn btn-primary btn-sm">
                       <i className="fas fa-plus me-2"></i>
                       New Note
@@ -226,135 +220,13 @@ function Settings() {
               </div>
             </div>
 
-            {/* Main Content */}
-            <div className="row g-4">
-              {/* Filters Panel (Initially Hidden) */}
-              <div className="col-12 col-lg-3 filters-panel">
-                <div className="filters-section">
-                  <div className="d-flex justify-content-between align-items-center mb-3">
-                    <h6 className="mb-0">Filters</h6>
-                    <button
-                      className="btn btn-link btn-sm p-0 text-muted"
-                      onClick={() => handleClearFilters()}
-                    >
-                      Clear all
-                    </button>
-                  </div>
-
-                  {/* Date Range */}
-                  <div className="mb-4">
-                    <label className="form-label small">Date Range</label>
-                    <div className="d-flex gap-2">
-                      <input
-                        type="date"
-                        className="form-control form-control-sm"
-                        onChange={(e) =>
-                          handleDateChange("from", e.target.value)
-                        }
-                      />
-                      <input
-                        type="date"
-                        className="form-control form-control-sm"
-                        onChange={(e) => handleDateChange("to", e.target.value)}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Tags Filter */}
-                  <div className="mb-4">
-                    <label className="form-label small">Tags</label>
-                    <select
-                      className="form-select form-select-sm"
-                      multiple
-                      onChange={(e) => handleTagsChange(e)}
-                    >
-                      <option value="work">Work</option>
-                      <option value="personal">Personal</option>
-                      <option value="important">Important</option>
-                    </select>
-                  </div>
-
-                  {/* Status Filter */}
-                  <div className="mb-4">
-                    <label className="form-label small">Status</label>
-                    <div className="form-check">
-                      <input
-                        type="checkbox"
-                        className="form-check-input"
-                        id="active-notes"
-                        checked={statusFilter.active}
-                        onChange={(e) =>
-                          handleStatusChange("active", e.target.checked)
-                        }
-                      />
-                      <label
-                        className="form-check-label"
-                        htmlFor="active-notes"
-                      >
-                        Active Notes
-                      </label>
-                    </div>
-                    <div className="form-check">
-                      <input
-                        type="checkbox"
-                        className="form-check-input"
-                        id="archived-notes"
-                        checked={statusFilter.archived}
-                        onChange={(e) =>
-                          handleStatusChange("archived", e.target.checked)
-                        }
-                      />
-                      <label
-                        className="form-check-label"
-                        htmlFor="archived-notes"
-                      >
-                        Archived
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Notes Grid */}
-              <div className="col-12 col-lg-9">
-                <div className="notes-grid">
-                  {notes.map((note) => (
-                    <div key={note.id} className="note-card">
-                      <div className="note-card-header">
-                        <h6 className="note-title">
-                          {note.title || "Untitled Note"}
-                        </h6>
-                        <div className="dropdown">
-                          <button
-                            className="btn btn-icon"
-                            data-bs-toggle="dropdown"
-                          >
-                            <i className="fas fa-ellipsis-v"></i>
-                          </button>
-                          <ul className="dropdown-menu dropdown-menu-end">
-                            <li>
-                              <a className="dropdown-item" href="#">
-                                <i className="fas fa-edit me-2"></i>Edit
-                              </a>
-                            </li>
-                            <li>
-                              <a className="dropdown-item" href="#">
-                                <i className="fas fa-archive me-2"></i>Archive
-                              </a>
-                            </li>
-                            <li>
-                              <hr className="dropdown-divider" />
-                            </li>
-                            <li>
-                              <a className="dropdown-item text-danger" href="#">
-                                <i className="fas fa-trash-alt me-2"></i>Delete
-                              </a>
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                      <div className="note-content">{note.content}</div>
-                      <div className="note-footer">
+            {/* Modern Notes Grid */}
+            <div className="notes-grid">
+              {notes.length > 0 ? (
+                notes.map((note) => (
+                  <div key={note.id} className="note-card">
+                    <div className="note-card-header">
+                      <div className="note-meta">
                         <div className="note-date">
                           <i className="far fa-clock me-1"></i>
                           {new Date(note.date).toLocaleDateString()}
@@ -369,10 +241,56 @@ function Settings() {
                           </div>
                         )}
                       </div>
+                      <div className="dropdown">
+                        <button className="btn-icon" data-bs-toggle="dropdown">
+                          <i className="fas fa-ellipsis-h"></i>
+                        </button>
+                        <ul className="dropdown-menu dropdown-menu-end">
+                          <li>
+                            <button className="dropdown-item">
+                              <i className="fas fa-edit me-2"></i>
+                              Edit
+                            </button>
+                          </li>
+                          <li>
+                            <button className="dropdown-item">
+                              <i className="fas fa-archive me-2"></i>
+                              Archive
+                            </button>
+                          </li>
+                          <li>
+                            <hr className="dropdown-divider" />
+                          </li>
+                          <li>
+                            <button className="dropdown-item text-danger">
+                              <i className="fas fa-trash-alt me-2"></i>
+                              Delete
+                            </button>
+                          </li>
+                        </ul>
+                      </div>
                     </div>
-                  ))}
+                    <div className="note-title">
+                      {note.title || "Untitled Note"}
+                    </div>
+                    <div className="note-content">{note.content}</div>
+                  </div>
+                ))
+              ) : (
+                <div className="notes-empty">
+                  <div className="empty-illustration">
+                    <i className="far fa-sticky-note"></i>
+                  </div>
+                  <h5>No Notes Found</h5>
+                  <p className="text-muted">
+                    Create your first note to get started!
+                  </p>
+                  <button className="btn btn-primary btn-sm">
+                    <i className="fas fa-plus me-2"></i>
+                    Create Note
+                  </button>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         );
