@@ -83,13 +83,14 @@ body.dark-mode .form-select:focus {
 }
 
 body.dark-mode .btn-outline-secondary {
-  color: var(--text-dark);
+  color: var(--text-muted-dark);
   border-color: var(--border-dark);
 }
 
 body.dark-mode .btn-outline-secondary:hover {
-  background-color: var(--border-dark);
+  background-color: rgba(255, 255, 255, 0.1);
   color: var(--text-dark);
+  border-color: var(--border-dark);
 }
 
 .contributor-avatar {
@@ -377,6 +378,7 @@ body.dark-mode .note-tags .badge {
 }
 
 .search-bar {
+  position: relative;
   min-width: 300px;
 }
 
@@ -384,11 +386,22 @@ body.dark-mode .note-tags .badge {
   background: var(--bg-light);
   border-radius: 8px;
   overflow: hidden;
+  border: 1px solid var(--border-light);
 }
 
-.search-bar .form-control:focus {
-  box-shadow: none;
-  background: var(--bg-light);
+.search-bar .form-control,
+.search-bar .input-group-text {
+  border: none;
+  background: transparent;
+  color: var(--text-light);
+}
+
+.search-bar .form-control::placeholder {
+  color: var(--text-muted-light);
+}
+
+.search-bar .input-group-text i {
+  color: var(--text-muted-light);
 }
 
 /* Modern Notes Grid */
@@ -605,4 +618,367 @@ body.dark-mode .btn-primary:active {
   background-color: var(--primary-color);
   border-color: var(--primary-color);
   opacity: 0.65;
+}
+
+/* Fix dark mode text colors */
+body.dark-mode {
+  background-color: var(--bg-dark);
+  color: var(--text-dark);
+}
+
+body.dark-mode .dropdown-menu {
+  background-color: var(--card-dark);
+  border-color: var(--border-dark);
+}
+
+body.dark-mode .dropdown-item {
+  color: var(--text-dark);
+}
+
+body.dark-mode .dropdown-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--text-dark);
+}
+
+body.dark-mode .dropdown-divider {
+  border-color: var(--border-dark);
+}
+
+body.dark-mode .note-content,
+body.dark-mode .note-date,
+body.dark-mode .text-muted,
+body.dark-mode .form-text,
+body.dark-mode .btn-icon,
+body.dark-mode .nav-link {
+  color: var(--text-muted-dark) !important;
+}
+
+body.dark-mode .note-title,
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5,
+body.dark-mode h6,
+body.dark-mode .nav-link.active {
+  color: var(--text-dark) !important;
+}
+
+/* Update button styles for better dark mode visibility */
+.btn-outline-secondary {
+  color: var(--text-muted-light);
+  border-color: var(--border-light);
+}
+
+body.dark-mode .btn-outline-secondary {
+  color: var(--text-muted-dark);
+  border-color: var(--border-dark);
+}
+
+body.dark-mode .btn-outline-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--text-dark);
+  border-color: var(--border-dark);
+}
+
+/* Fix form controls in dark mode */
+body.dark-mode .form-control,
+body.dark-mode .form-select {
+  background-color: var(--card-dark);
+  border-color: var(--border-dark);
+  color: var(--text-dark);
+}
+
+body.dark-mode .form-control::placeholder {
+  color: var(--text-muted-dark);
+}
+
+body.dark-mode .input-group-text {
+  background-color: var(--card-dark);
+  border-color: var(--border-dark);
+  color: var(--text-muted-dark);
+}
+
+/* Fix search bar in dark mode */
+body.dark-mode .search-bar .input-group {
+  background-color: var(--bg-dark);
+  border-color: var(--border-dark);
+}
+
+body.dark-mode .search-bar .form-control {
+  color: var(--text-dark);
+  background: transparent;
+}
+
+body.dark-mode .search-bar .form-control::placeholder {
+  color: var(--text-muted-dark);
+}
+
+body.dark-mode .search-bar .input-group-text {
+  background: transparent;
+  color: var(--text-muted-dark);
+}
+
+/* Ensure buttons maintain contrast in dark mode */
+body.dark-mode .btn-primary {
+  color: #fff !important;
+}
+
+body.dark-mode .btn-outline-primary {
+  color: var(--primary-color);
+}
+
+body.dark-mode .btn-outline-primary:hover {
+  color: #fff !important;
+}
+
+/* Fix note tags in dark mode */
+body.dark-mode .note-tag {
+  background: rgba(104, 73, 147, 0.2);
+  color: #fff;
+}
+
+/* Fix empty state text in dark mode */
+body.dark-mode .notes-empty {
+  color: var(--text-muted-dark);
+}
+
+/* Fix dropdown button hover states */
+body.dark-mode .btn-icon:hover {
+  color: var(--text-dark) !important;
+}
+
+/* Dropdown Menu Styles */
+.dropdown-menu {
+  padding: 0.5rem 0;
+  border: 1px solid var(--border-light);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  min-width: 200px;
+  margin-top: 0.5rem;
+  background: var(--card-light);
+}
+
+.dropdown-item {
+  padding: 0.6rem 1rem;
+  color: var(--text-light);
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.dropdown-item:hover {
+  background-color: rgba(104, 73, 147, 0.08);
+  color: var(--primary-color);
+}
+
+.dropdown-item i {
+  width: 20px;
+  text-align: center;
+}
+
+.dropdown-divider {
+  margin: 0.5rem 0;
+  border-color: var(--border-light);
+}
+
+/* Dark mode dropdown fixes */
+body.dark-mode .dropdown-menu {
+  background: var(--bg-dark);
+  border-color: var(--border-dark);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+body.dark-mode .dropdown-item {
+  color: var(--text-dark);
+}
+
+body.dark-mode .dropdown-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--text-dark);
+}
+
+body.dark-mode .dropdown-item.text-danger:hover {
+  background-color: rgba(220, 53, 69, 0.1);
+}
+
+/* Search Results Dropdown */
+.search-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--card-light);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-top: 0.5rem;
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 1000;
+  display: none;
+  border: 1px solid var(--border-light);
+}
+
+.search-results.show {
+  display: block;
+}
+
+.search-result-item {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border-light);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.search-result-item:last-child {
+  border-bottom: none;
+}
+
+.search-result-item:hover {
+  background-color: rgba(104, 73, 147, 0.08);
+}
+
+.search-result-title {
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+  color: var(--text-light);
+}
+
+.search-result-content {
+  font-size: 0.85rem;
+  color: var(--text-muted-light);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Dark mode search results */
+body.dark-mode .search-results {
+  background: var(--bg-dark);
+  border-color: var(--border-dark);
+}
+
+body.dark-mode .search-result-item {
+  border-color: var(--border-dark);
+}
+
+body.dark-mode .search-result-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+body.dark-mode .search-result-title {
+  color: var(--text-dark);
+}
+
+body.dark-mode .search-result-content {
+  color: var(--text-muted-dark);
+}
+
+/* Scrollbar Styles */
+.search-results::-webkit-scrollbar {
+  width: 8px;
+}
+
+.search-results::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.search-results::-webkit-scrollbar-thumb {
+  background-color: var(--border-light);
+  border-radius: 4px;
+}
+
+body.dark-mode .search-results::-webkit-scrollbar-thumb {
+  background-color: var(--border-dark);
+}
+
+/* Form Select in Dark Mode */
+body.dark-mode .form-select {
+  background-color: var(--bg-dark);
+  border-color: var(--border-dark);
+  color: var(--text-dark);
+}
+
+body.dark-mode .form-select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.25rem rgba(104, 73, 147, 0.25);
+}
+
+/* Fix select dropdown in dark mode */
+body.dark-mode .form-select option {
+  background-color: var(--bg-dark);
+  color: var(--text-dark);
+}
+
+/* Update form controls for better dark mode support */
+.form-control,
+.form-select,
+.input-group-text {
+  transition: all 0.2s ease;
+}
+
+/* Dark mode form control fixes */
+body.dark-mode .form-control,
+body.dark-mode .form-select,
+body.dark-mode .input-group-text {
+  background-color: var(--bg-dark) !important;
+  border-color: var(--border-dark);
+  color: var(--text-dark);
+}
+
+/* Fix search bar in dark mode */
+body.dark-mode .search-bar .input-group {
+  background-color: var(--bg-dark) !important;
+}
+
+body.dark-mode .search-bar .form-control,
+body.dark-mode .search-bar .input-group-text {
+  background-color: transparent !important;
+  color: var(--text-dark);
+}
+
+/* Fix select dropdowns in dark mode */
+body.dark-mode select.form-select {
+  background-color: var(--bg-dark) !important;
+  color: var(--text-dark);
+}
+
+body.dark-mode select.form-select option {
+  background-color: var(--bg-dark) !important;
+  color: var(--text-dark);
+}
+
+/* Fix dropdown menus in dark mode */
+body.dark-mode .dropdown-menu {
+  background-color: var(--bg-dark) !important;
+  border-color: var(--border-dark);
+}
+
+body.dark-mode .dropdown-item {
+  color: var(--text-dark);
+}
+
+body.dark-mode .dropdown-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--text-dark);
+}
+
+/* Fix input focus states in dark mode */
+body.dark-mode .form-control:focus,
+body.dark-mode .form-select:focus {
+  background-color: var(--bg-dark) !important;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.25rem rgba(104, 73, 147, 0.25);
+}
+
+/* Fix input placeholders in dark mode */
+body.dark-mode .form-control::placeholder {
+  color: var(--text-muted-dark);
+}
+
+/* Fix disabled inputs in dark mode */
+body.dark-mode .form-control:disabled,
+body.dark-mode .form-select:disabled {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  color: var(--text-muted-dark);
 }
