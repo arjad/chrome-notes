@@ -154,20 +154,22 @@ body.dark-mode .form-switch .form-check-input:focus {
   top: 0;
   bottom: 0;
   background: var(--card-light);
-  padding: 2rem 0;
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
-  width: 240px;
+  padding: 1.5rem 0;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
+  width: 280px;
   display: flex;
   flex-direction: column;
+  border-right: 1px solid var(--border-light);
 }
 
 .settings-tabs .nav-pills {
   flex: 1;
+  padding: 1rem 0;
 }
 
 .settings-tabs .nav-link {
   color: var(--text-muted-light);
-  padding: 1rem 1.5rem;
+  padding: 0.875rem 2rem;
   transition: all 0.2s ease;
   border-left: 3px solid transparent;
   text-align: left;
@@ -175,51 +177,133 @@ body.dark-mode .form-switch .form-check-input:focus {
   display: flex;
   align-items: center;
   gap: 12px;
+  margin: 0.25rem 0;
 }
 
 .settings-tabs .nav-link i {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   width: 24px;
   text-align: center;
+  opacity: 0.8;
+  transition: all 0.2s ease;
 }
 
 .settings-tabs .nav-link.active {
   color: var(--primary-color);
-  background-color: rgba(104, 73, 147, 0.1);
+  background-color: rgba(104, 73, 147, 0.08);
   border-left: 3px solid var(--primary-color);
+  font-weight: 500;
+}
+
+.settings-tabs .nav-link.active i {
+  opacity: 1;
 }
 
 .settings-tabs .nav-link:hover:not(.active) {
-  background-color: var(--bg-light);
+  background-color: rgba(0, 0, 0, 0.03);
   color: var(--text-light);
 }
 
 /* Profile section at bottom of tabs */
 .settings-tabs .profile-section {
-  padding: 1rem 1.5rem;
+  padding: 1.5rem 2rem;
   border-top: 1px solid var(--border-light);
   margin-top: auto;
+  background-color: rgba(104, 73, 147, 0.03);
 }
 
 .settings-tabs .premium-badge {
   background: linear-gradient(45deg, #ffd700, #ffa500);
   color: #000;
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-size: 0.75rem;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.7rem;
   font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(255, 165, 0, 0.2);
 }
 
-/* Adjust main content margin */
+/* Adjust main content margin and layout */
 .settings-layout {
-  margin-left: 240px !important;
+  margin-left: 280px !important;
+  padding: 2rem !important;
+  max-width: 1200px;
 }
 
 /* Dark mode updates */
+body.dark-mode .settings-tabs {
+  background: var(--card-dark);
+  border-right-color: var(--border-dark);
+}
+
+body.dark-mode .settings-tabs .nav-link {
+  color: var(--text-muted-dark);
+}
+
 body.dark-mode .settings-tabs .nav-link.active {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.06);
+  color: #fff;
+}
+
+body.dark-mode .settings-tabs .nav-link:hover:not(.active) {
+  background-color: rgba(255, 255, 255, 0.03);
+  color: var(--text-dark);
 }
 
 body.dark-mode .settings-tabs .profile-section {
   border-color: var(--border-dark);
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .settings-tabs {
+    width: 240px;
+  }
+
+  .settings-tabs .nav-link {
+    padding: 0.75rem 1.5rem;
+  }
+
+  .settings-tabs .profile-section {
+    padding: 1.25rem 1.5rem;
+  }
+
+  .settings-layout {
+    margin-left: 240px !important;
+    padding: 1.5rem !important;
+  }
+}
+
+/* Add smooth transitions for dark/light mode */
+.settings-tabs,
+.settings-tabs .nav-link,
+.settings-tabs .profile-section {
+  transition: all 0.3s ease;
+}
+
+/* Enhanced active state */
+.settings-tabs .nav-link.active {
+  position: relative;
+}
+
+.settings-tabs .nav-link.active::before {
+  content: "";
+  position: absolute;
+  left: -3px;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(to bottom, var(--primary-color), #9f74c7);
+}
+
+/* Profile section enhancements */
+.settings-tabs .profile-section .user-info {
+  font-size: 0.9rem;
+}
+
+.settings-tabs .profile-section .user-role {
+  font-size: 0.8rem;
+  opacity: 0.7;
 }

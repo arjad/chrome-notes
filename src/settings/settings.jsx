@@ -266,14 +266,20 @@ function Settings() {
         </div>
 
         <div className="profile-section">
-          <div className="d-flex align-items-center gap-2 mb-2">
+          <div className="d-flex align-items-center gap-3">
             <i
               className="fas fa-user-circle text-muted"
               style={{ fontSize: "24px" }}
             ></i>
             <div>
-              <div className="fw-medium">User Account</div>
-              {isPremium && <span className="premium-badge">PREMIUM</span>}
+              <div className="user-info">User Account</div>
+              <div className="user-role">
+                {isPremium ? (
+                  <span className="premium-badge">PREMIUM</span>
+                ) : (
+                  "Free Account"
+                )}
+              </div>
             </div>
           </div>
         </div>
