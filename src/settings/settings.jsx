@@ -19,6 +19,7 @@ function Settings() {
     active: true,
     archived: false,
   });
+  const [viewMode, setViewMode] = useState("grid"); // 'grid' or 'list'
 
   useEffect(() => {
     chrome.storage.local.get(["notes", "settings"], (result) => {
@@ -184,7 +185,6 @@ function Settings() {
       case "notes-detail":
         return (
           <div className="notes-view">
-            {/* Modern Header with Search and Actions */}
             <div className="notes-header card mb-4">
               <div className="card-body p-3">
                 <div className="d-flex align-items-center justify-content-between flex-wrap gap-3">
@@ -201,7 +201,31 @@ function Settings() {
                       />
                     </div>
                   </div>
-                  <div className="d-flex gap-2 align-items-center">
+                  <div className="d-flex gap-3 align-items-center">
+                    <div className="view-toggle btn-group">
+                      <button
+                        className={`btn btn-sm ${
+                          viewMode === "grid"
+                            ? "btn-primary"
+                            : "btn-outline-primary"
+                        }`}
+                        onClick={() => setViewMode("grid")}
+                      >
+                        <i className="fas fa-th-large me-2"></i>
+                        Grid
+                      </button>
+                      <button
+                        className={`btn btn-sm ${
+                          viewMode === "list"
+                            ? "btn-primary"
+                            : "btn-outline-primary"
+                        }`}
+                        onClick={() => setViewMode("list")}
+                      >
+                        <i className="fas fa-list me-2"></i>
+                        List
+                      </button>
+                    </div>
                     <select
                       className="form-select form-select-sm bg-light border-0"
                       style={{ width: "140px" }}
@@ -220,8 +244,8 @@ function Settings() {
               </div>
             </div>
 
-            {/* Modern Notes Grid */}
-            <div className="notes-grid">
+            {/* Notes Grid/List View */}
+            <div className={`notes-container ${viewMode}-view`}>
               {notes.length > 0 ? (
                 notes.map((note) => (
                   <div key={note.id} className="note-card">

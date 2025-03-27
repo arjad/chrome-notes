@@ -982,3 +982,111 @@ body.dark-mode .form-select:disabled {
   background-color: rgba(255, 255, 255, 0.05) !important;
   color: var(--text-muted-dark);
 }
+
+/* View Toggle Styles */
+.view-toggle .btn {
+  padding: 0.4rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.view-toggle .btn i {
+  font-size: 0.9rem;
+}
+
+/* Notes Container Styles */
+.notes-container {
+  transition: all 0.3s ease;
+}
+
+/* Grid View */
+.notes-container.grid-view {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+
+/* List View */
+.notes-container.list-view {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.list-view .note-card {
+  height: auto;
+  flex-direction: row;
+  align-items: center;
+  padding: 1rem;
+}
+
+.list-view .note-card-header {
+  border: none;
+  background: none;
+  padding: 0;
+  flex: 0 0 auto;
+  margin-right: 1.5rem;
+  min-width: 200px;
+}
+
+.list-view .note-content {
+  flex: 1;
+  padding: 0;
+  margin-right: 1.5rem;
+  -webkit-line-clamp: 2;
+}
+
+.list-view .note-meta {
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+}
+
+.list-view .note-tags {
+  margin-left: auto;
+}
+
+.list-view .note-actions {
+  position: static;
+  margin-left: auto;
+}
+
+/* Dark mode adjustments */
+body.dark-mode .view-toggle .btn-outline-primary {
+  color: var(--text-dark);
+  border-color: var(--border-dark);
+}
+
+body.dark-mode .view-toggle .btn-outline-primary:hover {
+  background-color: rgba(104, 73, 147, 0.2);
+  border-color: var(--primary-color);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .view-toggle {
+    width: 100%;
+  }
+
+  .view-toggle .btn {
+    flex: 1;
+  }
+
+  .list-view .note-card {
+    flex-direction: column;
+    padding: 0;
+  }
+
+  .list-view .note-card-header {
+    width: 100%;
+    margin: 0;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .list-view .note-content {
+    margin: 0;
+    padding: 1rem;
+  }
+}
