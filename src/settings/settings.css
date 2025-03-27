@@ -307,3 +307,203 @@ body.dark-mode .settings-tabs .profile-section {
   font-size: 0.8rem;
   opacity: 0.7;
 }
+
+/* Notes Detail View Styles */
+.filters-section {
+  background-color: var(--card-light);
+  border-radius: 8px;
+  padding: 1.5rem;
+  position: sticky;
+  top: 1rem;
+}
+
+.note-item {
+  transition: all 0.2s ease;
+  border: 1px solid var(--border-light);
+}
+
+.note-item:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transform: translateY(-1px);
+}
+
+.note-tags .badge {
+  font-weight: 500;
+  font-size: 0.75rem;
+  padding: 0.35em 0.65em;
+  background-color: rgba(104, 73, 147, 0.1) !important;
+  color: var(--primary-color) !important;
+}
+
+/* Dark mode specific styles */
+body.dark-mode .filters-section {
+  background-color: var(--card-dark);
+}
+
+body.dark-mode .note-item {
+  border-color: var(--border-dark);
+}
+
+body.dark-mode .note-item:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+body.dark-mode .note-tags .badge {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: #fff !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .filters-section {
+    position: relative;
+    top: 0;
+    margin-bottom: 1.5rem;
+  }
+}
+
+/* Modern Notes View Styles */
+.notes-view {
+  min-height: calc(100vh - 100px);
+}
+
+.notes-header {
+  background: var(--card-light);
+  border: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.notes-header .input-group-text,
+.notes-header .form-control {
+  border-color: var(--border-light);
+}
+
+.notes-header .form-control:focus {
+  box-shadow: none;
+}
+
+/* Notes Grid Layout */
+.notes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.note-card {
+  background: var(--card-light);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+  border: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+}
+
+.note-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+}
+
+.note-card-header {
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.note-title {
+  margin: 0;
+  font-weight: 500;
+  color: var(--text-light);
+}
+
+.btn-icon {
+  padding: 0.25rem;
+  color: var(--text-muted-light);
+  border: none;
+  background: transparent;
+}
+
+.note-content {
+  padding: 1rem;
+  flex: 1;
+  color: var(--text-muted-light);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.note-footer {
+  padding: 1rem;
+  border-top: 1px solid var(--border-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.note-date {
+  font-size: 0.8rem;
+  color: var(--text-muted-light);
+}
+
+.note-tag {
+  font-size: 0.75rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  background: rgba(104, 73, 147, 0.08);
+  color: var(--primary-color);
+  margin-right: 0.5rem;
+}
+
+/* Filters Panel */
+.filters-panel {
+  display: none;
+}
+
+.filters-panel.show {
+  display: block;
+}
+
+/* Dark Mode Adjustments */
+body.dark-mode .note-card {
+  background: var(--card-dark);
+  border-color: var(--border-dark);
+}
+
+body.dark-mode .note-card-header,
+body.dark-mode .note-footer {
+  border-color: var(--border-dark);
+}
+
+body.dark-mode .note-title {
+  color: var(--text-dark);
+}
+
+body.dark-mode .note-content {
+  color: var(--text-muted-dark);
+}
+
+body.dark-mode .note-tag {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .notes-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .notes-header .row {
+    gap: 1rem;
+  }
+
+  .notes-header .col-auto {
+    width: 100%;
+  }
+}

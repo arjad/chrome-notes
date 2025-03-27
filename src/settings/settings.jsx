@@ -12,6 +12,13 @@ function Settings() {
   const [sortOption, setSortOption] = useState("date-desc");
   const [activeTab, setActiveTab] = useState("settings");
   const [isPremium, setIsPremium] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const [dateRange, setDateRange] = useState({ from: "", to: "" });
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [statusFilter, setStatusFilter] = useState({
+    active: true,
+    archived: false,
+  });
 
   useEffect(() => {
     chrome.storage.local.get(["notes", "settings"], (result) => {
@@ -64,6 +71,38 @@ function Settings() {
   const formatDateForExport = (dateString) => {
     const options = { year: "numeric", month: "long", day: "numeric" };
     return new Date(dateString).toLocaleDateString("en-US", options);
+  };
+
+  const handleSearchChange = (value) => {
+    setSearchText(value);
+    // Implement search logic
+  };
+
+  const handleDateChange = (type, value) => {
+    setDateRange((prev) => ({ ...prev, [type]: value }));
+    // Implement date filter logic
+  };
+
+  const handleTagsChange = (e) => {
+    const selectedOptions = Array.from(
+      e.target.selectedOptions,
+      (option) => option.value
+    );
+    setSelectedTags(selectedOptions);
+    // Implement tags filter logic
+  };
+
+  const handleClearFilters = () => {
+    setSearchText("");
+    setDateRange({ from: "", to: "" });
+    setSelectedTags([]);
+    setStatusFilter({ active: true, archived: false });
+    // Reset all filters
+  };
+
+  const handleStatusChange = (status, value) => {
+    setStatusFilter((prev) => ({ ...prev, [status]: value }));
+    // Implement status filter logic
   };
 
   const renderTabContent = () => {
@@ -144,10 +183,196 @@ function Settings() {
         );
       case "notes-detail":
         return (
-          <div className="card">
-            <div className="card-body">
-              <h5>Notes Detail View</h5>
-              {/* Add notes detail view content */}
+          <div className="notes-view">
+            {/* Top Settings Bar */}
+            <div className="notes-header card mb-4">
+              <div className="card-body p-3">
+                <div className="row align-items-center">
+                  <div className="col-auto">
+                    <div className="input-group">
+                      <span className="input-group-text bg-transparent border-end-0">
+                        <i className="fas fa-search text-muted"></i>
+                      </span>
+                      <input
+                        type="text"
+                        className="form-control border-start-0 ps-0"
+                        placeholder="Search notes..."
+                        onChange={(e) => handleSearchChange(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-auto">
+                    <select
+                      className="form-select form-select-sm"
+                      style={{ width: "140px" }}
+                    >
+                      <option value="date-desc">Newest First</option>
+                      <option value="date-asc">Oldest First</option>
+                      <option value="alpha-asc">A-Z</option>
+                      <option value="alpha-desc">Z-A</option>
+                    </select>
+                  </div>
+                  <div className="col text-end">
+                    <button className="btn btn-outline-secondary btn-sm me-2">
+                      <i className="fas fa-filter me-2"></i>
+                      Filters
+                    </button>
+                    <button className="btn btn-primary btn-sm">
+                      <i className="fas fa-plus me-2"></i>
+                      New Note
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Main Content */}
+            <div className="row g-4">
+              {/* Filters Panel (Initially Hidden) */}
+              <div className="col-12 col-lg-3 filters-panel">
+                <div className="filters-section">
+                  <div className="d-flex justify-content-between align-items-center mb-3">
+                    <h6 className="mb-0">Filters</h6>
+                    <button
+                      className="btn btn-link btn-sm p-0 text-muted"
+                      onClick={() => handleClearFilters()}
+                    >
+                      Clear all
+                    </button>
+                  </div>
+
+                  {/* Date Range */}
+                  <div className="mb-4">
+                    <label className="form-label small">Date Range</label>
+                    <div className="d-flex gap-2">
+                      <input
+                        type="date"
+                        className="form-control form-control-sm"
+                        onChange={(e) =>
+                          handleDateChange("from", e.target.value)
+                        }
+                      />
+                      <input
+                        type="date"
+                        className="form-control form-control-sm"
+                        onChange={(e) => handleDateChange("to", e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Tags Filter */}
+                  <div className="mb-4">
+                    <label className="form-label small">Tags</label>
+                    <select
+                      className="form-select form-select-sm"
+                      multiple
+                      onChange={(e) => handleTagsChange(e)}
+                    >
+                      <option value="work">Work</option>
+                      <option value="personal">Personal</option>
+                      <option value="important">Important</option>
+                    </select>
+                  </div>
+
+                  {/* Status Filter */}
+                  <div className="mb-4">
+                    <label className="form-label small">Status</label>
+                    <div className="form-check">
+                      <input
+                        type="checkbox"
+                        className="form-check-input"
+                        id="active-notes"
+                        checked={statusFilter.active}
+                        onChange={(e) =>
+                          handleStatusChange("active", e.target.checked)
+                        }
+                      />
+                      <label
+                        className="form-check-label"
+                        htmlFor="active-notes"
+                      >
+                        Active Notes
+                      </label>
+                    </div>
+                    <div className="form-check">
+                      <input
+                        type="checkbox"
+                        className="form-check-input"
+                        id="archived-notes"
+                        checked={statusFilter.archived}
+                        onChange={(e) =>
+                          handleStatusChange("archived", e.target.checked)
+                        }
+                      />
+                      <label
+                        className="form-check-label"
+                        htmlFor="archived-notes"
+                      >
+                        Archived
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Notes Grid */}
+              <div className="col-12 col-lg-9">
+                <div className="notes-grid">
+                  {notes.map((note) => (
+                    <div key={note.id} className="note-card">
+                      <div className="note-card-header">
+                        <h6 className="note-title">
+                          {note.title || "Untitled Note"}
+                        </h6>
+                        <div className="dropdown">
+                          <button
+                            className="btn btn-icon"
+                            data-bs-toggle="dropdown"
+                          >
+                            <i className="fas fa-ellipsis-v"></i>
+                          </button>
+                          <ul className="dropdown-menu dropdown-menu-end">
+                            <li>
+                              <a className="dropdown-item" href="#">
+                                <i className="fas fa-edit me-2"></i>Edit
+                              </a>
+                            </li>
+                            <li>
+                              <a className="dropdown-item" href="#">
+                                <i className="fas fa-archive me-2"></i>Archive
+                              </a>
+                            </li>
+                            <li>
+                              <hr className="dropdown-divider" />
+                            </li>
+                            <li>
+                              <a className="dropdown-item text-danger" href="#">
+                                <i className="fas fa-trash-alt me-2"></i>Delete
+                              </a>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                      <div className="note-content">{note.content}</div>
+                      <div className="note-footer">
+                        <div className="note-date">
+                          <i className="far fa-clock me-1"></i>
+                          {new Date(note.date).toLocaleDateString()}
+                        </div>
+                        {note.tags && note.tags.length > 0 && (
+                          <div className="note-tags">
+                            {note.tags.map((tag) => (
+                              <span key={tag} className="note-tag">
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         );
