@@ -113,10 +113,6 @@ body[data-size="large"] {
   color: var(--primary) !important;
   border: 2px solid var(--primary);
 }
-.error-msg {
-  color: var(--danger);
-  font-size: 0.875rem;
-}
 .delete-modal {
   position: fixed;
   inset: 0;
