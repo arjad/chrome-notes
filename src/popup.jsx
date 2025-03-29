@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { createRoot } from "react-dom/client";
 import "./popup.css";
+import "./components/common_style.css"
 import sanitizeHtml from "sanitize-html";
 import RichTextEditor from "./components/RichText.jsx";
   
@@ -211,7 +212,7 @@ function Popup() {
             className="form-control form-control-sm input-tag"
             placeholder="Search notes..."
           />
-          <i className="fa-solid fa-gear" style={{ cursor: "pointer" }} onClick={openSettingsPage}></i>
+          <i className="fa-solid fa-bars" style={{ cursor: "pointer" }} onClick={openSettingsPage}></i>
         </div>
       </nav>
 
@@ -221,8 +222,8 @@ function Popup() {
 
       <div className="position-relative pb-4 mb-1 pt-2">
         {error && (
-          <div className="error-msg text-danger small">
-            <i className="fa-solid fa-circle-info me-1"></i>
+          <div className="text-danger small">
+            <i className="fa-solid fa-circle-info"></i>
             <span>{error}</span>
           </div>
         )}
