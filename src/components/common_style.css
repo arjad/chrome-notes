@@ -1,0 +1,139 @@
+/* Dark mode optimized CSS */
+:root {
+  --bg-dark: #1e242d;
+  --card-dark: #283142;
+  --text-dark: #ffffff;
+  --text-muted-dark: #a0a0a0;
+  --border-dark: rgba(255, 255, 255, 0.08);
+  --primary-color: #684993;
+  --primary-color-light: #9f74c7;
+  --primary: #684993;
+  --dark: #1e242d;
+  --danger: #dc3545;
+  --gray: #6c757d;
+  --border: #dee2e6;
+  --font-sm: 0.6rem;
+  --font-md: 0.9rem;
+  --space: 0.7rem;
+}
+
+.note-item {
+  border-bottom: 1px solid var(--border);
+  padding: 10px 0;
+}
+.note-text {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  font-size: 0.9rem;
+}
+.date {
+  font-size: 0.5rem;
+  color: var(--gray);
+  border: 1px solid var(--gray);
+  border-radius: 12px;
+  padding: 1px 8px;
+  display: inline-block;
+}
+.options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.options .icons i {
+  font-size: 0.6rem;
+  border-radius: 50%;
+  padding: 0.3rem;
+  margin-right: 0.3rem;
+  cursor: pointer;
+}
+.options .icons .fa-pen {
+  border: 1px solid darkgreen;
+  color: darkgreen;
+}
+.options .icons .fa-clock {
+  border: 1px solid purple;
+  color: purple;
+}
+.copy-icon {
+  border: 1px solid blue;
+  color: blue;
+}
+.copy-icon-green {
+  border: 1px solid darkgreen !important;
+  background-color: white !important;
+  color: darkgreen !important;
+}
+.delete-icon {
+  border: 1px solid var(--danger) !important;
+  color: var(--danger) !important;
+}
+.options .icons .fa-pen:hover,
+.copy-icon:hover,
+.delete-icon:hover {
+  color: white;
+}
+.copy-icon:hover {
+  background-color: blue;
+}
+.delete-icon:hover {
+  background-color: var(--danger);
+}
+.options .icons .fa-pen:hover {
+  background-color: darkgreen;
+}
+#save-btn {
+  background-color: var(--primary);
+  border: 2px solid var(--primary);
+}
+#save-btn:hover {
+  background-color: transparent;
+  color: var(--primary) !important;
+  border: 2px solid var(--primary);
+}
+.delete-modal {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.modal-content {
+  background-color: white;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+  width: 250px;
+}
+.modal-content h3 {
+  font-size: 10px;
+  color: #333;
+  margin-bottom: 10px;
+}
+.modal-buttons {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+}
+.btn-primary {
+  background-color: var(--primary);
+  border-color: var(--primary);
+}
+.btn-outline-primary {
+  color: var(--primary);
+  border-color: var(--primary);
+}
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--primary) !important;
+  border-color: var(--primary) !important;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus {
+  background-color: var(--primary) !important;
+  color: white !important; /* Change to white for contrast */
+  border-color: var(--primary) !important;
+}

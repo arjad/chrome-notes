@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { createRoot } from "react-dom/client";
 import "./popup.css";
+import "./components/common_style.css"
 import sanitizeHtml from "sanitize-html";
 import RichTextEditor from "./components/RichText.jsx";
   

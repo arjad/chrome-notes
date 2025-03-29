@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { createRoot } from "react-dom/client";
-
+import "../components/common_style.css";
 import "./settings.css";
 import ExportNotes from "../components/ExportNotes.jsx";
 import Profile from "./settings_components/profile.jsx";
