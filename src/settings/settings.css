@@ -19,6 +19,7 @@ body.dark-mode .form-check-label,
 body.dark-mode .form-label,
 body.dark-mode li,
 body.dark-mode p,
+body.dark-mode .note-text,
 body.dark-mode span,
 body.dark-mode .nav-link.active {
   color: var(--text-dark) !important;

@@ -3,15 +3,17 @@ import React, {useState, useEffect} from "react";
 const NotesList = () => {
   const [viewMode, setViewMode] = useState("list");
   const [notes, setNotes] = useState([]);
-  
+  const [sortOption, setSortOption] = useState("date-desc");
+  const [searchQuery, setSearchQuery] = useState("");
+
   useEffect(() => {
-    chrome.storage.local.get(["notes"], (result) => {
+    chrome.storage.local.get(["notes", "settings"], (result) => {
       if (result.notes) {
         setNotes(result.notes);
       }
+      if (result.settings?.sortOption) setSortOption(result.settings.sortOption);
     });
   }, []);
-
 
     const openAlarmModal = (id) => {
       console.log("Opening modal for note ID:", id);
@@ -19,6 +21,10 @@ const NotesList = () => {
       setIsAlarmModalOpen(true);
     };
     
+    function stripHtml(html) {
+      const doc = new DOMParser().parseFromString(html, "text/html");
+      return doc.body.textContent || "";
+    }
     const closeAlarmModal = () => {
       console.log("Closing modal");
       setAlarmNoteId(null);
@@ -114,7 +120,14 @@ const NotesList = () => {
       .catch(err => console.error("Error copying text: ", err));
     };
   
-  
+    const handleSortOptionChange = (e) => {
+      const value = e.target.value;
+      setSortOption(value);
+      chrome.storage.local.get(["settings"], (result) => {
+        const updatedSettings = { ...result.settings, sortOption: value };
+        chrome.storage.local.set({ settings: updatedSettings });
+      });
+    };
 
   const handleClearFilters = () => {
     setSearchText("");
@@ -136,7 +149,7 @@ const NotesList = () => {
                 type="text"
                 className="form-control border"
                 placeholder="Search notes..."
-                onChange={(e) => handleSearchChange(e.target.value)}
+                onChange={handleSearchChange}
               />
             </div>
           </div>
@@ -157,7 +170,10 @@ const NotesList = () => {
                 List
               </button>
             </div>
-            <select className="border" >
+            <select
+              value={sortOption}
+              onChange={handleSortOptionChange}
+            >
               <option value="date-desc">Latest first</option>
               <option value="date-asc">Oldest first</option>
               <option value="alpha-asc">A to Z</option>
@@ -174,7 +190,18 @@ const NotesList = () => {
       {/* Notes Grid/List View */}
       <div className={`notes-container p-3 ${viewMode}-view`}>
         {notes.length > 0 ? (
-          notes.map((note) => (
+          notes.filter((note) => {
+            const plainText = stripHtml(note.text).toLowerCase(); 
+            return plainText.includes(searchQuery.toLowerCase());
+          })
+          .sort((a, b) => {
+            if (sortOption === "date-desc") return new Date(b.date) - new Date(a.date);
+            else if (sortOption === "date-asc") return new Date(a.date) - new Date(b.date);
+            else if (sortOption === "alpha-asc") return stripHtml(a.text).localeCompare(stripHtml(b.text));
+            else if (sortOption === "alpha-desc") return stripHtml(b.text).localeCompare(stripHtml(a.text));
+            return 0;
+          })
+          .map((note) => (
             <div className="note-item border-bottom" key={note.id}>
               <div className="note-text" dangerouslySetInnerHTML={{ __html: note.text }}></div>
               <span className="options" data-id={note.id}>

@@ -103,7 +103,6 @@ function Settings() {
                 <div className="mb-3">
                   <label className="form-label">Sort Notes</label>
                   <select
-                    id="sort-options"
                     className="form-select"
                     value={sortOption}
                     onChange={handleSortOptionChange}

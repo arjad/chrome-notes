@@ -1,5 +1,5 @@
 {
-  "manifest_version": 3,
+  "manifest_version": 3.1,
   "name": "I Notes",
   "version": "1.1",
   "description": "i Notes is a lightweight, easy-to-use extension for taking quick notes, saving developer commands, and organizing ideas—all in one place",

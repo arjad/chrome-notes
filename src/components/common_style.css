@@ -16,7 +16,29 @@
   --font-md: 0.9rem;
   --space: 0.7rem;
 }
-
+.dark-mode {
+  background-color: var(--dark) !important;
+  color: white !important;
+}
+.dark-mode .input-tag {
+  background-color: transparent !important;
+  color: white !important;
+}
+.dark-mode .modal-content {
+  background-color: var(--dark);
+  color: white;
+}
+.dark-mode .date {
+  border-color: white;
+  color: white;
+}
+.dark-mode ::placeholder {
+  color: white;
+  opacity: 1; /* Firefox */
+}
+.dark-mode ::-ms-input-placeholder { /* Edge 12 -18 */
+  color: white;
+}
 .note-item {
   border-bottom: 1px solid var(--border);
   padding: 10px 0;
@@ -137,3 +159,4 @@
   color: white !important; /* Change to white for contrast */
   border-color: var(--primary) !important;
 }
+
