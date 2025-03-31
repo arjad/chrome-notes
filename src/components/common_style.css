@@ -1,31 +1,31 @@
 /* Dark mode optimized CSS */
 :root {
-  --bg-dark: #1e242d;
-  --card-dark: #283142;
-  --text-dark: #ffffff;
-  --text-muted-dark: #a0a0a0;
-  --border-dark: rgba(255, 255, 255, 0.08);
   --primary-color: #684993;
   --primary-color-light: #9f74c7;
-  --primary: #684993;
-  --dark: #1e242d;
+
+  /* dark mode */
+  --dark-mode-bg-color: #1e242d;
+  --dark-mode-text-color: #b8b8b8;
+  --text-muted-dark: #a0a0a0;
+  --border-dark: rgba(255, 255, 255, 0.08);
+
+  /* commonly used */
   --danger: #dc3545;
   --gray: #6c757d;
-  --border: #dee2e6;
-  --font-sm: 0.6rem;
-  --font-md: 0.9rem;
-  --space: 0.7rem;
 }
 .dark-mode {
-  background-color: var(--dark) !important;
+  background-color: var(--dark-mode-bg-color) !important;
   color: white !important;
+}
+.dark-mode .rich-text button {
+  color: var(--dark-mode-text-color) !important;
 }
 .dark-mode .input-tag {
   background-color: transparent !important;
   color: white !important;
 }
 .dark-mode .modal-content {
-  background-color: var(--dark);
+  background-color: var(--dark-mode-bg-color);
   color: white;
 }
 .dark-mode .date {
@@ -40,7 +40,7 @@
   color: white;
 }
 .note-item {
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--dark-mode-text-color);
   padding: 10px 0;
 }
 .note-text {
@@ -61,6 +61,8 @@
   justify-content: space-between;
   align-items: center;
 }
+
+/* icons */
 .options .icons i {
   font-size: 0.6rem;
   border-radius: 50%;
@@ -92,7 +94,7 @@
 .options .icons .fa-pen:hover,
 .copy-icon:hover,
 .delete-icon:hover {
-  color: white;
+  color: white !important;
 }
 .copy-icon:hover {
   background-color: blue;
@@ -103,14 +105,33 @@
 .options .icons .fa-pen:hover {
   background-color: darkgreen;
 }
+.fa-thumbtack {
+  background-color: transparent;
+  color: #ffd700;
+  border: 1px solid #ffd700 !important;
+}
+.dark-mode .pinned-note {
+  background-color: transparent;
+  border: 2px solid #ffd700 !important;
+}
+.pinned-icon {
+  color: #ffd700;
+  border: 1px solid #ffd700 !important;
+}
+i.fa-thumbtack.pinned {
+  color: white;
+  background: #ffd700;
+  border: 1px solid #ffd700 !important;
+
+}
 #save-btn {
-  background-color: var(--primary);
-  border: 2px solid var(--primary);
+  background-color: var(--primary-color);
+  border: 2px solid var(--primary-color);
 }
 #save-btn:hover {
   background-color: transparent;
-  color: var(--primary) !important;
-  border: 2px solid var(--primary);
+  color: var(--primary-color) !important;
+  border: 2px solid var(--primary-color);
 }
 .delete-modal {
   position: fixed;
@@ -140,23 +161,23 @@
   gap: 5px;
 }
 .btn-primary {
-  background-color: var(--primary);
-  border-color: var(--primary);
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
 }
 .btn-outline-primary {
-  color: var(--primary);
-  border-color: var(--primary);
+  color: var(--primary-color);
+  border-color: var(--primary-color);
 }
 .btn-primary:hover,
 .btn-primary:focus {
-  background-color: var(--primary) !important;
-  border-color: var(--primary) !important;
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
 }
 
 .btn-outline-primary:hover,
 .btn-outline-primary:focus {
-  background-color: var(--primary) !important;
-  color: white !important; /* Change to white for contrast */
-  border-color: var(--primary) !important;
+  background-color: var(--primary-color) !important;
+  color: white !important;
+  border-color: var(--primary-color) !important;
 }
 

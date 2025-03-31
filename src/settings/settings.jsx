@@ -10,7 +10,7 @@ import UserGuide from "./settings_components/user_guide.jsx";
 
 function Settings() {
   const [darkMode, setDarkMode] = useState(false);
-  const [popupSize, setPopupSize] = useState("medium");
+  const [popupSize, setPopupSize] = useState("small");
   const [sortOption, setSortOption] = useState("date-desc");
   const [activeTab, setActiveTab] = useState("settings");
 
@@ -21,9 +21,9 @@ function Settings() {
         if (result.settings.darkMode) {
           document.body.classList.add("dark-mode");
         }
+        if (result.settings.popupSize) setPopupSize(result.settings.popupSize);
+        if (result.settings.sortOption) setSortOption(result.settings.sortOption);
       }
-      if (result.settings.popupSize) setPopupSize(result.settings.popupSize);
-      if (result.settings.sortOption) setSortOption(result.settings.sortOption);
     });
   }, []);
   const handleDarkModeChange = (e) => {
