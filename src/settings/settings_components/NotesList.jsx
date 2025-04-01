@@ -1,10 +1,16 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useRef} from "react";
+import sanitizeHtml from "sanitize-html";
 
 const NotesList = () => {
   const [viewMode, setViewMode] = useState("list");
+  const [note, setNote] = useState({});
   const [notes, setNotes] = useState([]);
   const [sortOption, setSortOption] = useState("date-desc");
   const [searchQuery, setSearchQuery] = useState("");
+  const [isNewNoteModalOpen, setIsNewNoteModalOpen] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const editorRef = useRef(null);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     chrome.storage.local.get(["notes", "settings"], (result) => {
@@ -15,37 +21,10 @@ const NotesList = () => {
     });
   }, []);
 
-    const openAlarmModal = (id) => {
-      console.log("Opening modal for note ID:", id);
-      setAlarmNoteId(id);
-      setIsAlarmModalOpen(true);
-    };
-    
     function stripHtml(html) {
       const doc = new DOMParser().parseFromString(html, "text/html");
       return doc.body.textContent || "";
     }
-    const closeAlarmModal = () => {
-      console.log("Closing modal");
-      setAlarmNoteId(null);
-      setAlarmTime("");
-      setIsAlarmModalOpen(false);
-    };
-  
-    const setAlarm = () => {
-      if (!alarmTime) return;
-      const alarmName = `note-alarm-${alarmNoteId}`;
-      
-      chrome.alarms.create(alarmName, {
-        when: new Date(alarmTime).getTime(),
-      });
-      
-      closeAlarmModal();
-    };
-  
-    const openSettingsPage = () => {
-      chrome.tabs.create({ url: chrome.runtime.getURL("settings.html") });
-    };
     
     const handleSearchChange = (e) => {
       setSearchQuery(e.target.value.toLowerCase());
@@ -77,9 +56,17 @@ const NotesList = () => {
         allowedAttributes: {},
       });
     
+      // Get values from input fields
+      const alarmTime = document.getElementById("alarm-time").value;
+      const tag = document.getElementById("tag").value;
+      const url = document.getElementById("webpage").value;
+      const pinned = document.getElementById("flexCheckDefault").checked; // Checkbox for pinning
+    
       if (editingId) {
         const updatedNotes = notes.map((n) =>
-          n.id === editingId ? { ...n, text: sanitizedHtml, date: new Date().toISOString() } : n
+          n.id === editingId
+            ? { ...n, text: sanitizedHtml, date: new Date().toISOString(), alarmTime, tag, url, pinned }
+            : n
         );
         setNotes(updatedNotes);
         chrome.storage.local.set({ notes: updatedNotes });
@@ -89,15 +76,21 @@ const NotesList = () => {
           id: Date.now().toString(),
           text: sanitizedHtml,
           date: new Date().toISOString(),
-          pinned: false,
+          alarmTime,
+          tag,
+          url,
+          pinned,
         };
     
         const updatedNotes = [newNote, ...notes];
         setNotes(updatedNotes);
         chrome.storage.local.set({ notes: updatedNotes });
       }
+      
+      closeNewNoteModal();
       editorRef.current.innerHTML = "";
     };
+    
   
     const formatDate = (dateString) => {
       const options = { year: "numeric", month: "long", day: "numeric" };
@@ -129,11 +122,56 @@ const NotesList = () => {
       });
     };
 
-  const handleClearFilters = () => {
-    setSearchText("");
-    setDateRange({ from: "", to: "" });
-    setSelectedTags([]);
-    setStatusFilter({ active: true, archived: false });
+  const openNewNoteModal = () => {
+    setIsNewNoteModalOpen(true);
+    setEditingId(null);
+    // Clear the editor when opening for a new note
+    if (editorRef.current) {
+      editorRef.current.innerHTML = "";
+    }
+  };
+
+  const closeNewNoteModal = () => {
+    setIsNewNoteModalOpen(false);
+    setEditingId(null);
+    setError("");
+  };
+
+  const renderNotes = () => {
+    return notes
+      .filter((note) => {
+        const plainText = stripHtml(note.text).toLowerCase(); 
+        return plainText.includes(searchQuery.toLowerCase());
+      })
+      .sort((a, b) => {
+        if (sortOption === "date-desc") return new Date(b.date) - new Date(a.date);
+        else if (sortOption === "date-asc") return new Date(a.date) - new Date(b.date);
+        else if (sortOption === "alpha-asc") return stripHtml(a.text).localeCompare(stripHtml(b.text));
+        else if (sortOption === "alpha-desc") return stripHtml(b.text).localeCompare(stripHtml(a.text));
+        return 0;
+      })
+      .map((note) => (
+        <div className="note-item border-bottom" key={note.id}>
+          <div className="note-text" dangerouslySetInnerHTML={{ __html: note.text }}></div>
+          <span className="options" data-id={note.id}>
+            <small className="date">{formatDate(note.date)}</small>
+            {note.alarmTime},
+            {note.tag},
+            {note.url},
+            {note.pinned ? "true" : "false"}
+
+            <div className="icons">
+              <i className="fas fa-trash delete-icon" onClick={() => deleteNote(note.id)}></i>
+              <i className="fas fa-solid fa-pen" onClick={() => editNote(note.id, note.text)}></i>
+              <i
+                className="fa-solid fa-copy copy-icon"
+                data-id={note.id}
+                onClick={(e) => handleCopy(e, note.text)}
+              ></i>
+            </div>
+          </span>
+        </div>
+      ));
   };
 
   return (
@@ -179,7 +217,10 @@ const NotesList = () => {
               <option value="alpha-asc">A to Z</option>
               <option value="alpha-desc">Z to A</option>
             </select>
-            <button className="btn btn-primary btn-sm flex-sm-shrink-0">
+            <button 
+              className="btn btn-primary btn-sm flex-sm-shrink-0"
+              onClick={openNewNoteModal}
+            >
               <i className="fas fa-plus me-2"></i>
               New Note
             </button>
@@ -190,39 +231,7 @@ const NotesList = () => {
       {/* Notes Grid/List View */}
       <div className={`notes-container p-3 ${viewMode}-view`}>
         {notes.length > 0 ? (
-          notes.filter((note) => {
-            const plainText = stripHtml(note.text).toLowerCase(); 
-            return plainText.includes(searchQuery.toLowerCase());
-          })
-          .sort((a, b) => {
-            if (sortOption === "date-desc") return new Date(b.date) - new Date(a.date);
-            else if (sortOption === "date-asc") return new Date(a.date) - new Date(b.date);
-            else if (sortOption === "alpha-asc") return stripHtml(a.text).localeCompare(stripHtml(b.text));
-            else if (sortOption === "alpha-desc") return stripHtml(b.text).localeCompare(stripHtml(a.text));
-            return 0;
-          })
-          .map((note) => (
-            <div className="note-item border-bottom" key={note.id}>
-              <div className="note-text" dangerouslySetInnerHTML={{ __html: note.text }}></div>
-              <span className="options" data-id={note.id}>
-                <small className="date">{formatDate(note.date)}</small>
-                <div className="icons">
-                  <i
-                    className="fa-solid fa-clock"
-                    style={{ cursor: "pointer" }}
-                    onClick={() => openAlarmModal(note.id)}
-                  ></i>
-                  <i className="fas fa-trash delete-icon" onClick={() => deleteNote(note.id)}></i>
-                  <i className="fas fa-solid fa-pen" onClick={() => editNote(note.id, note.text)}></i>
-                  <i
-                    className="fa-solid fa-copy copy-icon"
-                    data-id={note.id}
-                    onClick={(e) => handleCopy(e, note.text)}
-                  ></i>
-                </div>
-              </span>
-          </div>
-          ))
+          renderNotes()
         ) : (
           <div className="notes-empty text-center p-4">
             <div className="empty-illustration">
@@ -232,13 +241,80 @@ const NotesList = () => {
             <p className="text-muted">
               Create your first note to get started!
             </p>
-            <button className="btn btn-primary btn-sm">
+            <button 
+              className="btn btn-primary btn-sm"
+              onClick={openNewNoteModal}
+            >
               <i className="fas fa-plus me-2"></i>
               Create Note
             </button>
           </div>
         )}
       </div>
+
+      {/* Bootstrap Modal */}
+      <div className={`modal fade ${isNewNoteModalOpen ? 'show d-block' : ''}`} 
+        id="noteModal" 
+        tabIndex="-1" 
+        role="dialog"
+        aria-labelledby="noteModalLabel"
+        aria-hidden={!isNewNoteModalOpen}
+      >
+        <div className="modal-dialog" role="document">
+          <div className="modal-content w-100">
+            <div className="modal-header">
+              <h5 className="modal-title" id="noteModalLabel">{editingId ? "Edit Note" : "New Note"}</h5>
+              <button type="button" className="btn-close" aria-label="Close" onClick={closeNewNoteModal}></button>
+            </div>
+            <div className="modal-body">
+              <div
+                ref={editorRef}
+                className="form-control"
+                contentEditable="true"
+                style={{ minHeight: "200px" }}
+                placeholder="Write your note here..."
+              ></div>
+              
+              <div className="row mt-3">
+                <div className="col-md-6">
+                  <label htmlFor="alarm-time" className="form-label">Alarm Time:</label>
+                  <input type="time" id="alarm-time" name="alarm-time" className="form-control"/>
+                </div>
+                <div className="col-md-6">
+                  <label htmlFor="tag" className="form-label">Tag:</label>
+                  <input 
+                    type="text" 
+                    id="tag"
+                    className="form-control" 
+                  />
+                </div>
+              </div>
+              
+              <div className="mt-3">
+                <label htmlFor="webpage" className="form-label">Show on which webpage (URL):</label>
+                <input type="url" id="webpage" name="webpage" className="form-control"/>
+              </div>
+              
+              <div class="mt-3">
+                <input class="form-check-input mr-2" type="checkbox" value="" id="flexCheckDefault"/>
+                <label class="form-check-label" for="flexCheckDefault">
+                  Pin Note
+                </label>
+              </div>
+            </div>
+            <div className="modal-footer">
+              {error && <div className="text-danger">{error}</div>}
+              <button type="button" className="btn btn-secondary" onClick={closeNewNoteModal}>
+                Cancel
+              </button>
+              <button type="button" className="btn btn-primary" onClick={saveNote}>
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 };
