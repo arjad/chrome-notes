@@ -36,9 +36,9 @@ const Profile = () => {
             ></i>
             <h5>Upgrade to Premium</h5>
             <p className="text-muted">
-              Get access to all premium features
+              Will be available soon
             </p>
-            <button className="btn btn-primary">
+            <button className="btn disabled">
               <i className="fas fa-arrow-up me-2"></i>
               Upgrade Now
             </button>

@@ -12,6 +12,10 @@ body[data-size="medium"] {
 body[data-size="large"] {
   width: 50rem;
 }
+.dark-mode {
+  background-color: var(--dark-mode-bg-color) !important;
+  color: white !important;
+}
 .i-notes {
   color: var(--primary-color);
 }
@@ -29,8 +33,4 @@ body[data-size="large"] {
 #notes-list::-webkit-scrollbar-thumb {
   background: var(--primary-color);
   border-radius: 4px;
-}
-
-#note-input{
-  min-height: 5rem;
 }

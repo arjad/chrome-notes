@@ -13,10 +13,6 @@
   --danger: #dc3545;
   --gray: #6c757d;
 }
-.dark-mode {
-  background-color: var(--dark-mode-bg-color) !important;
-  color: white !important;
-}
 .dark-mode .rich-text button {
   color: var(--dark-mode-text-color) !important;
 }
@@ -63,14 +59,17 @@
 }
 
 /* icons */
-.options .icons i {
+.options .icons i, 
+.list-view i,
+.grid-view i {
   font-size: 0.6rem;
   border-radius: 50%;
   padding: 0.3rem;
   margin-right: 0.3rem;
   cursor: pointer;
 }
-.options .icons .fa-pen {
+.options .icons .fa-pen,
+.list-view i.fa-pen {
   border: 1px solid darkgreen;
   color: darkgreen;
 }
@@ -119,10 +118,9 @@
   border: 1px solid #ffd700 !important;
 }
 i.fa-thumbtack.pinned {
-  color: white;
-  background: #ffd700;
-  border: 1px solid #ffd700 !important;
-
+  background-color: transparent;
+  border: 2px solid #ffd700 !important;
+  color: #ffd700;
 }
 #save-btn {
   background-color: var(--primary-color);
@@ -180,4 +178,6 @@ i.fa-thumbtack.pinned {
   color: white !important;
   border-color: var(--primary-color) !important;
 }
-
+#note-input{
+  min-height: 5rem;
+}

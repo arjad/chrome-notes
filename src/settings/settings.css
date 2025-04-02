@@ -8,6 +8,10 @@ body.dark-mode .card,
 body.dark-mode .settings-tabs {
   background: var(--dark-mode-bg-color);
 }
+.dark-mode {
+  background-color: rgb(22, 22, 27) !important;
+  color: white !important;
+}
 
 /* Text colors */
 body.dark-mode,
@@ -23,11 +27,14 @@ body.dark-mode .note-text,
 body.dark-mode span,
 body.dark-mode .form-control,
 body.dark-mode .form-select,
+body.dark-mode .settings-layout select,
 body.dark-mode .input-group
 body.dark-mode .input-group-text,
 body.dark-mode .btn-icon:hover,
 body.dark-mode .settings-tabs .nav-link.active,
 body.dark-mode .settings-tabs .nav-link:hover:not(.active),
+body.dark-mode table td,
+body.dark-mode table th,
 body.dark-mode .nav-link.active {
   color: var(--dark-mode-text-color) !important;
 }
@@ -46,6 +53,7 @@ body.dark-mode .settings-tabs .nav-link {
 /* Form elements */
 body.dark-mode .form-control,
 body.dark-mode .form-select,
+body.dark-mode .notes-header select,
 body.dark-mode .input-group
 body.dark-mode .input-group-text {
   background-color: var(--dark-mode-bg-color);
@@ -96,6 +104,9 @@ body.dark-mode .note-item:hover {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 /* settings tab */
+.modal-content {
+  text-align: left !important;
+}
 .settings-tabs {
   position: fixed;
   left: 0;
@@ -185,4 +196,9 @@ body.dark-mode .note-item:hover {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+}
+
+.list-view td{
+  max-width: 17rem;
+  padding: 0.7rem;
 }
