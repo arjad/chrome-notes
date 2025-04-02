@@ -34,30 +34,6 @@ function Popup() {
     });
   }, []);
 
-  const openAlarmModal = (id) => {
-    console.log("Opening modal for note ID:", id);
-    setAlarmNoteId(id);
-    setIsAlarmModalOpen(true);
-  };
-  
-  const closeAlarmModal = () => {
-    console.log("Closing modal");
-    setAlarmNoteId(null);
-    setAlarmTime("");
-    setIsAlarmModalOpen(false);
-  };
-
-  const setAlarm = () => {
-    if (!alarmTime) return;
-    const alarmName = `note-alarm-${alarmNoteId}`;
-    
-    chrome.alarms.create(alarmName, {
-      when: new Date(alarmTime).getTime(),
-    });
-    
-    closeAlarmModal();
-  };
-
   const openSettingsPage = () => {
     chrome.tabs.create({ url: chrome.runtime.getURL("settings.html") });
   };
@@ -159,6 +135,9 @@ function Popup() {
   
     return filteredNotes
       .sort((a, b) => {
+        if (a.pinned && !b.pinned) return -1;
+        if (!a.pinned && b.pinned) return 1;
+        
         if (sortOption === "date-desc") return new Date(b.date) - new Date(a.date);
         else if (sortOption === "date-asc") return new Date(a.date) - new Date(b.date);
         else if (sortOption === "alpha-asc") return stripHtml(a.text).localeCompare(stripHtml(b.text));
@@ -173,9 +152,10 @@ function Popup() {
               <small className="date">{formatDate(note.date)}</small>
               <div className="icons">
                 <i
-                  className="fa-solid fa-clock"
+                  className={`fa-solid ${note.pinned ? 'fa-thumbtack pinned' : 'fa-thumbtack'}`}
                   style={{ cursor: "pointer" }}
-                  onClick={() => openAlarmModal(note.id)}
+                  onClick={() => togglePinNote(note.id)}
+                  title={note.pinned ? "Unpin note" : "Pin note"}
                 ></i>
                 <i className="fas fa-trash delete-icon" onClick={() => deleteNote(note.id)}></i>
                 <i className="fas fa-solid fa-pen" onClick={() => editNote(note.id, note.text)}></i>
@@ -191,6 +171,13 @@ function Popup() {
       ));
   }
 
+  const togglePinNote = (id) => {
+    const updatedNotes = notes.map((note) => 
+      note.id === id ? { ...note, pinned: !note.pinned } : note
+    );
+    setNotes(updatedNotes);
+    chrome.storage.local.set({ notes: updatedNotes });
+  };
   
   return (
     <div className="container-fluid p-0">
@@ -235,47 +222,6 @@ function Popup() {
           Save Note
         </button>
       </div>
-
-      {/* Modal displayed using absolute positioning for Chrome extension */}
-      {isAlarmModalOpen && (
-        <div 
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 1000
-          }}
-        >
-          <div 
-            style={{
-              backgroundColor: "#fff",
-              padding: "15px",
-              borderRadius: "8px",
-              width: "90%",
-              maxWidth: "280px"
-            }}
-          >
-            <h3 className="fs-6 mb-3">Set Alarm</h3>
-            <p>This feature will be added by the end of may</p>
-            <input 
-              type="datetime-local" 
-              className="form-control"
-              value={alarmTime}
-              onChange={(e) => setAlarmTime(e.target.value)}
-            />
-            <div className="d-flex justify-content-center gap-2 mt-3">
-              <button className="btn btn-sm btn-success" onClick={setAlarm}>Set</button>
-              <button className="btn btn-sm btn-secondary" onClick={closeAlarmModal}>Cancel</button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

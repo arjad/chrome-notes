@@ -1,16 +1,16 @@
 /* Base dark mode styles */
 body.dark-mode {
-  background-color: var(--bg-dark);
-  color: var(--text-dark);
+  background-color: var(--dark-mode-bg-color);
 }
 
 /* Card elements */
 body.dark-mode .card,
 body.dark-mode .settings-tabs {
-  background: var(--card-dark);
+  background: var(--dark-mode-bg-color);
 }
 
 /* Text colors */
+body.dark-mode,
 body.dark-mode .note-title,
 body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, 
 body.dark-mode h4, body.dark-mode h5, body.dark-mode h6,
@@ -21,8 +21,15 @@ body.dark-mode li,
 body.dark-mode p,
 body.dark-mode .note-text,
 body.dark-mode span,
+body.dark-mode .form-control,
+body.dark-mode .form-select,
+body.dark-mode .input-group
+body.dark-mode .input-group-text,
+body.dark-mode .btn-icon:hover,
+body.dark-mode .settings-tabs .nav-link.active,
+body.dark-mode .settings-tabs .nav-link:hover:not(.active),
 body.dark-mode .nav-link.active {
-  color: var(--text-dark) !important;
+  color: var(--dark-mode-text-color) !important;
 }
 
 /* Muted text colors */
@@ -42,9 +49,7 @@ body.dark-mode .form-select,
 body.dark-mode .notes-header select,
 body.dark-mode .input-group
 body.dark-mode .input-group-text {
-  background-color: var(--card-dark);
-  border-color: var(--border-dark);
-  color: var(--text-dark);
+  background-color: var(--dark-mode-bg-color);
 }
 
 body.dark-mode .form-control::placeholder {
@@ -54,12 +59,10 @@ body.dark-mode .form-control::placeholder {
 /* Settings tabs */
 body.dark-mode .settings-tabs .nav-link.active {
   background-color: rgba(255, 255, 255, 0.06);
-  color: var(--text-dark) !important;
 }
 
 body.dark-mode .settings-tabs .nav-link:hover:not(.active) {
   background-color: rgba(255, 255, 255, 0.03);
-  color: var(--text-dark);
 }
 
 body.dark-mode .settings-tabs .profile-section {
@@ -81,12 +84,8 @@ body.dark-mode .form-check-input:checked {
 }
 
 body.dark-mode .search-bar .input-group {
-  background-color: var(--bg-dark);
+  background-color: var(--dark-mode-bg-color);
   border-color: var(--border-dark);
-}
-
-body.dark-mode .btn-icon:hover {
-  color: var(--text-dark) !important;
 }
 
 /* Note items */

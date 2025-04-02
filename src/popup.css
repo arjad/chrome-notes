@@ -13,7 +13,7 @@ body[data-size="large"] {
   width: 50rem;
 }
 .i-notes {
-  color: var(--primary);
+  color: var(--primary-color);
 }
 #notes-list {
   max-height: 60vh;
@@ -27,6 +27,6 @@ body[data-size="large"] {
   border-radius: 4px;
 }
 #notes-list::-webkit-scrollbar-thumb {
-  background: var(--primary);
+  background: var(--primary-color);
   border-radius: 4px;
 }
