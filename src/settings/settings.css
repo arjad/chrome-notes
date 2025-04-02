@@ -97,6 +97,9 @@ body.dark-mode .note-item:hover {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 /* settings tab */
+.modal-content {
+  text-align: left !important;
+}
 .settings-tabs {
   position: fixed;
   left: 0;
