@@ -30,7 +30,3 @@ body[data-size="large"] {
   background: var(--primary);
   border-radius: 4px;
 }
-
-#note-input{
-  min-height: 5rem;
-}

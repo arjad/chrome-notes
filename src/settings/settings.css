@@ -39,6 +39,7 @@ body.dark-mode .settings-tabs .nav-link {
 /* Form elements */
 body.dark-mode .form-control,
 body.dark-mode .form-select,
+body.dark-mode .notes-header select,
 body.dark-mode .input-group
 body.dark-mode .input-group-text {
   background-color: var(--card-dark);

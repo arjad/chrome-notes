@@ -159,4 +159,6 @@
   color: white !important; /* Change to white for contrast */
   border-color: var(--primary) !important;
 }
-
+#note-input{
+  min-height: 5rem;
+}
