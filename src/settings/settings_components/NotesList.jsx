@@ -183,7 +183,7 @@ const NotesList = () => {
   };
 
   const renderNotes = () => {
-    return notes
+    let note_array = notes
       .filter((note) => {
         const plainText = stripHtml(note.text).toLowerCase(); 
         return plainText.includes(searchQuery.toLowerCase());
@@ -194,18 +194,20 @@ const NotesList = () => {
         else if (sortOption === "alpha-asc") return stripHtml(a.text).localeCompare(stripHtml(b.text));
         else if (sortOption === "alpha-desc") return stripHtml(b.text).localeCompare(stripHtml(a.text));
         return 0;
-      })
-      .map((note) => (
-        <div className="note-item border-bottom" key={note.id}>
-          <div className="note-text" dangerouslySetInnerHTML={{ __html: note.text }}></div>
+      });
+      
+    if (viewMode === 'grid') {
+      return note_array.map((note) => (
+        <div className="note-item border-bottom position-relative" key={note.id}>
+          { note.pinned ? <i
+                className={`fa-solid fa-thumbtack pinned`}
+                onClick={() => togglePinNote(note.id)}
+                title={note.pinned ? "Unpin note" : "Pin note"}
+              ></i> 
+            : <span></span>}
+          <div className="note-text d-inline" dangerouslySetInnerHTML={{ __html: note.text }}></div>
           <span className="options" data-id={note.id}>
             <small className="date">{formatDate(note.date)}</small>
-            {note.alarmTime && <span>{note.alarmTime}</span>}
-            {note.tag && <span>{note.tag}</span>}
-            {note.url && typeof note.url === 'string' && <span>{note.url}</span>}
-            {<span>{note.pinned ? "true" : "false"}</span>}
-            {note.alarmDays && Array.isArray(note.alarmDays) && <span>{note.alarmDays.join(", ")}</span>}
-
             <div className="icons">
               <i className="fas fa-trash delete-icon" onClick={() => deleteNote(note.id)}></i>
               <i className="fas fa-solid fa-pen" onClick={() => editNote(note.id)}></i>
@@ -218,6 +220,70 @@ const NotesList = () => {
           </span>
         </div>
       ));
+    } else {
+      return (
+          <table className="w-100">
+            <thead>
+              <tr className="border-bottom">
+                <th></th>
+                <th>Note</th>
+                <th>URL</th>
+                <th>Tag</th>
+                <th>Date</th>
+                <th>Alarm Time</th>
+                <th>Alarm Days</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {note_array.map((note) => (
+                <tr key={note.id} className="position-relative py-2">
+                  <td>
+                    {note.pinned ? (
+                      <i
+                        className="fa-solid fa-thumbtack pinned"
+                        onClick={() => togglePinNote(note.id)}
+                        title={note.pinned ? "Unpin note" : "Pin note"}
+                      ></i>
+                    ) : (
+                      <span></span>
+                    )}
+                  </td>
+                  <td>
+                    <div className="note-text" dangerouslySetInnerHTML={{ __html: note.text }}></div>
+                  </td>
+                  <td>{note.url && typeof note.url === 'string' && <span>{note.url}</span>}</td>
+                  <td>{note.tag && <span>{note.tag}</span>}</td>
+                  <td> {formatDate(note.date)} </td>
+                  <td>{note.alarmTime && <span>{note.alarmTime}</span>}</td>
+                  <td>
+                    {note.alarmDays && Array.isArray(note.alarmDays) && (
+                      <span>{note.alarmDays.join(", ")}</span>
+                    )}
+                  </td>
+                  <td>
+                    <div className="icons">
+                      <i 
+                        className="fas fa-trash delete-icon" 
+                        onClick={() => deleteNote(note.id)}
+                      ></i>
+                      <i 
+                        className="fas fa-solid fa-pen" 
+                        onClick={() => editNote(note.id)}
+                      ></i>
+                      <i
+                        className="fa-solid fa-copy copy-icon"
+                        data-id={note.id}
+                        onClick={(e) => handleCopy(e, note.text)}
+                      ></i>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+      );
+    }
   };
 
   const toggleDay = (day) => {
