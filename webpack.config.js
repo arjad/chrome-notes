@@ -41,6 +41,11 @@ module.exports = {
           filename: 'settings.html',
           chunks: ['settings']
         }),
+        new HtmlWebpackPlugin({
+          template: './src/settings/settings.html',
+          filename: 'settings.html',
+          chunks: ['settings']
+        }),
         new CopyPlugin({
             patterns: [
               { from: "public" },

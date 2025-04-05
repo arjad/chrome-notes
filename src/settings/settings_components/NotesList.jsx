@@ -63,6 +63,33 @@ const NotesList = () => {
     }
   };
   
+  const daysArray = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const createWeeklyAlarm = (name, daysOfWeek, timeStr) => {
+    if (!timeStr || timeStr === "") return;
+    const now = new Date();
+    const [hours, minutes] = timeStr.split(':').map(num => parseInt(num, 10));
+    
+    daysOfWeek.forEach(day => {
+      const dayIndex = daysArray.indexOf(day);
+      if (dayIndex === -1) return;
+      const targetTime = new Date(now);
+      const daysUntilTargetDay = (dayIndex - now.getDay() + 7) % 7;
+      
+      targetTime.setDate(now.getDate() + daysUntilTargetDay);
+      targetTime.setHours(hours, minutes, 0, 0);
+      
+      if (targetTime < now) {
+        targetTime.setDate(targetTime.getDate() + 7);
+      }
+  
+      console.log(`Creating alarm for ${day} at ${timeStr}, timestamp: ${targetTime.getTime()}`);
+      chrome.alarms.create(`alarm_for${name}_${timeStr}_${day}`, {
+        when: targetTime.getTime(),
+        periodInMinutes: 10080 // 1 week
+      });
+    });
+  }
+  
   const saveNote = () => {
     if (editorRef.current.innerHTML.trim() === "") {
       setError("Please enter a note.");
@@ -109,7 +136,7 @@ const NotesList = () => {
       setNotes(updatedNotes);
       chrome.storage.local.set({ notes: updatedNotes });
     }
-    
+    createWeeklyAlarm(Date.now().toString(), selectedDays, note.alarmTime); 
     closeNewNoteModal();
   };
   
@@ -413,7 +440,7 @@ const NotesList = () => {
                 <div className="col-7">
                   <label className="form-label">Days of the Week:</label>
                   <div className="d-flex justify-content-between alarm-days">
-                    {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day, index) => (
+                    {daysArray.map((day, index) => (
                       <div 
                         key={day} 
                         className="border py-1 px-2 cursor-pointer"
