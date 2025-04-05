@@ -10,6 +10,6 @@ chrome.alarms.onAlarm.addListener((alarm) => {
   });
 
   chrome.tabs.create({
-    url: 'https://www.google.com',
+    url: 'https://c4.wallpaperflare.com/wallpaper/853/914/400/clocks-suits-men-time-wallpaper-preview.jpg?alarmName=${encodeURIComponent(alarm.name)',
   });
 });
