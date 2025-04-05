@@ -1,0 +1,1 @@
+chrome.alarms.onAlarm.addListener((e=>{console.log("Alarm triggered:",e.name),chrome.notifications.create({type:"basic",iconUrl:"/assets/note.png",title:"Alarm Triggered!",message:`Alarm "${e.name}" fired at ${(new Date).toLocaleTimeString()}`,silent:!1}),chrome.tabs.create({url:"https://www.google.com"})}));

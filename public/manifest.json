@@ -3,7 +3,12 @@
   "name": "I Notes",
   "version": "1.4",
   "description": "i Notes is a lightweight, easy-to-use extension for taking quick notes, saving developer commands",
-  "permissions": ["storage"],
+  "permissions": [
+    "storage", 
+    "notifications",
+    "tabs",
+    "alarms"
+  ],
   "action": {
     "default_popup": "popup.html"
   },
@@ -16,6 +21,9 @@
       "resources": ["assets/*"],
       "matches": ["<all_urls>"]
     }
-  ]
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
 
 }
