@@ -209,6 +209,14 @@ const NotesList = () => {
     });
   };
 
+  const togglePinNote = (id) => {
+    const updatedNotes = notes.map((note) => 
+      note.id === id ? { ...note, pinned: !note.pinned } : note
+    );
+    setNotes(updatedNotes);
+    chrome.storage.local.set({ notes: updatedNotes });
+  };
+  
   const renderNotes = () => {
     let note_array = notes
       .filter((note) => {
@@ -216,6 +224,9 @@ const NotesList = () => {
         return plainText.includes(searchQuery.toLowerCase());
       })
       .sort((a, b) => {
+        if (a.pinned && !b.pinned) return -1;
+        if (!a.pinned && b.pinned) return 1;
+        
         if (sortOption === "date-desc") return new Date(b.date) - new Date(a.date);
         else if (sortOption === "date-asc") return new Date(a.date) - new Date(b.date);
         else if (sortOption === "alpha-asc") return stripHtml(a.text).localeCompare(stripHtml(b.text));
