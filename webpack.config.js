@@ -4,6 +4,7 @@ const CopyPlugin = require("copy-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = {
+    mode: 'production', // or 'development'
     entry: {
         popup: './src/popup.jsx',
         settings: "./src/settings/settings.jsx",

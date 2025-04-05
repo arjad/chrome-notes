@@ -1,7 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { createRoot } from "react-dom/client";
 import "./popup.css";
-
+import "./components/common_style.css"
+import sanitizeHtml from "sanitize-html";
+import RichTextEditor from "./components/RichText.jsx";
+  
 function Popup() {
   const [note, setNote] = useState("");
   const [notes, setNotes] = useState([]);
@@ -11,25 +14,18 @@ function Popup() {
   const [alarmNoteId, setAlarmNoteId] = useState(null);
   const [alarmTime, setAlarmTime] = useState("");
   const [isAlarmModalOpen, setIsAlarmModalOpen] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
-  const [popupSize, setpopupSize] = useState(false);
   const [sortOption, setsortOption] = useState('date-desc');
+  const editorRef = useRef(null);
 
   useEffect(() => {
-    chrome.storage.local.get(["notes", "settings", "popupSize", "sortOption"], (result) => {
+    chrome.storage.local.get(["notes", "settings"], (result) => {
       if (result.settings !== undefined) {
-        setDarkMode(result.settings.darkMode);
         if (result.settings.darkMode) {
           document.body.classList.add("dark-mode");
         }
-      }
-      if (result.settings.popupSize !== undefined) {
-        setpopupSize(result.settings.popupSize);
         if (result.settings.popupSize) {
           document.body.setAttribute("data-size", result.settings.popupSize);
         }
-      }
-      if (result.settings.sortOption !== undefined) {
         setsortOption(result.settings.sortOption);
       }
       if (result.notes) {
@@ -38,39 +34,10 @@ function Popup() {
     });
   }, []);
 
-  const openAlarmModal = (id) => {
-    console.log("Opening modal for note ID:", id);
-    setAlarmNoteId(id);
-    setIsAlarmModalOpen(true);
-  };
-  
-  const closeAlarmModal = () => {
-    console.log("Closing modal");
-    setAlarmNoteId(null);
-    setAlarmTime("");
-    setIsAlarmModalOpen(false);
-  };
-
-  const setAlarm = () => {
-    if (!alarmTime) return;
-    const alarmName = `note-alarm-${alarmNoteId}`;
-    
-    chrome.alarms.create(alarmName, {
-      when: new Date(alarmTime).getTime(),
-    });
-    
-    closeAlarmModal();
-  };
-
   const openSettingsPage = () => {
     chrome.tabs.create({ url: chrome.runtime.getURL("settings.html") });
   };
   
-  const handleInputChange = (e) => {
-    setNote(e.target.value);
-    setError("");
-  };
-
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value.toLowerCase());
   };
@@ -84,17 +51,26 @@ function Popup() {
   const editNote = (id, text) => {
     setEditingId(id);
     setNote(text);
+    if (editorRef.current) {
+      editorRef.current.innerHTML = text;
+    }
   };
-  
+
   const saveNote = () => {
-    if (note.trim() === "") {
+    if (editorRef.current.innerHTML.trim() === "") {
       setError("Please enter a note.");
       return;
     }
+    setError("");
+  
+    const sanitizedHtml = sanitizeHtml(editorRef.current.innerHTML, {
+      allowedTags: ["b", "i", "u", "p", "br", "strong", "em", "ul", "ol", "li"],
+      allowedAttributes: {},
+    });
   
     if (editingId) {
       const updatedNotes = notes.map((n) =>
-        n.id === editingId ? { ...n, text: note, date: new Date().toISOString() } : n
+        n.id === editingId ? { ...n, text: sanitizedHtml, date: new Date().toISOString() } : n
       );
       setNotes(updatedNotes);
       chrome.storage.local.set({ notes: updatedNotes });
@@ -102,7 +78,7 @@ function Popup() {
     } else {
       const newNote = {
         id: Date.now().toString(),
-        text: note,
+        text: sanitizedHtml,
         date: new Date().toISOString(),
         pinned: false,
       };
@@ -111,7 +87,7 @@ function Popup() {
       setNotes(updatedNotes);
       chrome.storage.local.set({ notes: updatedNotes });
     }
-    setNote("");
+    editorRef.current.innerHTML = "";
   };
   const [isPinned, setIsPinned] = useState(false);
 
@@ -137,7 +113,11 @@ const togglePin = () => {
   };
   
   const handleCopy = (event, text) => {
-    navigator.clipboard.writeText(text)
+    const tempElement = document.createElement("div");
+    tempElement.innerHTML = text;
+    const plainText = tempElement.textContent || tempElement.innerText;
+
+    navigator.clipboard.writeText(plainText)
     .then(() => {
         const icon = event.target;
         icon.classList.add("copy-icon-green");
@@ -148,44 +128,73 @@ const togglePin = () => {
     .catch(err => console.error("Error copying text: ", err));
   };
 
-  // Add this logging to check state changes
   useEffect(() => {
     console.log("Modal open state changed:", isAlarmModalOpen);
   }, [isAlarmModalOpen]);
 
+  const handleFormat = (command) => {
+    document.execCommand(command, false, null);
+  };
+
+  function stripHtml(html) {
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    return doc.body.textContent || "";
+  }
+  
   function renderNotes() {
-    console.log(notes)
-    return notes
-      .filter((note) => note.text.toLowerCase().includes(searchQuery))
+    const filteredNotes = notes.filter((note) => {
+      const plainText = stripHtml(note.text).toLowerCase(); 
+      return plainText.includes(searchQuery.toLowerCase());
+    });
+    if (filteredNotes.length === 0) {
+      return <div className="text-center my-2"> No notes found. </div>;
+    }
+  
+    return filteredNotes
       .sort((a, b) => {
-        if (sortOption === 'date-desc') return new Date(b.date) - new Date(a.date);
-        if (sortOption === 'date-asc') return new Date(a.date) - new Date(b.date);
-        if (sortOption === 'alpha-asc') return a.text.localeCompare(b.text);
-        if (sortOption === 'alpha-desc') return b.text.localeCompare(a.text);
+        if (a.pinned && !b.pinned) return -1;
+        if (!a.pinned && b.pinned) return 1;
+        
+        if (sortOption === "date-desc") return new Date(b.date) - new Date(a.date);
+        else if (sortOption === "date-asc") return new Date(a.date) - new Date(b.date);
+        else if (sortOption === "alpha-asc") return stripHtml(a.text).localeCompare(stripHtml(b.text));
+        else if (sortOption === "alpha-desc") return stripHtml(b.text).localeCompare(stripHtml(a.text));
         return 0;
       })
       .map((note) => (
         <div className="note-item" key={note.id}>
           <div>
-            <div className="note-text">{note.text}</div>
+            <div className="note-text" dangerouslySetInnerHTML={{ __html: note.text }}></div>
             <span className="options" data-id={note.id}>
               <small className="date">{formatDate(note.date)}</small>
               <div className="icons">
-                <i 
-                  className="fa-solid fa-clock" 
+                <i
+                  className={`fa-solid ${note.pinned ? 'fa-thumbtack pinned' : 'fa-thumbtack'}`}
                   style={{ cursor: "pointer" }}
-                  onClick={() => openAlarmModal(note.id)}
+                  onClick={() => togglePinNote(note.id)}
+                  title={note.pinned ? "Unpin note" : "Pin note"}
                 ></i>
                 <i className="fas fa-trash delete-icon" onClick={() => deleteNote(note.id)}></i>
                 <i className="fas fa-solid fa-pen" onClick={() => editNote(note.id, note.text)}></i>
-                <i className="fa-solid fa-copy copy-icon" data-id={note.id} onClick={(e) => handleCopy(e, note.text)}></i>
+                <i
+                  className="fa-solid fa-copy copy-icon"
+                  data-id={note.id}
+                  onClick={(e) => handleCopy(e, note.text)}
+                ></i>
               </div>
             </span>
           </div>
         </div>
       ));
-}
+  }
 
+  const togglePinNote = (id) => {
+    const updatedNotes = notes.map((note) => 
+      note.id === id ? { ...note, pinned: !note.pinned } : note
+    );
+    setNotes(updatedNotes);
+    chrome.storage.local.set({ notes: updatedNotes });
+  };
   
   return (
     <div className="container-fluid p-0">
@@ -207,26 +216,18 @@ const togglePin = () => {
             className="form-control form-control-sm input-tag"
             placeholder="Search notes..."
           />
-          <i className="fa-solid fa-gear" style={{ cursor: "pointer" }} onClick={openSettingsPage}></i>
+          <i className="fa-solid fa-bars" style={{ cursor: "pointer" }} onClick={openSettingsPage}></i>
         </div>
       </nav>
 
       <div id="notes-list">{renderNotes()}</div>
 
-
-      <textarea
-        id="note-input"
-        className="form-control bg-transparent input-tag my-2"
-        rows="4"
-        placeholder="Enter your note here..."
-        value={note}
-        onChange={handleInputChange}
-      />
+      <RichTextEditor editorRef={editorRef} handleFormat={handleFormat} />
 
       <div className="position-relative pb-4 mb-1 pt-2">
         {error && (
-          <div className="error-msg text-danger small">
-            <i className="fa-solid fa-circle-info me-1"></i>
+          <div className="text-danger small">
+            <i className="fa-solid fa-circle-info"></i>
             <span>{error}</span>
           </div>
         )}
@@ -238,47 +239,6 @@ const togglePin = () => {
           Save Note
         </button>
       </div>
-
-      {/* Modal displayed using absolute positioning for Chrome extension */}
-      {isAlarmModalOpen && (
-        <div 
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 1000
-          }}
-        >
-          <div 
-            style={{
-              backgroundColor: "#fff",
-              padding: "15px",
-              borderRadius: "8px",
-              width: "90%",
-              maxWidth: "280px"
-            }}
-          >
-            <h3 className="fs-6 mb-3">Set Alarm</h3>
-            <p>This feature will be added by the end of may</p>
-            <input 
-              type="datetime-local" 
-              className="form-control"
-              value={alarmTime}
-              onChange={(e) => setAlarmTime(e.target.value)}
-            />
-            <div className="d-flex justify-content-center gap-2 mt-3">
-              <button className="btn btn-sm btn-success" onClick={setAlarm}>Set</button>
-              <button className="btn btn-sm btn-secondary" onClick={closeAlarmModal}>Cancel</button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

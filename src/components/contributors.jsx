@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 
-const Contributrors = ({ notes, onDelete, onUpdate }) => {
+const Contributors = ({ notes, onDelete, onUpdate }) => {
   const [contributors, setContributors] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchContributors();
@@ -26,36 +27,46 @@ const Contributrors = ({ notes, onDelete, onUpdate }) => {
       setContributors(contributors);
     } catch (error) {
       console.error("Error fetching contributors:", error);
+    } finally {
+      setLoading(false);
     }
   };
+
   return (
-    <div className="card">
-        <div className="card-body">
-        <h6 className="mb-3">Contributors ( {contributors.length} )</h6>
-        <div id="contributors-list"></div>
-
-        <ul className="list-group">
-            {contributors.length > 0 ? (
-            contributors.map((contributor) => (
-                <li key={contributor.id} className="list-group-item">
-                <a href={contributor.html_url} target="_blank" rel="noopener noreferrer">
-                    <img src={contributor.avatar_url} alt={contributor.login} width="24" className="me-2 rounded-circle" />
-                    {contributor.login}
-                </a>
-                </li>
-            ))
-            ) : (
-            <li className="list-group-item">Loading contributors...</li>
-            )}
-        </ul>
-
-        <a href="https://github.com/arjad/chrome-notes" target="_blank" className="btn btn-outline-secondary btn-sm w-100">
-            <i className="fab fa-github me-2"></i>
-            View on GitHub
-        </a>
+    <div className="card-body">
+      <h6 className="mb-3">Contributors ( {contributors.length} )</h6>
+      {loading ? (
+        <div className="text-center py-4">
+          <img src="https://i.gifer.com/ZZ5H.gif" alt="Loading..." width="50" />
+          <p>Loading contributors...</p>
         </div>
+      ) : (
+        <ul className="list-unstyled">
+          {contributors.length > 0 ? (
+            contributors.map((contributor) => (
+              <li key={contributor.id} className="my-2">
+                <img src={contributor.avatar_url} width="24" className="rounded-circle m-2" alt={contributor.login} />
+                <a href={contributor.html_url} target="_blank" rel="noopener noreferrer">
+                  {contributor.login}
+                </a>
+              </li>
+            ))
+          ) : (
+            <div className="text-center py-4">
+              <i class="fa-solid fa-spinner"></i>
+              <h5>Contributors</h5>
+              <p className="text-muted">Loading contributors...</p>
+            </div>
+          )}
+        </ul>
+      )}
+
+      <a href="https://github.com/arjad/chrome-notes" target="_blank" className="btn btn-outline-secondary btn-sm w-100">
+        <i className="fab fa-github me-2"></i>
+        View on GitHub
+      </a>
     </div>
   );
 };
 
-export default Contributrors;
+export default Contributors;

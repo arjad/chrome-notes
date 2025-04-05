@@ -1,148 +1,204 @@
-:root {
-    --primary-color: #684993;
-    --bg-light: #f3f2ef;
-    --bg-dark: #1e242d;
-    --card-light: #ffffff;
-    --card-dark: #283142;
-    --text-light: #2d2d2d;
-    --text-muted-light: #666666;
-    --text-dark: #ffffff;
-    --text-muted-dark: #a0a0a0;
-    --border-light: rgba(0, 0, 0, 0.08);
-    --border-dark: rgba(255, 255, 255, 0.08);
-  }
-  .dark-mode {
-    background-color: var(--bg-dark) !important;
-    color: white !important;
-  }
+/* Base dark mode styles */
+body.dark-mode {
+  background-color: var(--dark-mode-bg-color);
+}
 
-  body {
-    background-color: var(--bg-light);
-    color: var(--text-light);
-  }
+/* Card elements */
+body.dark-mode .card,
+body.dark-mode .settings-tabs {
+  background: var(--dark-mode-bg-color);
+}
+.dark-mode {
+  background-color: rgb(22, 22, 27) !important;
+  color: white !important;
+}
 
-  .settings-layout {
-    max-width: 1000px;
-    margin: 24px auto;
-    padding: 0 16px;
-  }
+/* Text colors */
+body.dark-mode,
+body.dark-mode .note-title,
+body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, 
+body.dark-mode h4, body.dark-mode h5, body.dark-mode h6,
+body.dark-mode .contributor-name,
+body.dark-mode .form-check-label,
+body.dark-mode .form-label,
+body.dark-mode li,
+body.dark-mode p,
+body.dark-mode .note-text,
+body.dark-mode span,
+body.dark-mode .form-control,
+body.dark-mode .form-select,
+body.dark-mode .settings-layout select,
+body.dark-mode .input-group
+body.dark-mode .input-group-text,
+body.dark-mode .btn-icon:hover,
+body.dark-mode .settings-tabs .nav-link.active,
+body.dark-mode .settings-tabs .nav-link:hover:not(.active),
+body.dark-mode table td,
+body.dark-mode table th,
+body.dark-mode .nav-link.active {
+  color: var(--dark-mode-text-color) !important;
+}
 
-  .card {
-    background-color: var(--card-light);
-    border: none;
-    box-shadow: 0 0 0 1px var(--border-light);
-  }
+/* Muted text colors */
+body.dark-mode .note-content,
+body.dark-mode .note-date,
+body.dark-mode .text-muted,
+body.dark-mode .form-text,
+body.dark-mode .btn-icon,
+body.dark-mode .nav-link,
+body.dark-mode .settings-tabs .nav-link {
+  color: var(--text-muted-dark) !important;
+}
 
-  .text-muted {
-    color: var(--text-muted-light) !important;
-  }
+/* Form elements */
+body.dark-mode .form-control,
+body.dark-mode .form-select,
+body.dark-mode .notes-header select,
+body.dark-mode .input-group
+body.dark-mode .input-group-text {
+  background-color: var(--dark-mode-bg-color);
+}
 
-  .list-group-item {
-    background-color: transparent;
-    border-color: var(--border-light);
-  }
+body.dark-mode .form-control::placeholder {
+  color: var(--text-muted-dark);
+}
 
-  .border-top {
-    border-color: var(--border-light) !important;
-  }
+/* Settings tabs */
+body.dark-mode .settings-tabs .nav-link.active {
+  background-color: rgba(255, 255, 255, 0.06);
+}
 
-  /* Dark mode styles */
-  body.dark-mode {
-    background-color: var(--bg-dark);
-    color: var(--text-dark);
-  }
+body.dark-mode .settings-tabs .nav-link:hover:not(.active) {
+  background-color: rgba(255, 255, 255, 0.03);
+}
 
-  body.dark-mode .card {
-    background-color: var(--card-dark);
-    box-shadow: 0 0 0 1px var(--border-dark);
-  }
+body.dark-mode .settings-tabs .profile-section {
+  border-color: var(--border-dark);
+  background-color: rgba(255, 255, 255, 0.02);
+}
 
-  body.dark-mode .text-muted {
-    color: var(--text-muted-dark) !important;
-  }
+body.dark-mode hr {
+  border-color: var(--border-dark);
+}
 
-  body.dark-mode .list-group-item {
-    border-color: var(--border-dark);
-  }
+body.dark-mode .text-primary {
+  color: var(--primary-color-light) !important;
+}
 
-  body.dark-mode .border-top {
-    border-color: var(--border-dark) !important;
-  }
+body.dark-mode .form-check-input:checked {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
 
-  body.dark-mode .form-control,
-  body.dark-mode .form-select {
-    background-color: var(--card-dark);
-    border-color: var(--border-dark);
-    color: var(--text-dark);
-  }
+body.dark-mode .search-bar .input-group {
+  background-color: var(--dark-mode-bg-color);
+  border-color: var(--border-dark);
+}
 
-  body.dark-mode .form-control:focus,
-  body.dark-mode .form-select:focus {
-    background-color: var(--card-dark);
-    color: var(--text-dark);
-  }
+/* Note items */
+body.dark-mode .note-item {
+  border-color: var(--border-dark);
+}
 
-  body.dark-mode .btn-outline-secondary {
-    color: var(--text-dark);
-    border-color: var(--border-dark);
-  }
+body.dark-mode .note-item:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+/* settings tab */
+.modal-content {
+  text-align: left !important;
+}
+.settings-tabs {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background: var(--card-light);
+  padding: 1.5rem 0;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--border-light);
+}
 
-  body.dark-mode .btn-outline-secondary:hover {
-    background-color: var(--border-dark);
-    color: var(--text-dark);
-  }
+.settings-tabs .nav-pills {
+  flex: 1;
+  padding: 1rem 0;
+}
 
-  .contributor-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
-  }
+.settings-tabs .nav-link {
+  color: var(--text-muted-light);
+  padding: 0.875rem 2rem;
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
+  text-align: left;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0.25rem 0;
+}
 
-  @media (max-width: 768px) {
-    .settings-layout {
-      margin: 16px;
-      padding: 0;
-    }
-  }
+.settings-tabs .nav-link i {
+  font-size: 1.1rem;
+  width: 24px;
+  text-align: center;
+  opacity: 0.8;
+  transition: all 0.2s ease;
+}
 
-  /* Fix text colors in dark mode */
-  body.dark-mode .contributor-name,
-  body.dark-mode .form-check-label,
-  body.dark-mode .form-label,
-  body.dark-mode h4,
-  body.dark-mode h5,
-  body.dark-mode h6 {
-    color: var(--text-dark);
-  }
+.settings-tabs .nav-link.active {
+  color: var(--primary-color);
+  background-color: rgba(104, 73, 147, 0.08);
+  border-left: 8px solid var(--primary-color);
+  font-weight: 500;
+}
 
-  body.dark-mode .list-group-item {
-    color: var(--text-dark);
-  }
+.settings-tabs .nav-link:hover:not(.active) {
+  background-color: rgba(0, 0, 0, 0.03);
+  color: var(--text-light);
+}
 
-  body.dark-mode .form-check-input:checked {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
-  }
+.settings-layout {
+  margin-left: 20rem !important;
+}
 
-  body.dark-mode hr {
-    border-color: var(--border-dark);
-  }
+.filters-section {
+  background-color: var(--card-light);
+  border-radius: 8px;
+  padding: 1.5rem;
+  position: sticky;
+  top: 1rem;
+}
 
-  /* Improve contrast for icons in dark mode */
-  body.dark-mode .text-primary {
-    color: #9f74c7 !important;
-  }
+.note-item {
+  transition: all 0.2s ease;
+  border: 1px solid var(--border-light);
+}
 
-  /* Fix hover states in dark mode */
-  body.dark-mode .list-group-item:hover {
-    background-color: var(--border-dark);
-  }
+.note-item:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transform: translateY(-1px);
+}
 
-  /* Fix form switch in dark mode */
-  body.dark-mode .form-switch .form-check-input {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
-  }
+/* Notes Container Styles */
+.notes-container {
+  transition: all 0.3s ease;
+}
 
-  body.dark-mode .form-switch .form-check-input:focus {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
-  }
+.notes-container.grid-view {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(25rem, 1fr));
+  gap: 1.25rem;
+}
+
+.notes-container.list-view {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.list-view td{
+  max-width: 17rem;
+  padding: 0.7rem;
+}
