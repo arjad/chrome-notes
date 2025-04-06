@@ -2,7 +2,11 @@
 
 Boost your productivity with Quick Notes, a simple and efficient Chrome extension that lets you manage notes effortlessly.
 
-Load the Extension in Chrome
+Extension Link: 
+https://chromewebstore.google.com/detail/ifaljgdldeljhephnhgecbleejgffbap?utm_source=item-share-cb
+<br>
+
+Load the Extension in Chrome (for development)
 
     1. Open Chrome and go to:
     👉 chrome://extensions/
@@ -31,8 +35,13 @@ Best for researchers and information scrapers who collect information from diffe
 ## Video Guide:<br>
 https://www.loom.com/share/7d3a2d9d4be84c80ae62a9985b36fc4a
 
-Review us:
-arjadgohar14@gmail.com
+
+<br/><br/>
+
 Updated and contributed by
 1.    Haffi Irfan
 2.    [Mubashir Iqbal](https://github.com/Mubshr07/) 
+
+<br/><br/>
+Review us:
+arjadgohar14@gmail.com
