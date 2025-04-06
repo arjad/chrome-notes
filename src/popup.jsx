@@ -11,9 +11,6 @@ function Popup() {
   const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [editingId, setEditingId] = useState(null);
-  const [alarmNoteId, setAlarmNoteId] = useState(null);
-  const [alarmTime, setAlarmTime] = useState("");
-  const [isAlarmModalOpen, setIsAlarmModalOpen] = useState(false);
   const [sortOption, setsortOption] = useState('date-desc');
   const editorRef = useRef(null);
 
@@ -110,10 +107,6 @@ function Popup() {
     })
     .catch(err => console.error("Error copying text: ", err));
   };
-
-  useEffect(() => {
-    console.log("Modal open state changed:", isAlarmModalOpen);
-  }, [isAlarmModalOpen]);
 
   const handleFormat = (command) => {
     document.execCommand(command, false, null);

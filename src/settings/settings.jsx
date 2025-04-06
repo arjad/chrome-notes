@@ -7,6 +7,7 @@ import Profile from "./settings_components/profile.jsx";
 import About from "./settings_components/about.jsx";
 import NotesList from "./settings_components/NotesList.jsx";
 import UserGuide from "./settings_components/user_guide.jsx";
+import ChatBot from "../components/chatBot.jsx";
 
 function Settings() {
   const [darkMode, setDarkMode] = useState(false);
@@ -63,6 +64,8 @@ function Settings() {
       case "settings":
         return (
           <div className="card border-1">
+            <ChatBot/>
+
             <div className="card-body">
               <div className="mb-4">
                 <h6 className="mb-3">Display</h6>
