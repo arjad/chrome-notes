@@ -6,7 +6,6 @@
   "permissions": [
     "storage", 
     "notifications",
-    "tabs",
     "alarms"
   ],
   "action": {
