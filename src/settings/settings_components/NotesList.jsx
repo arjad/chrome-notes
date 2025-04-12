@@ -8,7 +8,7 @@ const NotesList = () => {
     alarmTime: "",
     tag: "",
     url: "",
-    pinned: false
+    pinned: false, //ok
   });
   const [notes, setNotes] = useState([]);
   const [sortOption, setSortOption] = useState("date-desc");
