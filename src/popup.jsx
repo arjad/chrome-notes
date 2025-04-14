@@ -89,6 +89,23 @@ function Popup() {
     }
     editorRef.current.innerHTML = "";
   };
+  const [isPinned, setIsPinned] = useState(false);
+
+// Toggle pin status
+const togglePin = () => {
+  setIsPinned(!isPinned);
+};
+
+// In your popup's draggable props, conditionally disable dragging
+<Draggable disabled={isPinned}>
+  <div className="notes-popup">
+    <button onClick={togglePin}>
+      {isPinned ? 'Unpin' : 'Pin'}
+    </button>
+    {/* Rest of the notes popup content */}
+  </div>
+</Draggable>
+
 
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "long", day: "numeric" };
