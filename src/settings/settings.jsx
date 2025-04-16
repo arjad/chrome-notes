@@ -122,7 +122,7 @@ function Settings() {
                   Help us improve! Your feedback matters.
                 </p>
                 <a
-                  href="https://docs.google.com/forms/d/e/1FAIpQLSf_257jhT9AKWnVRDjT9EUgUpqgF3Qr2o_V3YchvwshOfXhfA/viewform?usp=sharing"
+                  // href="https://docs.google.com/forms/d/e/1FAIpQLSf_257jhT9AKWnVRDjT9EUgUpqgF3Qr2o_V3YchvwshOfXhfA/viewform?usp=sharing"
                   target="_blank"
                   className="btn btn-primary"
                 >
