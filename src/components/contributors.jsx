@@ -4,40 +4,40 @@ const Contributors = ({ notes, onDelete, onUpdate }) => {
   const [contributors, setContributors] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchContributors();
-  }, []);
+  // useEffect(() => {
+  //   // fetchContributors();
+  // }, []);
 
-  const fetchContributors = async () => {
-    const repoOwner = "arjad";
-    const repoName = "chrome-notes";
-    const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contributors`;
+  // const fetchContributors = async () => {
+  //   const repoOwner = "arjad";
+  //   const repoName = "chrome-notes";
+  //   const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contributors`;
 
-    try {
-      const response = await fetch(apiUrl, {
-        headers: {
-          "Accept": "application/vnd.github.v3+json",
-          "User-Agent": "fetch-contributors-demo"
-        },
-      });
+  //   try {
+  //     const response = await fetch(apiUrl, {
+  //       headers: {
+  //         "Accept": "application/vnd.github.v3+json",
+  //         "User-Agent": "fetch-contributors-demo"
+  //       },
+  //     });
 
-      if (!response.ok) throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
+  //     if (!response.ok) throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
 
-      const contributors = await response.json();
-      setContributors(contributors);
-    } catch (error) {
-      console.error("Error fetching contributors:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  //     const contributors = await response.json();
+  //     setContributors(contributors);
+  //   } catch (error) {
+  //     console.error("Error fetching contributors:", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   return (
     <div className="card-body">
       <h6 className="mb-3">Contributors ( {contributors.length} )</h6>
       {loading ? (
         <div className="text-center py-4">
-          <img src="https://i.gifer.com/ZZ5H.gif" alt="Loading..." width="50" />
+          {/* <img src="https://i.gifer.com/ZZ5H.gif" alt="Loading..." width="50" /> */}
           <p>Loading contributors...</p>
         </div>
       ) : (
@@ -61,10 +61,10 @@ const Contributors = ({ notes, onDelete, onUpdate }) => {
         </ul>
       )}
 
-      <a href="https://github.com/arjad/chrome-notes" target="_blank" className="btn btn-outline-secondary btn-sm w-100">
+      {/* <a href="https://github.com/arjad/chrome-notes" target="_blank" className="btn btn-outline-secondary btn-sm w-100">
         <i className="fab fa-github me-2"></i>
         View on GitHub
-      </a>
+      </a> */}
     </div>
   );
 };
