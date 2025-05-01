@@ -8,7 +8,7 @@ const NotesList = () => {
     alarmTime: "",
     tag: "",
     url: "",
-    pinned: false, //ok
+    pinned: false,
   });
   const [notes, setNotes] = useState([]);
   const [sortOption, setSortOption] = useState("date-desc");
@@ -263,7 +263,6 @@ const NotesList = () => {
           <table className="w-100">
             <thead>
               <tr className="border-bottom">
-                <th></th>
                 <th>Note</th>
                 <th>URL</th>
                 <th>Tag</th>
@@ -286,9 +285,7 @@ const NotesList = () => {
                     ) : (
                       <span></span>
                     )}
-                  </td>
-                  <td>
-                    <div className="note-text" dangerouslySetInnerHTML={{ __html: note.text }}></div>
+                    <div className="note-text d-inline" dangerouslySetInnerHTML={{ __html: note.text }}></div>
                   </td>
                   <td>{note.url && typeof note.url === 'string' && <span>{note.url}</span>}</td>
                   <td>{note.tag && <span>{note.tag}</span>}</td>
