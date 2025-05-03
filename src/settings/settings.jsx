@@ -10,6 +10,7 @@ import UserGuide from "./settings_components/user_guide.jsx";
 
 function Settings() {
   const [darkMode, setDarkMode] = useState(false);
+  const [detailedView, setDetailedView] = useState(false);
   const [popupSize, setPopupSize] = useState("small");
   const [sortOption, setSortOption] = useState("date-desc");
   const [activeTab, setActiveTab] = useState("settings");
@@ -18,6 +19,7 @@ function Settings() {
     chrome.storage.local.get([ "settings"], (result) => {
       if (result.settings !== undefined) {
         setDarkMode(result.settings.darkMode);
+        setDetailedView(result.settings.detailedView);
         if (result.settings.darkMode) {
           document.body.classList.add("dark-mode");
         }
@@ -26,8 +28,7 @@ function Settings() {
       }
     });
   }, []);
-  const handleDarkModeChange = (e) => {
-    const value = e.target.checked;
+  const handleDarkModeChange = (value) => {
     setDarkMode(value);
     chrome.storage.local.get(["settings"], (result) => {
       const updatedSettings = { ...result.settings, darkMode: value };
@@ -40,6 +41,15 @@ function Settings() {
       document.body.classList.remove("dark-mode");
     }
   };
+
+  const handleDetailedViewChange = (value) => {
+    setDetailedView(value);
+    chrome.storage.local.get(["settings"], (result) => {
+      const updatedSettings = { ...result.settings, detailedView: value };
+      chrome.storage.local.set({ settings: updatedSettings });
+    });
+  };
+
   const handlePopupSizeChange = (e) => {
     const value = e.target.value;
     setPopupSize(value);
@@ -66,22 +76,43 @@ function Settings() {
             <div className="card-body">
               <div className="mb-4">
                 <h6 className="mb-3">Display</h6>
-                <div className="form-check form-switch">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    id="dark-mode-toggle"
-                    checked={darkMode}
-                    onChange={handleDarkModeChange}
-                  />
-                  <label
-                    className="form-check-label"
-                    htmlFor="dark-mode-toggle"
-                  >
-                    Enable Dark Mode
-                  </label>
+                <div className="form-check form-switch theme-toggle mt-3 mb-3">
+                  <h6 className="mb-2">Choose Theme</h6>
+                  <div className="theme-icons d-flex gap-3">
+                    <img
+                      src="../assets/light.png"
+                      alt="Light Mode"
+                      className={`theme-icon ${!darkMode ? "active" : ""}`}
+                      onClick={() => handleDarkModeChange(false)}
+                    />
+                    <img
+                      src="../assets/dark.png"
+                      alt="Dark Mode"
+                      className={`theme-icon ${darkMode ? "active" : ""}`}
+                      onClick={() => handleDarkModeChange(true)}
+                    />
+                  </div>
+                </div>
+             
+                <div className="form-check form-switch theme-toggle mt-3 mb-3">
+                  <h6 className="mb-2">Choose Views Type</h6>
+                  <div className="theme-icons d-flex gap-3">
+                    <img
+                      src="../assets/simple.png"
+                      alt="Simple View"
+                      className={`theme-icon ${!detailedView ? "active" : ""}`}
+                      onClick={() => handleDetailedViewChange(false)}
+                    />
+                    <img
+                      src="../assets/detailed.png"
+                      alt="Detailed View"
+                      className={`theme-icon ${ detailedView ? "active" : ""}`}
+                      onClick={() => handleDetailedViewChange(true)}
+                    />
+                  </div>
                 </div>
               </div>
+              <hr />
 
               <div className="mt-3">
                 <label className="form-label">Popup Size</label>
