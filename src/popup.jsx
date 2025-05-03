@@ -11,11 +11,10 @@ function Popup() {
   const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [editingId, setEditingId] = useState(null);
-  const [alarmNoteId, setAlarmNoteId] = useState(null);
-  const [alarmTime, setAlarmTime] = useState("");
-  const [isAlarmModalOpen, setIsAlarmModalOpen] = useState(false);
   const [sortOption, setsortOption] = useState('date-desc');
   const editorRef = useRef(null);
+  const [detailedView, setDetailedView] = useState(false);
+  const [selectedNote, setSelectedNote] = useState(null);
 
   useEffect(() => {
     chrome.storage.local.get(["notes", "settings"], (result) => {
@@ -26,6 +25,7 @@ function Popup() {
         if (result.settings.popupSize) {
           document.body.setAttribute("data-size", result.settings.popupSize);
         }
+        setDetailedView(result.settings.detailedView);
         setsortOption(result.settings.sortOption);
       }
       if (result.notes) {
@@ -111,10 +111,6 @@ function Popup() {
     .catch(err => console.error("Error copying text: ", err));
   };
 
-  useEffect(() => {
-    console.log("Modal open state changed:", isAlarmModalOpen);
-  }, [isAlarmModalOpen]);
-
   const handleFormat = (command) => {
     document.execCommand(command, false, null);
   };
@@ -124,7 +120,61 @@ function Popup() {
     return doc.body.textContent || "";
   }
   
-  function renderNotes() {
+  function renderDetailedView() {
+    const filteredNotes = notes.filter((note) => {
+      const plainText = stripHtml(note.text).toLowerCase(); 
+      return plainText.includes(searchQuery.toLowerCase());
+    });
+    if (filteredNotes.length === 0) {
+      return <div className="text-center my-2"> No notes found. </div>;
+    }
+  
+    return filteredNotes
+      .sort((a, b) => {
+        if (a.pinned && !b.pinned) return -1;
+        if (!a.pinned && b.pinned) return 1;
+        
+        if (sortOption === "date-desc") return new Date(b.date) - new Date(a.date);
+        else if (sortOption === "date-asc") return new Date(a.date) - new Date(b.date);
+        else if (sortOption === "alpha-asc") return stripHtml(a.text).localeCompare(stripHtml(b.text));
+        else if (sortOption === "alpha-desc") return stripHtml(b.text).localeCompare(stripHtml(a.text));
+        return 0;
+      })
+      .map((note) => (
+        <div 
+          className="note-item"
+          key={note.id}
+          onClick={() => setSelectedNote(note)}
+          style={{ cursor: 'pointer' }}
+        >
+          <div>
+            <div className="note-text">
+              {note.text.split(" ").slice(0, 2).join(" ")}
+            </div>
+            <span className="options" data-id={note.id}>
+              <div className="icons">
+                <i
+                  className={`fa-solid ${note.pinned ? 'fa-thumbtack pinned' : 'fa-thumbtack'}`}
+                  style={{ cursor: "pointer" }}
+                  onClick={() => togglePinNote(note.id)}
+                  title={note.pinned ? "Unpin note" : "Pin note"}
+                ></i>
+                <i className="fas fa-trash delete-icon" onClick={() => deleteNote(note.id)}></i>
+                <i className="fas fa-solid fa-pen" onClick={() => editNote(note.id, note.text)}></i>
+                <i
+                  className="fa-solid fa-copy copy-icon"
+                  data-id={note.id}
+                  onClick={(e) => handleCopy(e, note.text)}
+                ></i>
+              </div>
+            </span>
+          </div>
+        </div>
+      ));
+  }
+
+
+  function renderSimpleView() {
     const filteredNotes = notes.filter((note) => {
       const plainText = stripHtml(note.text).toLowerCase(); 
       return plainText.includes(searchQuery.toLowerCase());
@@ -203,7 +253,26 @@ function Popup() {
         </div>
       </nav>
 
-      <div id="notes-list">{renderNotes()}</div>
+      {!detailedView ? (
+          <div id="notes-list">{renderSimpleView()}</div>
+        ) : (
+        <div id="notes-list" className="row">
+          <div className="col-4">
+            {renderDetailedView()}
+          </div>
+          <div className="col-8">
+            {selectedNote ? (
+              <div>
+                <h6>Note Preview</h6>
+                <div dangerouslySetInnerHTML={{ __html: selectedNote.text }} />
+              </div>
+            ) : (
+              <div>Select a note to see details</div>
+            )}
+          </div>
+
+        </div>
+      )}
 
       <RichTextEditor editorRef={editorRef} handleFormat={handleFormat} />
 

@@ -202,3 +202,13 @@ body.dark-mode .note-item:hover {
   max-width: 17rem;
   padding: 0.7rem;
 }
+
+.theme-icon{
+  height:12rem;
+  width: 18rem;;
+  border:1px solid gray;
+  border-radius: 10px;
+}
+.theme-icon.active {
+  border: 4px solid var(--primary-color);
+}
