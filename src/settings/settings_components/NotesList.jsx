@@ -288,12 +288,28 @@ const NotesList = () => {
                     <div className="note-text d-inline" dangerouslySetInnerHTML={{ __html: note.text }}></div>
                   </td>
                   <td>{note.url && typeof note.url === 'string' && <span>{note.url}</span>}</td>
-                  <td>{note.tag && <span>{note.tag}</span>}</td>
+                  <td>{note.tag && <span className="border p-1 rounded">{note.tag}</span>}</td>
                   <td> {formatDate(note.date)} </td>
-                  <td>{note.alarmTime && <span>{note.alarmTime}</span>}</td>
+                  <td>{note.alarmTime && <span>
+                    {new Date(`1970-01-01T${note.alarmTime}:00`).toLocaleTimeString([], {
+                      hour: 'numeric',
+                      minute: '2-digit',
+                      hour12: true,
+                    })}
+                    </span>}
+                  </td>
                   <td>
                     {note.alarmDays && Array.isArray(note.alarmDays) && (
-                      <span>{note.alarmDays.join(", ")}</span>
+                      <div className="flex flex-wrap gap-2">
+                        {note.alarmDays.map((day, index) => (
+                          <span
+                            key={index}
+                            className="rounded-5 border p-1 small text-muted mx-1"
+                          >
+                            {day[0]}
+                          </span>
+                        ))}
+                      </div>
                     )}
                   </td>
                   <td>
@@ -322,12 +338,18 @@ const NotesList = () => {
   };
 
   const toggleDay = (day) => {
+    let updatedDays;
     if (selectedDays.includes(day)) {
-      setSelectedDays(selectedDays.filter(d => d !== day));
+      updatedDays = selectedDays.filter(d => d !== day);
     } else {
-      setSelectedDays([...selectedDays, day]);
+      updatedDays = [...selectedDays, day];
     }
+  
+    // Sort according to daysArray
+    updatedDays.sort((a, b) => daysArray.indexOf(a) - daysArray.indexOf(b));
+    setSelectedDays(updatedDays);
   };
+  
   const handleFormat = (command) => {
     document.execCommand(command, false, null);
   };
@@ -451,9 +473,9 @@ const NotesList = () => {
                     {daysArray.map((day, index) => (
                       <div 
                         key={day} 
-                        className="border py-1 px-2 cursor-pointer"
+                        className="py-1 px-2 cursor-pointer rounded-5 text-center"
                         onClick={() => toggleDay(day)}
-                        style={selectedDays.includes(day) ? { backgroundColor: '#8A2BE2', color: 'white' } : {}}
+                        style={selectedDays.includes(day) ? { backgroundColor: '#684993', color: 'white' } : {}}
                       >
                         {day[0]}
                       </div>
