@@ -38,7 +38,9 @@ const NotesList = () => {
   };
   
   const deleteNote = (id) => {
-    const updatedNotes = notes.filter((note) => note.id !== id);
+    const updatedNotes = notes.map((note) =>
+      note.id === id ? { ...note, deleted: !note.deleted } : note
+    );
     setNotes(updatedNotes);
     chrome.storage.local.set({ notes: updatedNotes });
   };
@@ -237,13 +239,14 @@ const NotesList = () => {
     if (viewMode === 'grid') {
       return note_array.map((note) => (
         <div className="note-item border-bottom position-relative" key={note.id}>
-          { note.pinned ? <i
+          { note.pinned && (<i
                 className={`fa-solid fa-thumbtack pinned`}
                 onClick={() => togglePinNote(note.id)}
                 title={note.pinned ? "Unpin note" : "Pin note"}
               ></i> 
-            : <span></span>}
-          <div className="note-text d-inline" dangerouslySetInnerHTML={{ __html: note.text }}></div>
+          )}
+          <span className="note-text d-inline" dangerouslySetInnerHTML={{ __html: note.text }}></span>
+          {note.deleted && <span className="badge bg-danger m-lg-2">deleted</span>}
           <span className="options" data-id={note.id}>
             <small className="date">{formatDate(note.date)}</small>
             <div className="icons">
@@ -276,19 +279,18 @@ const NotesList = () => {
               {note_array.map((note) => (
                 <tr key={note.id} className="position-relative py-2">
                   <td>
-                    {note.pinned ? (
+                    {note.pinned && (
                       <i
                         className="fa-solid fa-thumbtack pinned"
                         onClick={() => togglePinNote(note.id)}
-                        title={note.pinned ? "Unpin note" : "Pin note"}
+                        title="Unpin note"
                       ></i>
-                    ) : (
-                      <span></span>
                     )}
-                    <div className="note-text d-inline" dangerouslySetInnerHTML={{ __html: note.text }}></div>
+                    <span className="note-text d-inline" dangerouslySetInnerHTML={{ __html: note.text }}></span>
+                    {note.deleted && <span className="badge bg-danger m-lg-2">deleted</span>}
                   </td>
                   <td>{note.url && typeof note.url === 'string' && <span>{note.url}</span>}</td>
-                  <td>{note.tag && <span className="border p-1 rounded">{note.tag}</span>}</td>
+                  <td>{note.tag && <span className="badge bg-secondary">{note.tag}</span>}</td>
                   <td> {formatDate(note.date)} </td>
                   <td>{note.alarmTime && <span>
                     {new Date(`1970-01-01T${note.alarmTime}:00`).toLocaleTimeString([], {
