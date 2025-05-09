@@ -9,7 +9,7 @@ import NotesList from "./settings_components/NotesList.jsx";
 import UserGuide from "./settings_components/user_guide.jsx";
 
 function Settings() {
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState();
   const [detailedView, setDetailedView] = useState(false);
   const [popupSize, setPopupSize] = useState("small");
   const [sortOption, setSortOption] = useState("date-desc");
@@ -20,7 +20,7 @@ function Settings() {
       if (result.settings !== undefined) {
         setDarkMode(result.settings.darkMode);
         setDetailedView(result.settings.detailedView);
-        if (result.settings.darkMode) {
+        if (result.settings.darkMode == "dark" || (result.settings.darkMode == "system" && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
           document.body.classList.add("dark-mode");
         }
         if (result.settings.popupSize) setPopupSize(result.settings.popupSize);
@@ -35,10 +35,20 @@ function Settings() {
       chrome.storage.local.set({ settings: updatedSettings });
     });
 
-    if (value) {
+    document.body.classList.remove("dark-mode", "light-mode");
+    if (value === "dark") {
       document.body.classList.add("dark-mode");
-    } else {
-      document.body.classList.remove("dark-mode");
+    } else if (value === "light") {
+      document.body.classList.add("light-mode");
+    } else if (value === "system") {
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.body.classList.add(prefersDark ? "dark-mode" : "light-mode");
+  
+      // Optional: Add listener to update on system theme change
+      window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
+        document.body.classList.remove("dark-mode", "light-mode");
+        document.body.classList.add(e.matches ? "dark-mode" : "light-mode");
+      });
     }
   };
 
@@ -79,18 +89,33 @@ function Settings() {
                 <div className="form-check form-switch theme-toggle mt-3 mb-3">
                   <h6 className="mb-2">Choose Theme</h6>
                   <div className="theme-icons d-flex gap-3">
-                    <img
-                      src="../assets/light.png"
-                      alt="Light Mode"
-                      className={`theme-icon ${!darkMode ? "active" : ""}`}
-                      onClick={() => handleDarkModeChange(false)}
-                    />
-                    <img
-                      src="../assets/dark.png"
-                      alt="Dark Mode"
-                      className={`theme-icon ${darkMode ? "active" : ""}`}
-                      onClick={() => handleDarkModeChange(true)}
-                    />
+                    <div>
+                      <img
+                        src="../assets/light.png"
+                        alt="Light Mode"
+                        className={`theme-icon ${darkMode == "light" ? "active" : ""}`}
+                        onClick={() => handleDarkModeChange("light")}
+                      />
+                      <p> Light Mode </p>
+                    </div>
+                    <div>
+                      <img
+                        src="../assets/dark.png"
+                        alt="Dark Mode"
+                        className={`theme-icon ${darkMode == "dark" ? "active" : ""}`}
+                        onClick={() => handleDarkModeChange("dark")}
+                      />
+                      <p>Dark Mode</p>
+                    </div>
+                    <div>
+                      <img
+                        src="../assets/system.png"
+                        alt="System Mode"
+                        className={`theme-icon ${darkMode == "system" ? "active" : ""}`}
+                        onClick={() => handleDarkModeChange("system")}
+                      />
+                      <p>System Mode</p>
+                    </div>
                   </div>
                 </div>
              
@@ -154,6 +179,7 @@ function Settings() {
                 </p>
                 <a
                   target="_blank"
+                  href="https://chromewebstore.google.com/detail/ifaljgdldeljhephnhgecbleejgffbap?utm_source=item-share-cb"
                   className="btn btn-primary"
                 >
                   <i className="fas fa-star me-2"></i>
