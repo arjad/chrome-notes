@@ -19,7 +19,7 @@ function Popup() {
   useEffect(() => {
     chrome.storage.local.get(["notes", "settings"], (result) => {
       if (result.settings !== undefined) {
-        if (result.settings.darkMode) {
+        if (result.settings.darkMode == "dark" || (result.settings.darkMode == "system" && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
           document.body.classList.add("dark-mode");
         }
         if (result.settings.popupSize) {
