@@ -36,7 +36,9 @@ const saveNote = (editorRef, notes, setNotes, editingId, setEditingId, setError)
 };
 
 const deleteNoteById = (id, notes, setNotes) => {
-  const updatedNotes = notes.filter((note) => note.id !== id);
+  const updatedNotes = notes.map((note) =>
+    note.id === id ? { ...note, deleted: !note.deleted } : note
+  );
   setNotes(updatedNotes);
   chrome.storage.local.set({ notes: updatedNotes });
 };

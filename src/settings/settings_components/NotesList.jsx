@@ -1,6 +1,7 @@
 import React, {useState, useEffect, useRef} from "react";
 import sanitizeHtml from "sanitize-html";
 import RichTextEditor from "../../components/RichText.jsx";
+import { deleteNoteById } from "../utils/commonFunctions.js";
 
 const NotesList = () => {
   const [viewMode, setViewMode] = useState("list");
@@ -264,7 +265,7 @@ const NotesList = () => {
   
   const renderNoteIcons = (note) => (
     <div className="icons">
-      <i className="fas fa-trash delete-icon" onClick={() => deleteNote(note.id)}></i>
+      <i className="fas fa-trash delete-icon" onClick={() => deleteNoteById(note.id, notes, setNotes)}></i>
       <i className="fas fa-solid fa-pen" onClick={() => editNote(note.id)}></i>
       <i className="fa-solid fa-copy copy-icon" data-id={note.id} onClick={(e) => handleCopy(e, note.text)}></i>
     </div>
