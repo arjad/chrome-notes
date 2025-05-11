@@ -13,18 +13,36 @@ const NotesList = () => {
   const [notes, setNotes] = useState([]);
   const [sortOption, setSortOption] = useState("date-desc");
   const [searchQuery, setSearchQuery] = useState("");
-  const [isNewNoteModalOpen, setIsNewNoteModalOpen] = useState(false);
+  const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const editorRef = useRef(null);
   const [error, setError] = useState("");
   const [selectedDays, setSelectedDays] = useState([]);
+  const [filters, setFilters] = useState({
+    notesText: '',
+    tag: "",
+    pinned: "all",
+  });
+
+  const handleFilterChange = (field, value) => {
+    setFilters(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const saveFilters = () => {
+    chrome.storage.local.set({ filters: filters });
+  }
 
   useEffect(() => {
-    chrome.storage.local.get(["notes", "settings"], (result) => {
+    chrome.storage.local.get(["notes", "settings", "filters"], (result) => {
       if (result.notes) {
         setNotes(result.notes);
       }
       if (result.settings?.sortOption) setSortOption(result.settings.sortOption);
+      if (result.filters) setFilters(result.filters);
     });
   }, []);
 
@@ -37,14 +55,7 @@ const NotesList = () => {
     setSearchQuery(e.target.value.toLowerCase());
   };
   
-  const deleteNote = (id) => {
-    const updatedNotes = notes.map((note) =>
-      note.id === id ? { ...note, deleted: !note.deleted } : note
-    );
-    setNotes(updatedNotes);
-    chrome.storage.local.set({ notes: updatedNotes });
-  };
-  
+
   const editNote = (id) => {
     const noteToEdit = notes.find((note) => note.id === id);
     if (noteToEdit) {
@@ -61,7 +72,7 @@ const NotesList = () => {
         editorRef.current.innerHTML = noteToEdit.text;
       }
       
-      setIsNewNoteModalOpen(true);
+      setIsNoteModalOpen(true);
     }
   };
   
@@ -139,7 +150,7 @@ const NotesList = () => {
       chrome.storage.local.set({ notes: updatedNotes });
     }
     createWeeklyAlarm(Date.now().toString(), selectedDays, note.alarmTime); 
-    closeNewNoteModal();
+    closeNoteModal();
   };
   
   const formatDate = (dateString) => {
@@ -172,8 +183,12 @@ const NotesList = () => {
     });
   };
 
-  const openNewNoteModal = () => {
-    setIsNewNoteModalOpen(true);
+  const openFilterModal = () => {
+    setIsFilterModalOpen(true);
+  }
+
+  const openNoteModal = () => {
+    setIsNoteModalOpen(true);
     setEditingId(null);
     // Clear the editor when opening for a new note
     if (editorRef.current) {
@@ -188,8 +203,8 @@ const NotesList = () => {
     setSelectedDays([]);
   };
 
-  const closeNewNoteModal = () => {
-    setIsNewNoteModalOpen(false);
+  const closeNoteModal = () => {
+    setIsNoteModalOpen(false);
     setEditingId(null);
     setError("");
     if (editorRef.current) {
@@ -218,127 +233,129 @@ const NotesList = () => {
     setNotes(updatedNotes);
     chrome.storage.local.set({ notes: updatedNotes });
   };
+  const filterNote = (note) => {
+    const plainText = stripHtml(note.text).toLowerCase();
+  
+    if (searchQuery && !plainText.includes(searchQuery.toLowerCase())) return false;
+    if (filters.notesText && !plainText.includes(filters.notesText.toLowerCase())) return false;
+    if (filters.tag && note.tag !== filters.tag) return false;
+  
+    if (filters.pinnedStatus === "pinned" && !note.pinned) return false;
+    if (filters.pinnedStatus === "unpinned" && note.pinned) return false;
+  
+    if (filters.deletedStatus === "deleted" && !note.deleted) return false;
+    if (filters.deletedStatus === "not_deleted" && note.deleted) return false;
+  
+    return true;
+  };
+  
+  const sortNotes = (a, b) => {
+    if (a.pinned && !b.pinned) return -1;
+    if (!a.pinned && b.pinned) return 1;
+  
+    switch (sortOption) {
+      case "date-desc": return new Date(b.date) - new Date(a.date);
+      case "date-asc": return new Date(a.date) - new Date(b.date);
+      case "alpha-asc": return stripHtml(a.text).localeCompare(stripHtml(b.text));
+      case "alpha-desc": return stripHtml(b.text).localeCompare(stripHtml(a.text));
+      default: return 0;
+    }
+  };
+  
+  const renderNoteIcons = (note) => (
+    <div className="icons">
+      <i className="fas fa-trash delete-icon" onClick={() => deleteNote(note.id)}></i>
+      <i className="fas fa-solid fa-pen" onClick={() => editNote(note.id)}></i>
+      <i className="fa-solid fa-copy copy-icon" data-id={note.id} onClick={(e) => handleCopy(e, note.text)}></i>
+    </div>
+  );
   
   const renderNotes = () => {
-    let note_array = notes
-      .filter((note) => {
-        const plainText = stripHtml(note.text).toLowerCase(); 
-        return plainText.includes(searchQuery.toLowerCase());
-      })
-      .sort((a, b) => {
-        if (a.pinned && !b.pinned) return -1;
-        if (!a.pinned && b.pinned) return 1;
-        
-        if (sortOption === "date-desc") return new Date(b.date) - new Date(a.date);
-        else if (sortOption === "date-asc") return new Date(a.date) - new Date(b.date);
-        else if (sortOption === "alpha-asc") return stripHtml(a.text).localeCompare(stripHtml(b.text));
-        else if (sortOption === "alpha-desc") return stripHtml(b.text).localeCompare(stripHtml(a.text));
-        return 0;
-      });
-      
-    if (viewMode === 'grid') {
-      return note_array.map((note) => (
+    const filteredNotes = notes.filter(filterNote).sort(sortNotes);
+  
+    if (viewMode === "grid") {
+      return filteredNotes.map((note) => (
         <div className="note-item border-bottom position-relative" key={note.id}>
-          { note.pinned && (<i
-                className={`fa-solid fa-thumbtack pinned`}
-                onClick={() => togglePinNote(note.id)}
-                title={note.pinned ? "Unpin note" : "Pin note"}
-              ></i> 
+          {note.pinned && (
+            <i
+              className="fa-solid fa-thumbtack pinned"
+              onClick={() => togglePinNote(note.id)}
+              title="Unpin note"
+            ></i>
           )}
           <span className="note-text d-inline" dangerouslySetInnerHTML={{ __html: note.text }}></span>
           {note.deleted && <span className="badge bg-danger m-lg-2">deleted</span>}
           <span className="options" data-id={note.id}>
             <small className="date">{formatDate(note.date)}</small>
-            <div className="icons">
-              <i className="fas fa-trash delete-icon" onClick={() => deleteNote(note.id)}></i>
-              <i className="fas fa-solid fa-pen" onClick={() => editNote(note.id)}></i>
-              <i
-                className="fa-solid fa-copy copy-icon"
-                data-id={note.id}
-                onClick={(e) => handleCopy(e, note.text)}
-              ></i>
-            </div>
+            {renderNoteIcons(note)}
           </span>
         </div>
       ));
-    } else {
-      return (
-          <table className="w-100">
-            <thead>
-              <tr className="border-bottom">
-                <th>Note</th>
-                <th>URL</th>
-                <th>Tag</th>
-                <th>Date</th>
-                <th>Alarm Time</th>
-                <th>Alarm Days</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {note_array.map((note) => (
-                <tr key={note.id} className="position-relative py-2">
-                  <td>
-                    {note.pinned && (
-                      <i
-                        className="fa-solid fa-thumbtack pinned"
-                        onClick={() => togglePinNote(note.id)}
-                        title="Unpin note"
-                      ></i>
-                    )}
-                    <span className="note-text d-inline" dangerouslySetInnerHTML={{ __html: note.text }}></span>
-                    {note.deleted && <span className="badge bg-danger m-lg-2">deleted</span>}
-                  </td>
-                  <td>{note.url && typeof note.url === 'string' && <span>{note.url}</span>}</td>
-                  <td>{note.tag && <span className="badge bg-secondary">{note.tag}</span>}</td>
-                  <td> {formatDate(note.date)} </td>
-                  <td>{note.alarmTime && <span>
+    }
+  
+    return (
+      <table className="w-100">
+        <thead>
+          <tr className="border-bottom">
+            <th>Note</th>
+            <th>URL</th>
+            <th>Tag</th>
+            <th>Date</th>
+            <th>Alarm Time</th>
+            <th>Alarm Days</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredNotes.map((note) => (
+            <tr key={note.id} className="position-relative py-2">
+              <td>
+                {note.pinned && (
+                  <i
+                    className="fa-solid fa-thumbtack pinned"
+                    onClick={() => togglePinNote(note.id)}
+                    title="Unpin note"
+                  ></i>
+                )}
+                <span className="note-text d-inline" dangerouslySetInnerHTML={{ __html: note.text }}></span>
+                {note.deleted && <span className="badge bg-danger m-lg-2">deleted</span>}
+              </td>
+              <td>{note.url && <span>{note.url}</span>}</td>
+              <td>{note.tag && <span className="badge bg-secondary">{note.tag}</span>}</td>
+              <td>{formatDate(note.date)}</td>
+              <td>
+                {note.alarmTime && (
+                  <span>
                     {new Date(`1970-01-01T${note.alarmTime}:00`).toLocaleTimeString([], {
-                      hour: 'numeric',
-                      minute: '2-digit',
+                      hour: "numeric",
+                      minute: "2-digit",
                       hour12: true,
                     })}
-                    </span>}
-                  </td>
-                  <td>
-                    {note.alarmDays && Array.isArray(note.alarmDays) && (
-                      <div className="flex flex-wrap gap-2">
-                        {note.alarmDays.map((day, index) => (
-                          <span
-                            key={index}
-                            className="rounded-5 border p-1 small text-muted mx-1"
-                          >
-                            {day[0]}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </td>
-                  <td>
-                    <div className="icons">
-                      <i 
-                        className="fas fa-trash delete-icon" 
-                        onClick={() => deleteNote(note.id)}
-                      ></i>
-                      <i 
-                        className="fas fa-solid fa-pen" 
-                        onClick={() => editNote(note.id)}
-                      ></i>
-                      <i
-                        className="fa-solid fa-copy copy-icon"
-                        data-id={note.id}
-                        onClick={(e) => handleCopy(e, note.text)}
-                      ></i>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-      );
-    }
+                  </span>
+                )}
+              </td>
+              <td>
+                {Array.isArray(note.alarmDays) && (
+                  <div className="flex flex-wrap gap-2">
+                    {note.alarmDays.map((day, index) => (
+                      <span
+                        key={index}
+                        className="rounded-5 border p-1 small text-muted mx-1"
+                      >
+                        {day[0]}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </td>
+              <td>{renderNoteIcons(note)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    );
   };
-
+  
   const toggleDay = (day) => {
     let updatedDays;
     if (selectedDays.includes(day)) {
@@ -374,6 +391,13 @@ const NotesList = () => {
             </div>
           </div>
           <div className="d-flex gap-3 align-items-center">
+            <button 
+              className="btn btn-outline-primary btn-sm flex-sm-shrink-0"
+              onClick={openFilterModal}
+            >
+              <i class="fa-solid fa-filter me-2"></i>
+              Filters
+            </button>
             <div className="view-toggle btn-group">
               <button
                 className={`btn btn-sm flex-xxl-shrink-0 ${ viewMode === "grid" ? "btn-primary" : "btn-outline-primary" }`}
@@ -401,7 +425,7 @@ const NotesList = () => {
             </select>
             <button 
               className="btn btn-primary btn-sm flex-sm-shrink-0"
-              onClick={openNewNoteModal}
+              onClick={openNoteModal}
             >
               <i className="fas fa-plus me-2"></i>
               New Note
@@ -425,7 +449,7 @@ const NotesList = () => {
             </p>
             <button 
               className="btn btn-primary btn-sm"
-              onClick={openNewNoteModal}
+              onClick={openNoteModal}
             >
               <i className="fas fa-plus me-2"></i>
               Create Note
@@ -434,19 +458,80 @@ const NotesList = () => {
         )}
       </div>
 
-      {/* Bootstrap Modal */}
-      <div className={`modal border fade ${isNewNoteModalOpen ? 'show d-block' : ''}`} 
-        id="noteModal" 
+      {/* Filter Modal */}
+      <div className={`filter-modal offcanvas offcanvas-end ${isFilterModalOpen ? 'show' : ''}`} tabIndex="-1">
+        <div className="offcanvas-header">
+          <h5 className="offcanvas-title">Filters</h5>
+          <button type="button" className="btn" onClick={() => setIsFilterModalOpen(false)}>
+            <i className="fa-solid fa-x"></i>
+          </button>
+        </div>
+        <div className="offcanvas-body">
+          <div>
+            <label htmlFor="notes-text" className="form-label">Notes text:</label>
+            <input 
+              type="text"
+              className="form-control" 
+              value={filters.notesText}
+              onChange={(e) => handleFilterChange('notesText', e.target.value)}
+            />
+          </div>
+
+          <div className="mt-2">
+            <label htmlFor="tag" className="form-label">Notes tag:</label>
+            <input 
+              type="text" 
+              className="form-control" 
+              value={filters.tag}
+              onChange={(e) => handleFilterChange('tag', e.target.value)}
+            />
+          </div>
+
+          <div className="mt-2">
+            <label className="form-label">Pinned status:</label>
+            <select 
+              className="form-select"
+              value={filters.pinnedStatus}
+              onChange={(e) => handleFilterChange('pinnedStatus', e.target.value)}
+            >
+              <option value="both">Both</option>
+              <option value="pinned">Pinned</option>
+              <option value="unpinned">Unpinned</option>
+            </select>
+          </div>
+
+          <div className="mt-2">
+            <label className="form-label">Deleted status:</label>
+            <select 
+              className="form-select"
+              value={filters.deletedStatus}
+              onChange={(e) => handleFilterChange('deletedStatus', e.target.value)}
+            >
+              <option value="both">Both</option>
+              <option value="deleted">Deleted</option>
+              <option value="not_deleted">Not Deleted</option>
+            </select>
+          </div>
+          <button className="btn btn-primary mt-3" onClick={saveFilters}>Apply Filters</button>
+        </div>
+      </div>
+
+
+
+      {/* Note Modal */}
+      <div className={`newnote-modal modal border fade ${isNoteModalOpen ? 'show d-block' : ''}`} 
         tabIndex="-1" 
         role="dialog"
         aria-labelledby="noteModalLabel"
-        aria-hidden={!isNewNoteModalOpen}
+        aria-hidden={!isNoteModalOpen}
       >
         <div className="modal-dialog" role="document">
           <div className="modal-content w-100">
             <div className="modal-header">
               <h5 className="modal-title" id="noteModalLabel">{editingId ? "Edit Note" : "New Note"}</h5>
-              <button type="button" className="btn-close" aria-label="Close" onClick={closeNewNoteModal}></button>
+              <button type="button" className="btn" onClick={closeNoteModal}>
+                <i class="fa-solid fa-x"></i>
+              </button>
             </div>
             <div className="modal-body">
               <RichTextEditor 
@@ -525,7 +610,7 @@ const NotesList = () => {
             </div>
             <div className="modal-footer">
               {error && <div className="text-danger">{error}</div>}
-              <button type="button" className="btn btn-secondary" onClick={closeNewNoteModal}>
+              <button type="button" className="btn btn-secondary" onClick={closeNoteModal}>
                 Cancel
               </button>
               <button type="button" className="btn btn-primary" onClick={saveNote}>

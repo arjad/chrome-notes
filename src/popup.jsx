@@ -4,7 +4,8 @@ import "./popup.css";
 import "./components/common_style.css"
 import sanitizeHtml from "sanitize-html";
 import RichTextEditor from "./components/RichText.jsx";
-  
+import { saveNote, deleteNoteById, handleCopy, editNoteById, togglePinNoteById, formatDate, stripHtml } from "./settings/utils/commonFunctions.js";
+
 function Popup() {
   const [note, setNote] = useState("");
   const [notes, setNotes] = useState([]);
@@ -42,83 +43,9 @@ function Popup() {
     setSearchQuery(e.target.value.toLowerCase());
   };
 
-  const deleteNote = (id) => {
-    const updatedNotes = notes.filter((note) => note.id !== id);
-    setNotes(updatedNotes);
-    chrome.storage.local.set({ notes: updatedNotes });
-  };
-
-  const editNote = (id, text) => {
-    setEditingId(id);
-    setNote(text);
-    if (editorRef.current) {
-      editorRef.current.innerHTML = text;
-    }
-  };
-
-  const saveNote = () => {
-    if (editorRef.current.innerHTML.trim() === "") {
-      setError("Please enter a note.");
-      return;
-    }
-    setError("");
-  
-    const sanitizedHtml = sanitizeHtml(editorRef.current.innerHTML, {
-      allowedTags: ["b", "i", "u", "p", "br", "strong", "em", "ul", "ol", "li"],
-      allowedAttributes: {},
-    });
-  
-    if (editingId) {
-      const updatedNotes = notes.map((n) =>
-        n.id === editingId ? { ...n, text: sanitizedHtml, date: new Date().toISOString() } : n
-      );
-      setNotes(updatedNotes);
-      chrome.storage.local.set({ notes: updatedNotes });
-      setEditingId(null);
-    } else {
-      const newNote = {
-        id: Date.now().toString(),
-        text: sanitizedHtml,
-        date: new Date().toISOString(),
-        pinned: false,
-      };
-  
-      const updatedNotes = [newNote, ...notes];
-      setNotes(updatedNotes);
-      chrome.storage.local.set({ notes: updatedNotes });
-    }
-    editorRef.current.innerHTML = "";
-  };
-
-  const formatDate = (dateString) => {
-    const options = { year: "numeric", month: "long", day: "numeric" };
-    return new Date(dateString).toLocaleDateString("en-US", options);
-  };
-  
-  const handleCopy = (event, text) => {
-    const tempElement = document.createElement("div");
-    tempElement.innerHTML = text;
-    const plainText = tempElement.textContent || tempElement.innerText;
-
-    navigator.clipboard.writeText(plainText)
-    .then(() => {
-        const icon = event.target;
-        icon.classList.add("copy-icon-green");
-        setTimeout(() => {
-          icon.classList.remove("copy-icon-green");
-        }, 1000);
-    })
-    .catch(err => console.error("Error copying text: ", err));
-  };
-
   const handleFormat = (command) => {
     document.execCommand(command, false, null);
   };
-
-  function stripHtml(html) {
-    const doc = new DOMParser().parseFromString(html, "text/html");
-    return doc.body.textContent || "";
-  }
   
   function renderDetailedView() {
     const filteredNotes = notes.filter((note) => {
@@ -156,16 +83,19 @@ function Popup() {
                 <i
                   className={`fa-solid ${note.pinned ? 'fa-thumbtack pinned' : 'fa-thumbtack'}`}
                   style={{ cursor: "pointer" }}
-                  onClick={() => togglePinNote(note.id)}
+                  onClick={() => togglePinNoteById(note.id, notes, setNotes)}
                   title={note.pinned ? "Unpin note" : "Pin note"}
                 ></i>
-                <i className="fas fa-trash delete-icon" onClick={() => deleteNote(note.id)}></i>
-                <i className="fas fa-solid fa-pen" onClick={() => editNote(note.id, note.text)}></i>
+                <i className="fas fa-trash delete-icon" onClick={() => deleteNoteById(note.id, notes, setNotes)}></i>
                 <i
-                  className="fa-solid fa-copy copy-icon"
-                  data-id={note.id}
-                  onClick={(e) => handleCopy(e, note.text)}
+                  className="fas fa-solid fa-pen"
+                  onClick={() => editNoteById(note.id, note.text, setEditingId, setNote, editorRef)}
                 ></i>
+                <i
+                className="fa-solid fa-copy copy-icon"
+                data-id={note.id}
+                onClick={(e) => handleCopy(e, note.text)}
+              ></i>
               </div>
             </span>
           </div>
@@ -204,11 +134,11 @@ function Popup() {
                 <i
                   className={`fa-solid ${note.pinned ? 'fa-thumbtack pinned' : 'fa-thumbtack'}`}
                   style={{ cursor: "pointer" }}
-                  onClick={() => togglePinNote(note.id)}
+                  onClick={() => togglePinNoteById(note.id, notes, setNotes)}
                   title={note.pinned ? "Unpin note" : "Pin note"}
                 ></i>
-                <i className="fas fa-trash delete-icon" onClick={() => deleteNote(note.id)}></i>
-                <i className="fas fa-solid fa-pen" onClick={() => editNote(note.id, note.text)}></i>
+                <i className="fas fa-trash delete-icon" onClick={() => deleteNoteById(note.id, notes, setNotes)}></i>
+                <i className="fas fa-solid fa-pen" onClick={() => editNoteById(note.id, note.text, setEditingId, setNote, editorRef)}></i>
                 <i
                   className="fa-solid fa-copy copy-icon"
                   data-id={note.id}
@@ -221,14 +151,6 @@ function Popup() {
       ));
   }
 
-  const togglePinNote = (id) => {
-    const updatedNotes = notes.map((note) => 
-      note.id === id ? { ...note, pinned: !note.pinned } : note
-    );
-    setNotes(updatedNotes);
-    chrome.storage.local.set({ notes: updatedNotes });
-  };
-  
   return (
     <div className="container-fluid p-0">
       <nav className="d-flex align-items-center justify-content-between mb-3">
@@ -286,7 +208,9 @@ function Popup() {
         <button
           id="save-btn"
           className="btn btn-sm rounded-pill px-3 text-white position-absolute end-0 top-0"
-          onClick={saveNote}
+          onClick={() =>
+            saveNote(editorRef, notes, setNotes, editingId, setEditingId, setError)
+          }
         >
           Save Note
         </button>

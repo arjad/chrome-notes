@@ -35,6 +35,20 @@
 .dark-mode ::-ms-input-placeholder { /* Edge 12 -18 */
   color: white;
 }
+.dark-mode .filter-modal{
+  background-color: var(--dark-mode-bg-color);
+  border: grey;
+  box-shadow: -5px 0px 10px rgba(255, 255, 255, 0.1);
+}
+.dark-mode .filter-modal .fa-x{
+  color: white;
+}
+.dark-mode .newnote-modal .modal-content{
+  box-shadow: 0px 0px 10px 7px rgba(255, 255, 255, 0.1);
+}
+.dark-mode .newnote-modal .fa-x{
+  color: white;
+}
 .note-item {
   border-bottom: 1px solid var(--dark-mode-text-color);
   padding: 10px 0;
