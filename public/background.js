@@ -9,4 +9,11 @@ chrome.alarms.onAlarm.addListener((alarm) => {
     silent: false
   });
 
+   chrome.windows.create({
+    url: chrome.runtime.getURL("alarm.html"),
+    type: "popup",
+    width: 400,
+    height: 300
+  });
+
 });
