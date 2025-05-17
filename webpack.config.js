@@ -8,6 +8,7 @@ module.exports = {
     entry: {
         popup: './src/popup.jsx',
         settings: "./src/settings/settings.jsx",
+        content: './src/content.js'
     },
     output: {
       filename: '[name].js',

@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useRef} from "react";
 import sanitizeHtml from "sanitize-html";
 import RichTextEditor from "../../components/RichText.jsx";
-import { deleteNoteById } from "../utils/commonFunctions.js";
+import { deleteNoteById, permanentlyDeleteNoteById } from "../utils/commonFunctions.js";
 
 const NotesList = () => {
   const [viewMode, setViewMode] = useState("list");
@@ -35,6 +35,7 @@ const NotesList = () => {
 
   const saveFilters = () => {
     chrome.storage.local.set({ filters: filters });
+    setIsFilterModalOpen(false)
   }
 
   useEffect(() => {
@@ -265,6 +266,7 @@ const NotesList = () => {
   
   const renderNoteIcons = (note) => (
     <div className="icons">
+      {note.deleted && ( <i className="fas fa-xmark delete-icon" onClick={() => permanentlyDeleteNoteById(note.id, notes, setNotes)}></i> )}
       <i className="fas fa-trash delete-icon" onClick={() => deleteNoteById(note.id, notes, setNotes)}></i>
       <i className="fas fa-solid fa-pen" onClick={() => editNote(note.id)}></i>
       <i className="fa-solid fa-copy copy-icon" data-id={note.id} onClick={(e) => handleCopy(e, note.text)}></i>
