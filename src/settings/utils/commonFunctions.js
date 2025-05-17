@@ -43,6 +43,12 @@ const deleteNoteById = (id, notes, setNotes) => {
   chrome.storage.local.set({ notes: updatedNotes });
 };
 
+const permanentlyDeleteNoteById = (id, notes, setNotes) => {
+  const updatedNotes = notes.filter(note => note.id !== id);
+  setNotes(updatedNotes);
+  chrome.storage.local.set({ notes: updatedNotes });
+};
+
 function handleCopy(event, text) {
   const tempElement = document.createElement("div");
   tempElement.innerHTML = text;
@@ -92,6 +98,7 @@ const handleSearchChange = (e) => {
 module.exports = {
   saveNote,
   deleteNoteById,
+  permanentlyDeleteNoteById,
   handleCopy,
   editNoteById,
   togglePinNoteById,
