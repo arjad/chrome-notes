@@ -39,9 +39,26 @@ https://www.loom.com/share/7d3a2d9d4be84c80ae62a9985b36fc4a
 <br/><br/>
 
 Updated and contributed by
-1.    Haffi Irfan
-2.    [Mubashir Iqbal](https://github.com/Mubshr07/) 
-
+<br/>
+arjad<br/>
+itsn8k<br/>
+Abiha0421
+<br/>
+Dev-Hassaan
+<br/>
+Abdullah-hub498
+<br/>
+ammad-ahmed1
+<br/>
+Mubshr07
+<br/>
+devasjad
+<br/>
+haffiirfan
+<br/>
+sameer914dev
+<br/>
+sheikh-asjad
 <br/><br/>
 Review us:
 arjadgohar14@gmail.com
