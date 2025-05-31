@@ -33,7 +33,7 @@ document.body.appendChild(openBtn);
 const sidebar = createElement('div', {
   position: 'fixed',
   top: '0',
-  right: '-300px',
+  right: '-500px',
   width: '300px',
   height: '100vh',
   backgroundColor: '#fff',
