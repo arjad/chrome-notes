@@ -1,6 +1,6 @@
 import React from "react";
 
-const RichText = ({ editorRef, handleFormat }) => {
+const RichText = ({ editorRef, handleFormat, detailedView }) => {
   return (
     <section className="border rich-text mb-2">
       <nav className="flex w-100 border-bottom" aria-label="Text formatting options">
@@ -25,7 +25,7 @@ const RichText = ({ editorRef, handleFormat }) => {
         contentEditable
         role="textbox"
         aria-label="Rich text editor"
-        className="bg-transparent input-tag"
+        className={`bg-transparent input-tag ${detailedView ? 'detailedView' : ''}`}
         id="note-input"
         placeholder="Enter your note here..."
       ></div>

@@ -195,3 +195,9 @@ i.fa-thumbtack.pinned {
 #note-input{
   min-height: 5rem;
 }
+#add-btn {
+  color: var(--primary-color);
+}
+.detailedView {
+  height: 20rem;
+}

@@ -23,6 +23,10 @@ body[data-size="large"] {
   max-height: 60vh;
   overflow-y: auto;
 }
+#notes-list-detailed {
+  min-height: 60vh;
+  overflow-y: auto;
+}
 #notes-list::-webkit-scrollbar {
   width: 8px;
   border-radius: 4px;

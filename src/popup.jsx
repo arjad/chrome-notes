@@ -47,6 +47,10 @@ function Popup() {
     document.execCommand(command, false, null);
   };
   
+  const addNote = () => {
+    editorRef.current.innerHTML = ""; 
+    setEditingId(null)
+  }
   function renderDetailedView() {
     const filteredNotes = notes.filter((note) => {
       const plainText = stripHtml(note.text).toLowerCase(); 
@@ -110,6 +114,8 @@ function Popup() {
   function renderSimpleView() {
     const filteredNotes = notes.filter((note) => {
       const plainText = stripHtml(note.text).toLowerCase(); 
+      if (note.deleted) return false;
+
       return plainText.includes(searchQuery.toLowerCase());
     });
     if (filteredNotes.length === 0) {
@@ -181,25 +187,46 @@ function Popup() {
       {!detailedView ? (
           <div id="notes-list">{renderSimpleView()}</div>
         ) : (
-        <div id="notes-list" className="row">
-          <div className="col-4">
-            {renderDetailedView()}
-          </div>
-          <div className="col-8">
-            {selectedNote ? (
-              <div>
-                <h6>Note Preview</h6>
-                <div dangerouslySetInnerHTML={{ __html: selectedNote.text }} />
-              </div>
-            ) : (
-              <div>Select a note to see details</div>
-            )}
+          <div id="notes-list-detailed" className="row">
+            <div className="col-4">
+              {renderDetailedView()}
+            </div>
+            <div className="col-8">
+              {selectedNote ? (
+                <div>
+                  {editingId ? (
+                    <div className="d-flex justify-content-between">
+                      <h6>Updating Note</h6>
+                      <button
+                        id="add-btn"
+                        className="btn bold"
+                        onClick={() => addNote()}
+                      >
+                        Add Note
+                      </button>
+                    </div>
+                  ) : (
+                    <h6>New Note</h6>
+                  )}
+                  <RichTextEditor
+                    editorRef={editorRef}
+                    handleFormat={handleFormat}
+                    detailedView={true}
+                  />
+                </div>
+              ) : (
+                <div>Select a note to see details</div>
+              )}
+            </div>
           </div>
 
-        </div>
       )}
 
-      <RichTextEditor editorRef={editorRef} handleFormat={handleFormat} />
+      {
+        !detailedView ? (
+          <RichTextEditor editorRef={editorRef} handleFormat={handleFormat} />
+        ) : null
+      }
 
       <div className="position-relative pb-4 mb-1 pt-2">
         {error && (
@@ -215,7 +242,7 @@ function Popup() {
             saveNote(editorRef, notes, setNotes, editingId, setEditingId, setError)
           }
         >
-          Save Note
+          { editingId ? "Update Note" : "Add Note" }
         </button>
       </div>
     </div>
