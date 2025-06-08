@@ -3,18 +3,30 @@ on:
   push:
     branches:
       - main
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - name: Create dist ZIP
+
+      - name: Create Chrome dist ZIP
         run: |
           cd dist
-          zip -r ../dist.zip .
+          zip -r ../I-notes-extension.zip .
           cd ..
-      - name: Upload dist.zip as artifact
+      - name: Create Firefox add-on ZIP
+        run: |
+          zip -r ../I-notes-addon.zip .
+          cd ..
+      - name: Upload I-notes-extension.zip as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: dist-zip
-          path: dist.zip
+          name: I-notes-extension
+          path: I-notes-extension.zip
+
+      - name: Upload I-notes-addon.zip as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: I-notes-addon
+          path: I-notes-addon.zip
