@@ -1,7 +1,6 @@
 {
-  "manifest_version": 3,
   "name": "I Notes",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "description": "i Notes is a lightweight, easy-to-use extension for taking quick notes, saving developer commands",
   "permissions": [
     "storage", 
@@ -12,14 +11,13 @@
     "default_popup": "popup.html"
   },
   "icons": {
+    "32": "assets/note.png",
     "48": "assets/note.png",
+    "96": "assets/note.png",
     "128": "assets/note.png"
   },
   "web_accessible_resources": [
-    {
-      "resources": ["assets/*"],
-      "matches": ["<all_urls>"]
-    }
+    "myfile.js"
   ],
   "background": {
     "service_worker": "background.js"
@@ -29,5 +27,15 @@
       "matches": ["<all_urls>"],
       "js": ["content.js"]
     }
-  ]
+  ],
+  "manifest_version": 2,
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "i-notes@example.com"
+    }
+  }
 }
