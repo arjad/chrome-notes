@@ -1,5 +1,5 @@
 import React from "react";
-import Contributors from "../../components/Contributors.jsx";
+import Contributors from "../../components/contributors.jsx";
 
 const About = () => {
   return (
