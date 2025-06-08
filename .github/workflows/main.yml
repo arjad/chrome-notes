@@ -17,7 +17,6 @@ jobs:
           cd ..
       - name: Create Firefox add-on ZIP
         run: |
-          cd firefox-dist
           zip -r ../I-notes-addon.zip .
           cd ..
       - name: Upload I-notes-extension.zip as artifact
