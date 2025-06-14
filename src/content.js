@@ -36,6 +36,7 @@ const sidebar = createElement('div', {
   right: '-300px',
   width: '300px',
   height: '100vh',
+  display: 'none', // Initially hidden
   backgroundColor: '#fff',
   boxShadow: '-2px 0 8px rgba(0,0,0,0.2)',
   transition: 'right 0.3s ease',
@@ -70,8 +71,12 @@ sidebar.appendChild(content);
 
 // Toggle logic
 openBtn.addEventListener('click', () => {
+  sidebar.style.display = 'block';
   sidebar.style.right = '0';
 });
 closeBtn.addEventListener('click', () => {
-  sidebar.style.right = '-300px';
+  sidebar.style.right = '-50rem';
+  setTimeout(() => {
+    sidebar.style.display = 'none';
+  }, 300);
 });
