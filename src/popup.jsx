@@ -110,6 +110,8 @@ function Popup() {
   function renderSimpleView() {
     const filteredNotes = notes.filter((note) => {
       const plainText = stripHtml(note.text).toLowerCase(); 
+      if (note.deleted) return false;
+
       return plainText.includes(searchQuery.toLowerCase());
     });
     if (filteredNotes.length === 0) {

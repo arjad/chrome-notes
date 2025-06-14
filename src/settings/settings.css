@@ -227,9 +227,25 @@ body.dark-mode .note-item:hover {
   top: -5rem;
   right: 0rem;
   color: black;
-  width: 10rem;
+  width: 15rem;
   border-radius: 5px;
   padding: 0.3rem;
   background-color: white;
   border: 1px solid black;
+}
+
+/*---------------------------------------
+  ABOUT              
+-----------------------------------------*/
+.user_guide-image {
+  border-radius: var(--primary-color);
+  border: 1px solid lightgray;
+  position: relative;
+  height:100%;
+  width: 100%;
+}
+
+.about-thumb {
+  padding-right: 20px;
+  padding-left: 20px;
 }
