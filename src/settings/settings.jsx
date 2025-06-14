@@ -263,6 +263,15 @@ function Settings() {
         </h2>
         {renderTabContent()}
       </div>
+
+      <a className="agent-image" href="https://i-notes-extension.netlify.app/help_center">
+        <img src= "../assets/agent.png" height="70rem" width="70rem"/>
+        <div className="agent-text">
+          Need Help?
+          <br/>
+          I am here to help you.
+        </div>
+      </a>
     </div>
   );
 }

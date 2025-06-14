@@ -212,3 +212,24 @@ body.dark-mode .note-item:hover {
 .theme-icon.active {
   border: 4px solid var(--primary-color);
 }
+.agent-image {
+  position: fixed;
+  bottom: 5rem;
+  right: 5rem;;
+}
+.agent-image img {
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 2px solid var(--primary-color);
+}
+.agent-text {
+  position: absolute;
+  top: -5rem;
+  right: 0rem;
+  color: black;
+  width: 10rem;
+  border-radius: 5px;
+  padding: 0.3rem;
+  background-color: white;
+  border: 1px solid black;
+}
