@@ -14,6 +14,8 @@ function Settings() {
   const [popupSize, setPopupSize] = useState("small");
   const [sortOption, setSortOption] = useState("date-desc");
   const [activeTab, setActiveTab] = useState("settings");
+  const [hideSortNotes, setHideSortNotes] = useState(false);
+
 
   useEffect(() => {
     chrome.storage.local.get([ "settings"], (result) => {
@@ -25,6 +27,7 @@ function Settings() {
         }
         if (result.settings.popupSize) setPopupSize(result.settings.popupSize);
         if (result.settings.sortOption) setSortOption(result.settings.sortOption);
+        if (result.settings.hideSortNotes) setHideSortNotes(result.settings.hideSortNotes || false);
       }
     });
   }, []);
@@ -78,6 +81,18 @@ function Settings() {
     });
   };
 
+  const handleHideSideNotes = (e) => {
+    const value = e.target.value === "true"; // convert string to boolean
+    setHideSortNotes(value);
+  
+    chrome.storage.local.get(["settings"], (result) => {
+      const settings = result.settings || {};
+      settings.hideSortNotes = value; // ✅ camelCase
+      chrome.storage.local.set({ settings });
+    });
+  };
+  
+  
   const renderTabContent = () => {
     switch (activeTab) {
       case "settings":
@@ -167,6 +182,18 @@ function Settings() {
                     <option value="date-asc">Oldest to Newest</option>
                     <option value="alpha-asc">A-Z</option>
                     <option value="alpha-desc">Z-A</option>
+                  </select>
+                </div>
+
+                <div className="mb-3">
+                  <label className="form-label">Side Notes Modal</label>
+                  <select
+                    className="form-select"
+                    value={hideSortNotes.toString()}
+                    onChange={handleHideSideNotes}
+                  >
+                    <option value="false">Show</option>
+                    <option value="true">Hide</option>
                   </select>
                 </div>
               </div>
