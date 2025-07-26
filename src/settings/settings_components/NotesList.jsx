@@ -266,10 +266,10 @@ const NotesList = () => {
   
   const renderNoteIcons = (note) => (
     <div className="icons">
-      {note.deleted && ( <i className="fas fa-xmark delete-icon" onClick={() => permanentlyDeleteNoteById(note.id, notes, setNotes)}></i> )}
-      <i className="fas fa-trash delete-icon" onClick={() => deleteNoteById(note.id, notes, setNotes)}></i>
-      <i className="fas fa-solid fa-pen" onClick={() => editNote(note.id)}></i>
-      <i className="fa-solid fa-copy copy-icon" data-id={note.id} onClick={(e) => handleCopy(e, note.text)}></i>
+      {note.deleted && ( <i className="fas fa-xmark delete-icon" title="Delete permanently" onClick={() => permanentlyDeleteNoteById(note.id, notes, setNotes)}></i> )}
+      <i className="fas fa-trash delete-icon" title="Archive" onClick={() => deleteNoteById(note.id, notes, setNotes)}></i>
+      <i className="fas fa-solid fa-pen" title="Edit" onClick={() => editNote(note.id)}></i>
+      <i className="fa-solid fa-copy copy-icon" title="Copy to clipboard" data-id={note.id} onClick={(e) => handleCopy(e, note.text)}></i>
     </div>
   );
   
