@@ -7,6 +7,7 @@ import Profile from "./settings_components/profile.jsx";
 import About from "./settings_components/about.jsx";
 import NotesList from "./settings_components/NotesList.jsx";
 import UserGuide from "./settings_components/user_guide.jsx";
+import Features from "./settings_components/features.jsx";
 
 function Settings() {
   const [darkMode, setDarkMode] = useState();
@@ -228,6 +229,10 @@ function Settings() {
         return (
           <UserGuide/>
         );
+      case "features":
+        return (
+          <Features/>
+        );
       case "profile":
         return (
           <Profile/>
@@ -271,7 +276,13 @@ function Settings() {
             <i className="fas fa-question-circle"></i>
             User Guide
           </button>
-         
+          <button
+            className={`nav-link ${activeTab === "features" ? "active" : ""}`}
+            onClick={() => setActiveTab("features")}
+          >
+            <i className="fas fa-hand-holding-heart"></i>
+            Features
+          </button>
         </div>
 
         <div
