@@ -5,7 +5,7 @@ const FeaturesList = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("https://eq4zwqitdvfl353njhm3rs6h3e0mziuz.lambda-url.us-east-1.on.aws/")
+    fetch(process.env.LAMBDA_URL)
       .then((res) => res.json())
       .then((json) => {
         setFeatures(json);
