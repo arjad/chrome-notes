@@ -16,10 +16,11 @@ function Settings() {
   const [sortOption, setSortOption] = useState("date-desc");
   const [activeTab, setActiveTab] = useState("settings");
   const [hideSortNotes, setHideSortNotes] = useState(false);
+  const [userProfile, setUserProfile] = useState(null);
 
 
   useEffect(() => {
-    chrome.storage.local.get([ "settings"], (result) => {
+    chrome.storage.local.get([ "settings", "userProfile"], (result) => {
       if (result.settings !== undefined) {
         setDarkMode(result.settings.darkMode);
         setDetailedView(result.settings.detailedView);
@@ -29,6 +30,7 @@ function Settings() {
         if (result.settings.popupSize) setPopupSize(result.settings.popupSize);
         if (result.settings.sortOption) setSortOption(result.settings.sortOption);
         if (result.settings.hideSortNotes) setHideSortNotes(result.settings.hideSortNotes || false);
+        if (result.userProfile !== undefined) setUserProfile(result.userProfile);
       }
     });
   }, []);
@@ -286,11 +288,24 @@ function Settings() {
         </div>
 
         <div
-         className={`nav-link profile-section ${activeTab === "profile" ? "active" : ""}`}
-         onClick={() => setActiveTab("profile")}
+          className={`nav-link profile-section d-flex align-items-center gap-2 ${activeTab === "profile" ? "active" : ""}`}
+          onClick={() => setActiveTab("profile")}
         >
-          <i className="fas fa-user-circle"></i>
-          Profile
+          {userProfile && userProfile.picture ? (
+            <>
+              <img
+                src={userProfile.picture}
+                alt="User"
+                width="24"
+                height="24"
+                style={{ borderRadius: "50%" }}
+              />
+              <span>{userProfile.name.split(" ")[0]}</span>
+            </>
+          ) : (<>
+            <i className="fas fa-user-circle"></i>
+            <span>Profile</span>
+          </>)}
         </div>
       </div>
 
