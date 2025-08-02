@@ -1,12 +1,14 @@
 {
   "manifest_version": 3,
   "name": "I Notes",
-  "version": "1.7.8",
+  "version": "1.7.9",
   "description": "i Notes is a lightweight, easy-to-use extension for taking quick notes, saving developer commands",
   "permissions": [
     "storage", 
     "notifications",
-    "alarms"
+    "alarms",
+    "identity"
+
   ],
   "action": {
     "default_popup": "popup.html"
@@ -29,5 +31,10 @@
       "matches": ["<all_urls>"],
       "js": ["content.js"]
     }
-  ]
+  ],
+  "oauth2": {
+    "client_id": "112404701625-va4cnbnnlhm68kcv248rs91plojci4at.apps.googleusercontent.com",
+    "scopes": ["profile", "email"]
+  }
+
 }
