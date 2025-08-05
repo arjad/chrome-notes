@@ -1,3 +1,4 @@
+// alarm
 chrome.alarms.onAlarm.addListener((alarm) => {
   console.log("Alarm triggered:", alarm.name);
   
@@ -18,10 +19,12 @@ chrome.alarms.onAlarm.addListener((alarm) => {
 
 });
 
+// welcome note
 chrome.runtime.onInstalled.addListener(() => {
   console.log("I Notes extension installed");
 });
 
+// google auth
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "startGoogleLogin") {
     const clientId = process.env.GOOGLE_AUTH_CLIENT_ID;

@@ -19,6 +19,9 @@ const RichText = ({ editorRef, handleFormat }) => {
         <button onClick={() => handleFormat("insertOrderedList")} className="border-0 bg-transparent">
           <i className="fa-solid fa-list-ol"></i>
         </button>
+        <button onClick={() => handleFormat("code")} className="border-0 bg-transparent">
+          <i className="fas fa-code"></i>
+        </button>
       </nav>
       <div
         ref={editorRef}
