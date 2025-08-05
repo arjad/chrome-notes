@@ -195,3 +195,22 @@ i.fa-thumbtack.pinned {
 #note-input{
   min-height: 5rem;
 }
+
+.highlight-code {
+  background-color: #bdbdbd;
+  color: #f8f8f2;
+  font-family: monospace;
+  padding: 2px 4px;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+  padding: 3px;
+  margin: 8px 0;
+  white-space: pre-wrap;
+  font-family: 'Courier New', Courier, monospace;
+  border-radius: 3px;
+  color: black;
+}
+.dark-mode .highlight-code {
+  background-color: #474747;
+  color: white;
+}

@@ -286,7 +286,7 @@ const NotesList = () => {
               title="Unpin note"
             ></i>
           )}
-          <span className="note-text d-inline" dangerouslySetInnerHTML={{ __html: note.text }}></span>
+          <span className="note-text d-inline" dangerouslySetInnerHTML={{ __html: note.text.replace(/`([^`]+)`/g, '<code class="inline-code highlight-code">$1</code>')  }}></span>
           {note.deleted && <span className="badge bg-danger m-lg-2">deleted</span>}
           <span className="options" data-id={note.id}>
             <small className="date">{formatDate(note.date)}</small>
@@ -320,7 +320,7 @@ const NotesList = () => {
                     title="Unpin note"
                   ></i>
                 )}
-                <span className="note-text d-inline" dangerouslySetInnerHTML={{ __html: note.text }}></span>
+                <span className="note-text d-inline" dangerouslySetInnerHTML={{ __html: note.text.replace(/`([^`]+)`/g, '<code class="inline-code highlight-code">$1</code>') }}></span>
                 {note.deleted && <span className="badge bg-danger m-lg-2">deleted</span>}
               </td>
               <td>{note.url && <span>{note.url}</span>}</td>

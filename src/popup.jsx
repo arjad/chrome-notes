@@ -44,7 +44,29 @@ function Popup() {
   };
 
   const handleFormat = (command) => {
-    document.execCommand(command, false, null);
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) return;
+  
+    const range = selection.getRangeAt(0);
+    if (command === "code") {
+      if (range.collapsed) return;
+  
+      const selectedText = range.toString();
+      const isWrapped = selectedText.startsWith("`") && selectedText.endsWith("`");
+      const newText = isWrapped
+        ? selectedText.slice(1, -1)
+        : "`" + selectedText + "`";
+      const newNode = document.createTextNode(newText);
+      range.deleteContents();
+      range.insertNode(newNode);
+      const newRange = document.createRange();
+      newRange.setStart(newNode, 0);
+      newRange.setEnd(newNode, newText.length);
+      selection.removeAllRanges();
+      selection.addRange(newRange);
+    } else {
+      document.execCommand(command, false, null);
+    }
   };
   
   function renderDetailedView() {
@@ -70,7 +92,9 @@ function Popup() {
         else if (sortOption === "alpha-desc") return stripHtml(b.text).localeCompare(stripHtml(a.text));
         return 0;
       })
-      .map((note) => (
+      .map((note) => {
+        const formatedText = note.text.replace(/`([^`]+)`/g, '<code class="inline-code highlight-code">$1</code>');
+        return (
         <div 
           className="note-item"
           key={note.id}
@@ -103,7 +127,7 @@ function Popup() {
             </span>
           </div>
         </div>
-      ));
+      )});
   }
 
 
@@ -129,31 +153,33 @@ function Popup() {
         else if (sortOption === "alpha-desc") return stripHtml(b.text).localeCompare(stripHtml(a.text));
         return 0;
       })
-      .map((note) => (
-        <div className="note-item" key={note.id}>
-          <div>
-            <div className="note-text" dangerouslySetInnerHTML={{ __html: note.text }}></div>
-            <span className="options" data-id={note.id}>
-              <small className="date">{formatDate(note.date)}</small>
-              <div className="icons">
-                <i
-                  className={`fa-solid ${note.pinned ? 'fa-thumbtack pinned' : 'fa-thumbtack'}`}
-                  style={{ cursor: "pointer" }}
-                  onClick={() => togglePinNoteById(note.id, notes, setNotes)}
-                  title={note.pinned ? "Unpin note" : "Pin note"}
-                ></i>
-                <i className="fas fa-trash delete-icon" onClick={() => deleteNoteById(note.id, notes, setNotes)}></i>
-                <i className="fas fa-solid fa-pen" onClick={() => editNoteById(note.id, note.text, setEditingId, setNote, editorRef)}></i>
-                <i
-                  className="fa-solid fa-copy copy-icon"
-                  data-id={note.id}
-                  onClick={(e) => handleCopy(e, note.text)}
-                ></i>
-              </div>
-            </span>
+      .map((note) => {
+        const formatedText = note.text.replace(/`([^`]+)`/g, '<code class="inline-code highlight-code">$1</code>');
+        return (
+          <div className="note-item" key={note.id}>
+            <div>
+              <div className="note-text" dangerouslySetInnerHTML={{ __html: formatedText }}></div>
+              <span className="options" data-id={note.id}>
+                <small className="date">{formatDate(note.date)}</small>
+                <div className="icons">
+                  <i
+                    className={`fa-solid ${note.pinned ? 'fa-thumbtack pinned' : 'fa-thumbtack'}`}
+                    style={{ cursor: "pointer" }}
+                    onClick={() => togglePinNoteById(note.id, notes, setNotes)}
+                    title={note.pinned ? "Unpin note" : "Pin note"}
+                  ></i>
+                  <i className="fas fa-trash delete-icon" onClick={() => deleteNoteById(note.id, notes, setNotes)}></i>
+                  <i className="fas fa-solid fa-pen" onClick={() => editNoteById(note.id, note.text, setEditingId, setNote, editorRef)}></i>
+                  <i
+                    className="fa-solid fa-copy copy-icon"
+                    data-id={note.id}
+                    onClick={(e) => handleCopy(e, note.text)}
+                  ></i>
+                </div>
+              </span>
+            </div>
           </div>
-        </div>
-      ));
+        )});
   }
 
   return (
@@ -191,7 +217,7 @@ function Popup() {
             {selectedNote ? (
               <div>
                 <h6>Note Preview</h6>
-                <div dangerouslySetInnerHTML={{ __html: selectedNote.text }} />
+                <div dangerouslySetInnerHTML={{ __html: selectedNote.text.replace(/`([^`]+)`/g, '<code class="inline-code highlight-code">$1</code>') }} />
               </div>
             ) : (
               <div>Select a note to see details</div>

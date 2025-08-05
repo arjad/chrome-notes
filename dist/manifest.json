@@ -1,15 +1,15 @@
 {
   "manifest_version": 3,
   "name": "I Notes",
-  "version": "1.7.9",
+  "version": "1.8.0",
   "description": "i Notes is a lightweight, easy-to-use extension for taking quick notes, saving developer commands",
   "permissions": [
     "storage", 
     "notifications",
     "alarms",
     "identity"
-
   ],
+  "host_permissions": ["<all_urls>"],
   "action": {
     "default_popup": "popup.html"
   },

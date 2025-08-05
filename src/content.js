@@ -66,7 +66,7 @@ chrome.storage.local.get(["settings"], (result) => {
       cursor: 'pointer',
       boxShadow: '0 0 2px rgba(0,0,0,0.3)',
       fontWeight: 'bold',
-      display: 'none' // Initially hidden
+      display: 'none'
     }, {
       innerText: '×',
       title: 'Hide'
@@ -79,7 +79,6 @@ chrome.storage.local.get(["settings"], (result) => {
       e.stopPropagation();
       openBtn.style.display = 'none';
     
-      // Update chrome.storage.local settings
       chrome.storage.local.get(["settings"], (result) => {
         const settings = result.settings || {};
         settings.hideSortNotes = true;
@@ -187,7 +186,7 @@ chrome.storage.local.get(["settings"], (result) => {
         const html = `
           <div class="note-item" style="padding: 10px 0px; border-bottom: 1px solid #6c757d;">
             <div>
-              <div class="note-text">${note.text}</div>
+              <div class="note-text">${note.text.replace(/`([^`]+)`/g, `<code style="background-color:#c2c2c2;color:black;font-family:'Courier New',Courier,monospace;padding:3px;margin:8px 0;white-space:pre-wrap;border-radius:3px;">$1</code>`) }</div>
               <span class="options" style="display: flex; justify-content: space-between; align-items: center;" data-id="${note.id}">
                 <small class="date" style="font-size: 0.5rem; color: #6c757d; border: 1px solid #6c757d; border-radius: 12px; padding: 1px 8px;">${formatDate(note.date)}</small>
                 <div class="icons">
