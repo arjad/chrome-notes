@@ -27,9 +27,9 @@ const FeaturesList = () => {
   }
 
   return (
-    <div className="row mt-3">
+    <div className="row mt-3 justify-content-center">
       {features.map((f, idx) => (
-        <div key={idx} className="border col-3 mx-2 rounded p-2">
+        <div key={idx} className="border col-3 mx-2 mb-4 rounded p-2">
           {f.status === "released" && (
             <img className="float-end" height="50" src="../assets/released.png" alt="Released" />
           )}

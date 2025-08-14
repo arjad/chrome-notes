@@ -17,6 +17,7 @@ function Settings() {
   const [activeTab, setActiveTab] = useState("settings");
   const [hideSortNotes, setHideSortNotes] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
+  const [showHelp, setShowHelp] = useState(true);
 
 
   useEffect(() => {
@@ -317,14 +318,60 @@ function Settings() {
         {renderTabContent()}
       </div>
 
-      <a className="agent-image" href="https://i-notes-extension.netlify.app/help_center">
-        <img src= "../assets/agent.png" height="70rem" width="70rem"/>
-        <div className="agent-text">
-          Need Help?
-          <br/>
-          I am here to help you.
+      {showHelp && (
+        <div 
+          className="agent-image"
+        >
+          {/* Close button */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              setShowHelp(false);
+            }}
+            style={{
+              position: "absolute",
+              top: "-5px",
+              right: "-5px",
+              background: "gray",
+              color: "white",
+              border: "none",
+              borderRadius: "50%",
+              width: "20px",
+              height: "20px",
+              cursor: "pointer",
+              fontSize: "12px",
+              lineHeight: "18px",
+              textAlign: "center",
+              padding: 0,
+              zIndex: 1
+            }}
+          >
+            ×
+          </button>
+
+          {/* Link wrapper */}
+          <a
+            href="https://i-notes-extension.netlify.app/help_center"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ display: "inline-block", textDecoration: "none" }}
+          >
+            <img
+              src="../assets/agent.png"
+              height="70rem"
+              width="70rem"
+              alt="Help Agent"
+            />
+            <div className="agent-text">
+              Need Help?
+              <br />
+              I am here to help you.
+            </div>
+          </a>
         </div>
-      </a>
+      )}
+
     </div>
   );
 }
