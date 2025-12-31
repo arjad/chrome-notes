@@ -15,6 +15,7 @@ export default function Profile() {
   const [isSigningIn, setIsSigningIn] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [profileData, setProfileData] = useState(null);
+  const [loadingSignIn, setLoadingSignIn] = useState(false);
 
   const [loading, setLoading] = useState(true); // NEW
 
@@ -56,6 +57,8 @@ export default function Profile() {
   // Sign Up handler
   function handleSignUp(e) {
     e.preventDefault();
+    setLoadingSignIn(true);
+
     const attributeList = [
       new CognitoUserAttribute({ Name: "email", Value: email }),
       new CognitoUserAttribute({ Name: "name", Value: name }),
@@ -68,6 +71,7 @@ export default function Profile() {
         console.log("Sign-up successful:", data);
         setNeedsConfirmation(true);
       }
+      setLoadingSignIn(false);
     });
   }
 
@@ -90,9 +94,40 @@ export default function Profile() {
     });
   }
 
+  async function fetchUserNotes(userId, idToken) {
+    const res = await fetch(
+      `${process.env.LAMBDA_URL}get_notes?userId=${userId}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: idToken,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  
+    if (!res.ok) {
+      throw new Error("Failed to fetch notes");
+    }
+    return await res.json();
+  }
+
+  function mergeNotes(localNotes = [], cloudNotes = []) {
+    const map = new Map();
+    cloudNotes.forEach(note => {
+      if (note.id) map.set(note.id, note);
+    });
+    localNotes.forEach(note => {
+      if (note.id) map.set(note.id, note);
+    });
+  
+    return Array.from(map.values());
+  }
+  
   // Sign In handler
   function handleSignIn(e) {
     e.preventDefault();
+    setLoadingSignIn(true);
 
     const authDetails = new AuthenticationDetails({
       Username: email,
@@ -105,7 +140,9 @@ export default function Profile() {
     });
 
     user.authenticateUser(authDetails, {
-      onSuccess: (session) => {
+      onSuccess: async (session) => {
+        setLoadingSignIn(false);
+
         const idToken = session.getIdToken().getJwtToken();
         const accessToken = session.getAccessToken().getJwtToken();
         const refreshToken = session.getRefreshToken().getToken();
@@ -114,6 +151,21 @@ export default function Profile() {
           { idToken, accessToken, refreshToken },
           () => console.log("Tokens stored in chrome.storage.local")
         );
+        const userId = session.getIdToken().payload.sub;
+
+        try {
+          const cloudNotes = await fetchUserNotes(userId, idToken);
+          chrome.storage.local.get(["notes"], (result) => {
+            const localNotes = result.notes || [];
+            const merged = mergeNotes(localNotes, cloudNotes);
+
+            chrome.storage.local.set({ notes: merged }, () =>
+              console.log("Notes merged successfully")
+            );
+          });
+        } catch (err) {
+          console.error(err);
+        }
 
         user.getUserAttributes((err, attrs) => {
           if (!err && attrs) {
@@ -127,6 +179,7 @@ export default function Profile() {
         });
       },
       onFailure: (err) => {
+        setLoadingSignIn(false);
         alert(err.message || "Sign-in failed");
       },
     });
@@ -138,8 +191,8 @@ export default function Profile() {
     if (user) {
       user.signOut();
     }
-    chrome.storage.local.clear(() => {
-      console.log("Tokens cleared");
+    chrome.storage.local.remove(["idToken", "accessToken", "refreshToken"], () => {
+      console.log("Auth tokens cleared, notes preserved");
       setIsLoggedIn(false);
       setIsSigningIn(true);
     });
@@ -177,6 +230,7 @@ export default function Profile() {
           onChange={(e) => setCode(e.target.value)}
           required
         />
+        <br/>
         <br/>
         <button type="submit" className="btn btn-primary btn-sm rounded-pill px-3 text-white">Confirm</button>
       </form>
@@ -220,7 +274,14 @@ export default function Profile() {
             required
           />
           <br/>
-          <button type="submit">Sign Up</button>
+
+          <button type="submit" disabled={loadingSignIn}>
+            {loadingSignIn ? (
+              <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            ) : (
+              "Sign Up"
+            )}
+          </button>
         </form>
       </div>
 
@@ -245,7 +306,13 @@ export default function Profile() {
             required
           />
           <br/>
-          <button type="submit">Sign In</button>
+          <button type="submit" disabled={loadingSignIn}>
+            {loadingSignIn ? (
+              <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            ) : (
+              "Sign In"
+            )}
+          </button>
         </form>
       </div>
 

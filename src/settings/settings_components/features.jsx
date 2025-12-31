@@ -5,7 +5,7 @@ const FeaturesList = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(process.env.LAMBDA_URL)
+    fetch(process.env.LAMBDA_URL + "features")
       .then((res) => res.json())
       .then((json) => {
         setFeatures(json);

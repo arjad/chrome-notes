@@ -2,6 +2,8 @@ import React, {useState, useEffect, useRef} from "react";
 import sanitizeHtml from "sanitize-html";
 import RichTextEditor from "../../components/RichText.jsx";
 import { deleteNoteById, permanentlyDeleteNoteById } from "../utils/commonFunctions.js";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const NotesList = () => {
   const [viewMode, setViewMode] = useState("list");
@@ -24,6 +26,7 @@ const NotesList = () => {
     notesText: '',
     tag: "",
     pinned: "all",
+    deletedStatus: "active",
   });
 
   const handleFilterChange = (field, value) => {
@@ -173,7 +176,7 @@ const NotesList = () => {
           icon.classList.remove("copy-icon-green");
         }, 1000);
     })
-    .catch(err => console.error("Error copying text: ", err));
+    .catch(err => console.log("Error copying text: ", err));
   };
 
   const handleSortOptionChange = (e) => {
@@ -246,7 +249,7 @@ const NotesList = () => {
     if (filters.pinnedStatus === "unpinned" && note.pinned) return false;
   
     if (filters.deletedStatus === "deleted" && !note.deleted) return false;
-    if (filters.deletedStatus === "not_deleted" && note.deleted) return false;
+    if (filters.deletedStatus === "active" && note.deleted) return false;
   
     return true;
   };
@@ -376,6 +379,59 @@ const NotesList = () => {
     document.execCommand(command, false, null);
   };
 
+  function getUserIdFromIdToken(idToken) {
+    const payload = JSON.parse(atob(idToken.split(".")[1]));
+    return payload.sub;
+  }
+  
+  const handleSyncClick = async () => {
+    try {
+      chrome.storage.local.get(["idToken", "notes"], async (result) => {
+        const idToken = result.idToken;
+        const notes = result.notes || [];
+      
+        if (!idToken) {
+          console.log("Missing idToken");
+          toast.warning("First Need to login");
+
+          return;
+        }
+      
+        const userId = getUserIdFromIdToken(idToken);
+      
+        await syncNotesToAWS(idToken, userId);
+      });
+    } catch (err) {
+      console.log("Sync error:", err);
+    }
+  };
+    
+  async function syncNotesToAWS(idToken, userId) {
+    chrome.storage.local.get(["notes"], async (result) => {
+      const localNotes = result.notes || [];
+  
+      if (localNotes.length > 0) {
+        try {
+          const response = await fetch(
+            process.env.LAMBDA_URL + "sync_notes",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: idToken
+              },
+              body: JSON.stringify({ userId, notes: localNotes })
+            }
+          );
+          toast.success("Local Notes saved successfully to cloud!");
+        } catch (err) {
+          toast.error("Failed to save notes. Try again after some time");
+          console.log("Sync failed:", err);
+        }
+      }
+    });
+  }
+
   return (
     <div className="notes-view card border-1">
       <div className="notes-header mb-4 p-3 border-bottom">
@@ -394,6 +450,14 @@ const NotesList = () => {
             </div>
           </div>
           <div className="d-flex gap-3 align-items-center">
+            <button
+              className="btn btn-outline-success btn-sm flex-sm-shrink-0"
+              onClick={handleSyncClick}
+            >
+              <i className="fas fa-cloud-upload-alt me-2"></i>
+              Sync
+            </button>
+
             <button 
               className="btn btn-outline-primary btn-sm flex-sm-shrink-0"
               onClick={openFilterModal}
@@ -512,7 +576,7 @@ const NotesList = () => {
             >
               <option value="both">Both</option>
               <option value="deleted">Deleted</option>
-              <option value="not_deleted">Not Deleted</option>
+              <option value="active">Active</option>
             </select>
           </div>
           <button className="btn btn-primary mt-3" onClick={saveFilters}>Apply Filters</button>

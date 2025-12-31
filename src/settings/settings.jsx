@@ -8,6 +8,7 @@ import About from "./settings_components/about.jsx";
 import NotesList from "./settings_components/NotesList.jsx";
 import UserGuide from "./settings_components/user_guide.jsx";
 import Features from "./settings_components/features.jsx";
+import { toast, ToastContainer } from "react-toastify";
 
 function Settings() {
   const [darkMode, setDarkMode] = useState();
@@ -16,12 +17,15 @@ function Settings() {
   const [sortOption, setSortOption] = useState("date-desc");
   const [activeTab, setActiveTab] = useState("settings");
   const [hideSortNotes, setHideSortNotes] = useState(false);
-  const [userProfile, setUserProfile] = useState(null);
   const [showHelp, setShowHelp] = useState(true);
 
 
-  useEffect(() => {
-    chrome.storage.local.get([ "settings", "userProfile"], (result) => {
+  useEffect(() => {    
+    chrome.storage.local.get([ "settings", "idToken", "accessToken" ], (result) => {
+      const loggedIn = !!result.idToken && !!result.accessToken;
+      if (!loggedIn) {
+        toast.warning("Please login to save notes on cloud");
+      }
       if (result.settings !== undefined) {
         setDarkMode(result.settings.darkMode);
         setDetailedView(result.settings.detailedView);
@@ -31,7 +35,6 @@ function Settings() {
         if (result.settings.popupSize) setPopupSize(result.settings.popupSize);
         if (result.settings.sortOption) setSortOption(result.settings.sortOption);
         if (result.settings.hideSortNotes) setHideSortNotes(result.settings.hideSortNotes || false);
-        if (result.userProfile !== undefined) setUserProfile(result.userProfile);
       }
     });
   }, []);
@@ -247,6 +250,16 @@ function Settings() {
 
   return (
     <div className="d-flex">
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar
+        newestOnTop
+        closeOnClick
+        pauseOnHover
+        draggable
+      />
+
       <div className="settings-tabs">
         <div className="nav flex-column nav-pills">
           <button
@@ -292,29 +305,22 @@ function Settings() {
           className={`nav-link profile-section d-flex align-items-center gap-2 ${activeTab === "profile" ? "active" : ""}`}
           onClick={() => setActiveTab("profile")}
         >
-          {userProfile && userProfile.picture ? (
-            <>
-              <img
-                src={userProfile.picture}
-                alt="User"
-                width="24"
-                height="24"
-                style={{ borderRadius: "50%" }}
-              />
-              <span>{userProfile.name.split(" ")[0]}</span>
-            </>
-          ) : (<>
+          <>
             <i className="fas fa-user-circle"></i>
             <span>Profile</span>
-          </>)}
+          </>
         </div>
       </div>
 
       <div className="container settings-layout mt-4">
-        <h2>
-          {activeTab.charAt(0).toUpperCase() +
-            activeTab.slice(1).replace("-", " ")}
-        </h2>
+        <div className="d-flex justify-content-between">
+          <h2 className="d-inline">
+            {activeTab.charAt(0).toUpperCase() +
+              activeTab.slice(1).replace("-", " ")}
+          </h2>
+
+        </div>
+        
         {renderTabContent()}
       </div>
 
