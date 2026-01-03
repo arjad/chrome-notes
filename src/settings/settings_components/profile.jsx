@@ -20,7 +20,7 @@ export default function Profile() {
   const [loading, setLoading] = useState(true); // NEW
 
   useEffect(() => {
-    chrome.storage.local.get(["idToken", "accessToken"], (result) => {
+    chrome.storage.local.get(["idToken", "accessToken", "notes"], (result) => {
       if (result.idToken && result.accessToken) {
         const user = UserPool.getCurrentUser();
         if (user) {
@@ -32,10 +32,17 @@ export default function Profile() {
                   attrs.forEach((attr) => {
                     profile[attr.getName()] = attr.getValue();
                   });
+                  profile.fullName = profile.name || `${profile.given_name || ""} ${profile.family_name || ""}`;
+                  profile.email = profile.email || session.getIdToken().payload.email;
+                  profile.totalNotes = result.notes
+  ? result.notes.filter((note) => !note.deleted).length
+  : 0;
+
+
                   setProfileData(profile);
                   setIsLoggedIn(true);
                 }
-                setLoading(false); // ✅ done checking
+                setLoading(false);
               });
             } else {
               setLoading(false);
@@ -206,15 +213,39 @@ export default function Profile() {
   }
   
   if (isLoggedIn && profileData) {
-    return (
-      <div>
-        <h2>Welcome, {profileData.name || profileData.email}</h2>
-        <p>Email: {profileData.email}</p>
-        <button
-          id="save-btn"
-          className="btn btn-sm rounded-pill px-3 text-white"
-          onClick={handleSignOut}
-        >Sign Out</button>
+     return (
+      <div className="container py-4">
+        <div className="card shadow-sm p-4">
+          <div className="row align-items-start">
+            <div className="col-12 col-md-2 text-center">
+              <i 
+                className="fas fa-user-circle"
+                style={{ fontSize: "150px", color: "#555" }}
+              ></i>
+            </div>     
+  
+            <div className="col-12 col-md-10">
+              <p> Full Name: {profileData.fullName}</p>
+              <p> Email: {profileData.email}</p>
+            </div>
+          </div>
+          <br/>
+          <hr/>
+          <br/>
+          <div>
+            <h5 className="mb-3">Notes</h5>
+            Total Notes: <strong>{profileData.totalNotes || 0}</strong>
+          </div>
+  
+          <div className="mt-4 text-end">
+            <button
+              className="btn btn-sm btn-danger rounded-pill px-4"
+              onClick={handleSignOut}
+            >
+              Sign Out
+            </button>
+          </div>
+        </div>
       </div>
     );
   }
@@ -242,7 +273,7 @@ export default function Profile() {
 
   return (
     <div
-      className={`container ${!isSigningIn ? "right-panel-active" : ""}`}
+      className={`container pt-5 ${!isSigningIn ? "right-panel-active" : ""}`}
       id="profile-container"
     >
       <div class="form-container sign-up-container">

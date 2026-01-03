@@ -3,15 +3,8 @@ import Contributors from "../../components/contributors.jsx";
 
 const About = () => {
   return (
-    <div className="card p-3">
-      <div className="card-body">
-        <img
-          src="../assets/note.png"
-          width="48"
-          height="48"
-          alt="iNotes Logo"
-          className="mb-3"
-        />
+    <div className="p-3 row">
+      <div className="card-body col-8">
         <p className="text-muted">
           iNotes is a lightweight, open-source Chrome extension designed to help you take and manage notes directly in your browser.
           It’s perfect for quick thoughts, reminders, and to-dos.
@@ -53,8 +46,9 @@ const About = () => {
           or open an issue. We’d love to hear from you!
         </p>
       </div>
-
-      <Contributors />
+      <div className="col-4">
+       <Contributors />
+      </div>
     </div>
   );
 };
