@@ -35,6 +35,56 @@ function Popup() {
     });
   }, []);
 
+  const recognitionRef = useRef(null);
+  const [isListening, setIsListening] = useState(false);
+
+  useEffect(() => {
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      console.error("Speech Recognition not supported");
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = "en-US";
+
+    recognition.onresult = (event) => {
+      let finalTranscript = "";
+
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        if (event.results[i].isFinal) {
+          finalTranscript += event.results[i][0].transcript;
+        }
+      }
+
+      if (finalTranscript && editorRef.current) {
+        editorRef.current.innerHTML += finalTranscript + " ";
+      }
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    recognitionRef.current = recognition;
+  }, []);
+
+  const toggleVoiceInput = () => {
+    if (!recognitionRef.current) return;
+
+    if (isListening) {
+      recognitionRef.current.stop();
+      setIsListening(false);
+    } else {
+      recognitionRef.current.start();
+      setIsListening(true);
+    }
+  };
+
   const openSettingsPage = () => {
     chrome.tabs.create({ url: chrome.runtime.getURL("settings.html") });
   };
@@ -227,7 +277,13 @@ function Popup() {
         </div>
       )}
 
-      <RichTextEditor editorRef={editorRef} handleFormat={handleFormat} />
+      <RichTextEditor
+        editorRef={editorRef}
+        handleFormat={handleFormat}
+        toggleVoiceInput={toggleVoiceInput}
+        isListening={isListening}
+
+      />
 
       <div className="position-relative pb-4 mb-1 pt-2">
         {error && (
@@ -239,8 +295,13 @@ function Popup() {
         <button
           id="save-btn"
           className="btn btn-sm rounded-pill px-3 text-white position-absolute end-0 top-0"
-          onClick={() =>
+          onClick={() => {
+            if (recognitionRef.current) {
+              recognitionRef.current.stop();
+            }
+            setIsListening(false)
             saveNote(editorRef, notes, setNotes, editingId, setEditingId, setError)
+          }
           }
         >
           Save Note

@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 
-const RichText = ({ editorRef, handleFormat }) => {
+const RichText = ({ editorRef, handleFormat, toggleVoiceInput, isListening }) => {
   return (
     <section className="border rich-text mb-2">
       <nav className="flex w-100 border-bottom" aria-label="Text formatting options">
@@ -22,6 +22,27 @@ const RichText = ({ editorRef, handleFormat }) => {
         <button onClick={() => handleFormat("code")} className="border-0 bg-transparent">
           <i className="fas fa-code"></i>
         </button>
+        <div className="voice-wrapper float-end d-flex align-items-center gap-2">
+          {isListening && (
+            <img
+              src="assets/record.gif"
+              alt="Listening..."
+              className="listening-img mr-2"
+              style={{
+                height: "25px"
+              }}
+            />
+          )}
+          <button
+            onClick={toggleVoiceInput}
+            className="border-0 bg-transparent"
+          >
+            <i
+              className={`fa-solid ${isListening ? "fa-stop text-danger" : "fa-microphone"
+                }`}
+            ></i>
+          </button>
+        </div>
       </nav>
       <div
         ref={editorRef}
