@@ -73,22 +73,32 @@ function Popup() {
     recognitionRef.current = recognition;
   }, []);
 
-  const toggleVoiceInput = () => {
+  const toggleVoiceInput = async () => {
     if (!recognitionRef.current) return;
 
     if (isListening) {
       recognitionRef.current.stop();
       setIsListening(false);
     } else {
-      recognitionRef.current.start();
-      setIsListening(true);
+      // Check/Request permission before starting
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        // Stop the stream immediately, we just wanted the permission
+        stream.getTracks().forEach(track => track.stop());
+
+        recognitionRef.current.start();
+        setIsListening(true);
+      } catch (err) {
+        console.error("Microphone permission denied:", err);
+        setError("Microphone permission denied");
+      }
     }
   };
 
   const openSettingsPage = () => {
     chrome.tabs.create({ url: chrome.runtime.getURL("settings.html") });
   };
-  
+
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value.toLowerCase());
   };
@@ -96,11 +106,11 @@ function Popup() {
   const handleFormat = (command) => {
     const selection = window.getSelection();
     if (!selection || selection.rangeCount === 0) return;
-  
+
     const range = selection.getRangeAt(0);
     if (command === "code") {
       if (range.collapsed) return;
-  
+
       const selectedText = range.toString();
       const isWrapped = selectedText.startsWith("`") && selectedText.endsWith("`");
       const newText = isWrapped
@@ -118,10 +128,10 @@ function Popup() {
       document.execCommand(command, false, null);
     }
   };
-  
+
   function renderDetailedView() {
     const filteredNotes = notes.filter((note) => {
-      const plainText = stripHtml(note.text).toLowerCase(); 
+      const plainText = stripHtml(note.text).toLowerCase();
 
       if (note.deleted) return false;
 
@@ -130,12 +140,12 @@ function Popup() {
     if (filteredNotes.length === 0) {
       return <div className="text-center my-2"> No notes found. </div>;
     }
-  
+
     return filteredNotes
       .sort((a, b) => {
         if (a.pinned && !b.pinned) return -1;
         if (!a.pinned && b.pinned) return 1;
-        
+
         if (sortOption === "date-desc") return new Date(b.date) - new Date(a.date);
         else if (sortOption === "date-asc") return new Date(a.date) - new Date(b.date);
         else if (sortOption === "alpha-asc") return stripHtml(a.text).localeCompare(stripHtml(b.text));
@@ -145,45 +155,46 @@ function Popup() {
       .map((note) => {
         const formatedText = note.text.replace(/`([^`]+)`/g, '<code class="inline-code highlight-code">$1</code>');
         return (
-        <div 
-          className="note-item"
-          key={note.id}
-          onClick={() => setSelectedNote(note)}
-          style={{ cursor: 'pointer' }}
-        >
-          <div>
-            <div className="note-text">
-              {note.text.split(" ").slice(0, 2).join(" ")}
-            </div>
-            <span className="options" data-id={note.id}>
-              <div className="icons">
-                <i
-                  className={`fa-solid ${note.pinned ? 'fa-thumbtack pinned' : 'fa-thumbtack'}`}
-                  style={{ cursor: "pointer" }}
-                  onClick={() => togglePinNoteById(note.id, notes, setNotes)}
-                  title={note.pinned ? "Unpin note" : "Pin note"}
-                ></i>
-                <i className="fas fa-trash delete-icon" onClick={() => deleteNoteById(note.id, notes, setNotes)}></i>
-                <i
-                  className="fas fa-solid fa-pen"
-                  onClick={() => editNoteById(note.id, note.text, setEditingId, setNote, editorRef)}
-                ></i>
-                <i
-                className="fa-solid fa-copy copy-icon"
-                data-id={note.id}
-                onClick={(e) => handleCopy(e, note.text)}
-              ></i>
+          <div
+            className="note-item"
+            key={note.id}
+            onClick={() => setSelectedNote(note)}
+            style={{ cursor: 'pointer' }}
+          >
+            <div>
+              <div className="note-text">
+                {note.text.split(" ").slice(0, 2).join(" ")}
               </div>
-            </span>
+              <span className="options" data-id={note.id}>
+                <div className="icons">
+                  <i
+                    className={`fa-solid ${note.pinned ? 'fa-thumbtack pinned' : 'fa-thumbtack'}`}
+                    style={{ cursor: "pointer" }}
+                    onClick={() => togglePinNoteById(note.id, notes, setNotes)}
+                    title={note.pinned ? "Unpin note" : "Pin note"}
+                  ></i>
+                  <i className="fas fa-trash delete-icon" onClick={() => deleteNoteById(note.id, notes, setNotes)}></i>
+                  <i
+                    className="fas fa-solid fa-pen"
+                    onClick={() => editNoteById(note.id, note.text, setEditingId, setNote, editorRef)}
+                  ></i>
+                  <i
+                    className="fa-solid fa-copy copy-icon"
+                    data-id={note.id}
+                    onClick={(e) => handleCopy(e, note.text)}
+                  ></i>
+                </div>
+              </span>
+            </div>
           </div>
-        </div>
-      )});
+        )
+      });
   }
 
 
   function renderSimpleView() {
     const filteredNotes = notes.filter((note) => {
-      const plainText = stripHtml(note.text).toLowerCase(); 
+      const plainText = stripHtml(note.text).toLowerCase();
       if (note.deleted) return false;
 
       return plainText.includes(searchQuery.toLowerCase());
@@ -191,12 +202,12 @@ function Popup() {
     if (filteredNotes.length === 0) {
       return <div className="text-center my-2"> No notes found. </div>;
     }
-  
+
     return filteredNotes
       .sort((a, b) => {
         if (a.pinned && !b.pinned) return -1;
         if (!a.pinned && b.pinned) return 1;
-        
+
         if (sortOption === "date-desc") return new Date(b.date) - new Date(a.date);
         else if (sortOption === "date-asc") return new Date(a.date) - new Date(b.date);
         else if (sortOption === "alpha-asc") return stripHtml(a.text).localeCompare(stripHtml(b.text));
@@ -229,7 +240,8 @@ function Popup() {
               </span>
             </div>
           </div>
-        )});
+        )
+      });
   }
 
   return (
@@ -257,8 +269,8 @@ function Popup() {
       </nav>
 
       {!detailedView ? (
-          <div id="notes-list">{renderSimpleView()}</div>
-        ) : (
+        <div id="notes-list">{renderSimpleView()}</div>
+      ) : (
         <div id="notes-list" className="row">
           <div className="col-4">
             {renderDetailedView()}
