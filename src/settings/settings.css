@@ -1,23 +1,28 @@
 /* Base dark mode styles */
 body.dark-mode {
-  background-color: var(--dark-mode-bg-color);
+	background-color: var(--dark-mode-bg-color);
 }
 
 /* Card elements */
 body.dark-mode .card,
 body.dark-mode .settings-tabs {
-  background: var(--dark-mode-bg-color);
+	background: var(--dark-mode-bg-color);
 }
+
 .dark-mode {
-  background-color: rgb(22, 22, 27) !important;
-  color: white !important;
+	background-color: rgb(22, 22, 27) !important;
+	color: white !important;
 }
 
 /* Text colors */
 body.dark-mode,
 body.dark-mode .note-title,
-body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, 
-body.dark-mode h4, body.dark-mode h5, body.dark-mode h6,
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5,
+body.dark-mode h6,
 body.dark-mode .contributor-name,
 body.dark-mode .form-check-label,
 body.dark-mode .form-label,
@@ -28,15 +33,14 @@ body.dark-mode span,
 body.dark-mode .form-control,
 body.dark-mode .form-select,
 body.dark-mode .settings-layout select,
-body.dark-mode .input-group
-body.dark-mode .input-group-text,
+body.dark-mode .input-group body.dark-mode .input-group-text,
 body.dark-mode .btn-icon:hover,
 body.dark-mode .settings-tabs .nav-link.active,
 body.dark-mode .settings-tabs .nav-link:hover:not(.active),
 body.dark-mode table td,
 body.dark-mode table th,
 body.dark-mode .nav-link.active {
-  color: var(--dark-mode-text-color) !important;
+	color: var(--dark-mode-text-color) !important;
 }
 
 /* Muted text colors */
@@ -47,213 +51,220 @@ body.dark-mode .form-text,
 body.dark-mode .btn-icon,
 body.dark-mode .nav-link,
 body.dark-mode .settings-tabs .nav-link {
-  color: var(--text-muted-dark) !important;
+	color: var(--text-muted-dark) !important;
 }
 
 /* Form elements */
 body.dark-mode .form-control,
 body.dark-mode .form-select,
 body.dark-mode .notes-header select,
-body.dark-mode .input-group
-body.dark-mode .input-group-text {
-  background-color: var(--dark-mode-bg-color);
+body.dark-mode .input-group body.dark-mode .input-group-text {
+	background-color: var(--dark-mode-bg-color);
 }
 
 body.dark-mode .form-control::placeholder {
-  color: var(--text-muted-dark);
+	color: var(--text-muted-dark);
 }
 
 /* Settings tabs */
 body.dark-mode .settings-tabs .nav-link.active {
-  background-color: rgba(255, 255, 255, 0.06);
+	background-color: rgba(255, 255, 255, 0.06);
 }
 
 body.dark-mode .settings-tabs .nav-link:hover:not(.active) {
-  background-color: rgba(255, 255, 255, 0.03);
+	background-color: rgba(255, 255, 255, 0.03);
 }
 
 body.dark-mode .settings-tabs .profile-section {
-  border-color: var(--border-dark);
-  background-color: rgba(255, 255, 255, 0.02);
+	border-color: var(--border-dark);
+	background-color: rgba(255, 255, 255, 0.02);
 }
 
 body.dark-mode hr {
-  border-color: var(--border-dark);
+	border-color: var(--border-dark);
 }
 
 body.dark-mode .text-primary {
-  color: var(--primary-color-light) !important;
+	color: var(--primary-color-light) !important;
 }
 
 body.dark-mode .form-check-input:checked {
-  background-color: var(--primary-color);
-  border-color: var(--primary-color);
+	background-color: var(--primary-color);
+	border-color: var(--primary-color);
 }
 
 body.dark-mode .search-bar .input-group {
-  background-color: var(--dark-mode-bg-color);
-  border-color: var(--border-dark);
+	background-color: var(--dark-mode-bg-color);
+	border-color: var(--border-dark);
 }
 
 /* Note items */
 body.dark-mode .note-item {
-  border-color: var(--border-dark);
+	border-color: var(--border-dark);
 }
 
 body.dark-mode .note-item:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
+
 /* settings tab */
 .modal-content {
-  text-align: left !important;
+	text-align: left !important;
 }
+
 .settings-tabs {
-  position: fixed;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  background: var(--card-light);
-  padding: 1.5rem 0;
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
-  width: 280px;
-  display: flex;
-  flex-direction: column;
-  border-right: 1px solid var(--border-light);
+	position: fixed;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	background: var(--card-light);
+	padding: 1.5rem 0;
+	box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
+	width: 280px;
+	display: flex;
+	flex-direction: column;
+	border-right: 1px solid var(--border-light);
 }
 
 .settings-tabs .nav-pills {
-  flex: 1;
-  padding: 1rem 0;
+	flex: 1;
+	padding: 1rem 0;
 }
 
 .settings-tabs .nav-link {
-  color: var(--text-muted-light);
-  padding: 0.875rem 2rem;
-  transition: all 0.2s ease;
-  border-left: 3px solid transparent;
-  text-align: left;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 0.25rem 0;
+	color: var(--text-muted-light);
+	padding: 0.875rem 2rem;
+	transition: all 0.2s ease;
+	border-left: 3px solid transparent;
+	text-align: left;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin: 0.25rem 0;
 }
 
 .settings-tabs .nav-link i {
-  font-size: 1.1rem;
-  width: 24px;
-  text-align: center;
-  opacity: 0.8;
-  transition: all 0.2s ease;
+	font-size: 1.1rem;
+	width: 24px;
+	text-align: center;
+	opacity: 0.8;
+	transition: all 0.2s ease;
 }
 
 .settings-tabs .nav-link.active {
-  color: var(--primary-color);
-  background-color: rgba(104, 73, 147, 0.08);
-  border-left: 8px solid var(--primary-color);
-  font-weight: 500;
+	color: var(--primary-color);
+	background-color: rgba(104, 73, 147, 0.08);
+	border-left: 8px solid var(--primary-color);
+	font-weight: 500;
 }
 
 .settings-tabs .nav-link:hover:not(.active) {
-  background-color: rgba(0, 0, 0, 0.03);
-  color: var(--text-light);
+	background-color: rgba(0, 0, 0, 0.03);
+	color: var(--text-light);
 }
 
 .settings-layout {
-  margin-left: 20rem !important;
+	margin-left: 20rem !important;
 }
 
 .filters-section {
-  background-color: var(--card-light);
-  border-radius: 8px;
-  padding: 1.5rem;
-  position: sticky;
-  top: 1rem;
+	background-color: var(--card-light);
+	border-radius: 8px;
+	padding: 1.5rem;
+	position: sticky;
+	top: 1rem;
 }
 
 .note-item {
-  transition: all 0.2s ease;
-  border: 1px solid var(--border-light);
+	transition: all 0.2s ease;
+	border: 1px solid var(--border-light);
 }
 
 .note-item:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  transform: translateY(-1px);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+	transform: translateY(-1px);
 }
 
 /* Notes Container Styles */
 .notes-container {
-  transition: all 0.3s ease;
+	transition: all 0.3s ease;
 }
 
 .notes-container.grid-view {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(25rem, 1fr));
-  gap: 1.25rem;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(25rem, 1fr));
+	gap: 1.25rem;
 }
 
 .notes-container.list-view {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
 }
 
-.list-view td{
-  max-width: 17rem;
-  padding: 0.7rem;
+.list-view td {
+	max-width: 17rem;
+	padding: 0.7rem;
 }
 
-.theme-icon{
-  height:12rem;
-  width: 18rem;;
-  border:1px solid gray;
-  border-radius: 10px;
+.theme-icon {
+	height: 12rem;
+	width: 18rem;
+	;
+	border: 1px solid gray;
+	border-radius: 10px;
 }
+
 .theme-icon.active {
-  border: 4px solid var(--primary-color);
+	border: 4px solid var(--primary-color);
 }
+
 .agent-image {
-  position: fixed;
-  bottom: 5rem;
-  right: 5rem;;
+	position: fixed;
+	bottom: 5rem;
+	right: 5rem;
+	;
 }
+
 .agent-image img {
-  border-radius: 50%;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  border: 2px solid var(--primary-color);
+	border-radius: 50%;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	border: 2px solid var(--primary-color);
 }
+
 .agent-text {
-  position: absolute;
-  top: -5rem;
-  right: 0rem;
-  color: black;
-  width: 15rem;
-  border-radius: 5px;
-  padding: 0.3rem;
-  background-color: white;
-  border: 1px solid black;
+	position: absolute;
+	top: -5rem;
+	right: 0rem;
+	color: black;
+	width: 15rem;
+	border-radius: 5px;
+	padding: 0.3rem;
+	background-color: white;
+	border: 1px solid black;
 }
 
 /*---------------------------------------
   ABOUT              
 -----------------------------------------*/
 .user_guide-image {
-  border-radius: var(--primary-color);
-  border: 1px solid lightgray;
-  position: relative;
-  height:100%;
-  width: 100%;
+	border-radius: var(--primary-color);
+	border: 1px solid lightgray;
+	position: relative;
+	height: 100%;
+	width: 100%;
 }
 
 .about-thumb {
-  padding-right: 20px;
-  padding-left: 20px;
+	padding-right: 20px;
+	padding-left: 20px;
 }
 
 /* profile */
 
 body.dark-mode #profile-container h2 {
-  color: var(--text-muted-dark);
+	color: var(--text-muted-dark);
 }
 
 #profile-container h2 {
@@ -324,13 +335,13 @@ body.dark-mode#profile-container form {
 	padding: 12px 15px;
 	margin: 8px 0;
 	width: 100%;
-  color: var(--text-muted-dark);
+	color: var(--text-muted-dark);
 }
 
 #profile-container.container {
 	border-radius: 10px;
-  	box-shadow: 0 14px 28px rgba(0,0,0,0.25), 
-			0 10px 10px rgba(0,0,0,0.22);
+	box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25),
+		0 10px 10px rgba(0, 0, 0, 0.22);
 	position: relative;
 	overflow: hidden;
 	width: 768px;
@@ -353,7 +364,7 @@ body.dark-mode#profile-container form {
 
 #profile-container.right-panel-active .sign-in-container {
 	transform: translateX(100%);
-  opacity: 0;
+	opacity: 0;
 }
 
 #profile-container .sign-up-container {
@@ -371,12 +382,15 @@ body.dark-mode#profile-container form {
 }
 
 @keyframes show {
-	0%, 49.99% {
+
+	0%,
+	49.99% {
 		opacity: 0;
 		z-index: 1;
 	}
-	
-	50%, 100% {
+
+	50%,
+	100% {
 		opacity: 1;
 		z-index: 5;
 	}
@@ -393,7 +407,7 @@ body.dark-mode#profile-container form {
 	z-index: 100;
 }
 
-#profile-container.right-panel-active .overlay-container{
+#profile-container.right-panel-active .overlay-container {
 	transform: translateX(-100%);
 }
 
@@ -409,12 +423,12 @@ body.dark-mode#profile-container form {
 	left: -100%;
 	height: 100%;
 	width: 200%;
-  	transform: translateX(0);
+	transform: translateX(0);
 	transition: transform 0.6s ease-in-out;
 }
 
 #profile-container.right-panel-active .overlay {
-  	transform: translateX(50%);
+	transform: translateX(50%);
 }
 
 #profile-container .overlay-panel {

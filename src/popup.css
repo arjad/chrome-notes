@@ -31,6 +31,42 @@ body[data-size="large"] {
   border-radius: 4px;
 }
 #notes-list::-webkit-scrollbar-thumb {
-  background: var(--primary-color);
+  background: lightgray;
   border-radius: 4px;
+}
+.announcement-banner {
+  display: flex;
+  align-items: flex-start;
+  background: linear-gradient(135deg, rgba(104, 73, 147, 0.1), rgba(104, 73, 147, 0.3));
+  border: 2px solid #4B0082;
+  color: #333;
+  padding: 0.5rem 0.6rem;
+  border-radius: 6px;
+  margin-bottom: 0.8rem;
+  font-size: 0.75rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+.dark-mode .announcement-banner {
+  color: white;
+  background: linear-gradient(135deg, rgba(104, 73, 147, 0.2), rgba(104, 73, 147, 0.5));
+  border-color: #6a0dad;
+}
+.announcement-text {
+  flex-grow: 1;
+  line-height: 1.4;
+}
+.close-announcement {
+  cursor: pointer;
+  margin-left: 10px;
+  padding: 2px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.close-announcement:hover {
+  background: rgba(255, 255, 255, 0.4);
 }

@@ -265,7 +265,14 @@ chrome.storage.local.get(["settings"], (result) => {
         const copyBtn = noteItem.querySelector('.copy-btn');
         if (copyBtn) {
           copyBtn.addEventListener('click', () => {
-            navigator.clipboard.writeText(copyBtn.dataset.text).then(() => {
+            let text = copyBtn.dataset.text;
+            let formattedText = text.replace(/<br\s*[\/]?>/gi, '\n')
+                                    .replace(/<\/p>|<\/div>|<\/li>/gi, '\n');
+            const tempElement = document.createElement("div");
+            tempElement.innerHTML = formattedText;
+            const plainText = (tempElement.textContent || tempElement.innerText).trim();
+
+            navigator.clipboard.writeText(plainText).then(() => {
               copyBtn.innerText = 'Copied!';
               setTimeout(() => copyBtn.innerText = 'Copy', 1000);
             });

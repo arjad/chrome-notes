@@ -57,6 +57,7 @@
   word-wrap: break-word;
   overflow-wrap: break-word;
   font-size: 0.9rem;
+  white-space: pre-wrap;
 }
 .date {
   font-size: 0.5rem;
@@ -81,19 +82,20 @@
   padding: 0.3rem;
   margin-right: 0.3rem;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 .options .icons .fa-pen,
 .list-view i.fa-pen {
-  border: 1px solid darkgreen;
-  color: darkgreen;
+  border: 1px solid lightgray;
+  color: lightgray;
 }
 .options .icons .fa-clock {
-  border: 1px solid purple;
-  color: purple;
+  border: 1px solid lightgray;
+  color: lightgray;
 }
 .copy-icon {
-  border: 1px solid blue;
-  color: blue;
+  border: 1px solid lightgray;
+  color: lightgray;
 }
 .copy-icon-green {
   border: 1px solid darkgreen !important;
@@ -101,27 +103,43 @@
   color: darkgreen !important;
 }
 .delete-icon {
-  border: 1px solid var(--danger) !important;
-  color: var(--danger) !important;
+  border: 1px solid lightgray !important;
+  color: lightgray !important;
 }
 .options .icons .fa-pen:hover,
+.list-view i.fa-pen:hover,
 .copy-icon:hover,
-.delete-icon:hover {
+.delete-icon:hover,
+.options .icons .fa-clock:hover,
+.fa-thumbtack:hover {
   color: white !important;
 }
 .copy-icon:hover {
   background-color: blue;
+  border-color: blue !important;
 }
 .delete-icon:hover {
   background-color: var(--danger);
+  border-color: var(--danger) !important;
 }
-.options .icons .fa-pen:hover {
+.options .icons .fa-pen:hover,
+.list-view i.fa-pen:hover {
   background-color: darkgreen;
+  border-color: darkgreen !important;
+}
+.options .icons .fa-clock:hover {
+  background-color: purple;
+  border-color: purple !important;
 }
 .fa-thumbtack {
   background-color: transparent;
-  color: #ffd700;
-  border: 1px solid #ffd700 !important;
+  color: lightgray;
+  border: 1px solid lightgray !important;
+}
+.fa-thumbtack:hover {
+  background-color: #ffd700;
+  border-color: #ffd700 !important;
+  color: white !important;
 }
 .dark-mode .pinned-note {
   background-color: transparent;
@@ -134,7 +152,11 @@
 i.fa-thumbtack.pinned {
   background-color: transparent;
   border: 2px solid #ffd700 !important;
-  color: #ffd700;
+  color: #ffd700 !important;
+}
+i.fa-thumbtack.pinned:hover {
+  background-color: #ffd700;
+  color: white !important;
 }
 #save-btn {
   background-color: var(--primary-color);
@@ -194,6 +216,7 @@ i.fa-thumbtack.pinned {
 }
 #note-input{
   min-height: 5rem;
+  white-space: pre-wrap;
 }
 
 .highlight-code {

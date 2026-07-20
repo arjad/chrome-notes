@@ -7,7 +7,8 @@
     "storage", 
     "notifications",
     "alarms",
-    "identity"
+    "identity",
+    "contextMenus"
   ],
   "host_permissions": ["<all_urls>"],
   "action": {
