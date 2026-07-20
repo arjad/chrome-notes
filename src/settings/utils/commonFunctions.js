@@ -7,10 +7,11 @@ const saveNote = (editorRef, notes, setNotes, editingId, setEditingId, setError)
   }
   setError("");
 
-  const sanitizedHtml = sanitizeHtml(editorRef.current.innerHTML, {
-    allowedTags: ["b", "i", "u", "p", "br", "strong", "em", "ul", "ol", "li"],
+  let sanitizedHtml = sanitizeHtml(editorRef.current.innerHTML, {
+    allowedTags: ["b", "i", "u", "p", "br", "strong", "em", "ul", "ol", "li", "div"],
     allowedAttributes: {},
   });
+  sanitizedHtml = sanitizedHtml.replace(/&nbsp;/g, ' ').replace(/&amp;nbsp;/g, ' ');
 
   if (editingId) {
     const updatedNotes = notes.map((n) =>
@@ -50,9 +51,14 @@ const permanentlyDeleteNoteById = (id, notes, setNotes) => {
 };
 
 function handleCopy(event, text) {
+  let formattedText = text.replace(/<br\s*[\/]?>/gi, '\n')
+                          .replace(/<\/p>|<\/div>|<\/li>/gi, '\n')
+                          .replace(/&nbsp;/g, ' ')
+                          .replace(/&amp;nbsp;/g, ' ');
   const tempElement = document.createElement("div");
-  tempElement.innerHTML = text;
-  const plainText = tempElement.textContent || tempElement.innerText;
+  tempElement.innerHTML = formattedText;
+  let plainText = (tempElement.textContent || tempElement.innerText).trim();
+  plainText = plainText.replace(/\u00A0/g, ' ');
 
   navigator.clipboard.writeText(plainText)
     .then(() => {

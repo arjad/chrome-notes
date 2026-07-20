@@ -22,6 +22,37 @@ chrome.alarms.onAlarm.addListener((alarm) => {
 // welcome note
 chrome.runtime.onInstalled.addListener(() => {
   console.log("I Notes extension installed");
+  
+  chrome.contextMenus.create({
+    id: "add-inote",
+    title: "Add this text as note in iNotes",
+    contexts: ["selection"]
+  });
+});
+
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+  if (info.menuItemId === "add-inote" && info.selectionText) {
+    chrome.storage.local.get(["notes"], (result) => {
+      const notes = result.notes || [];
+      const newNote = {
+        id: Date.now().toString(),
+        text: `<div>${info.selectionText}</div>`,
+        date: new Date().toISOString(),
+        pinned: false,
+      };
+      
+      const updatedNotes = [newNote, ...notes];
+      chrome.storage.local.set({ notes: updatedNotes }, () => {
+        chrome.notifications.create({
+          type: "basic",
+          iconUrl: "/assets/note.png",
+          title: "i Notes",
+          message: "Note saved successfully!",
+          silent: true
+        });
+      });
+    });
+  }
 });
 
 // google auth

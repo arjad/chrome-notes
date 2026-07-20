@@ -196,7 +196,7 @@ function Settings() {
                   <label className="form-label">Side Notes Modal</label>
                   <select
                     className="form-select"
-                    value={hideSortNotes.toString()}
+                    value={String(hideSortNotes)}
                     onChange={handleHideSideNotes}
                   >
                     <option value="false">Show</option>

@@ -16,9 +16,10 @@ function Popup() {
   const editorRef = useRef(null);
   const [detailedView, setDetailedView] = useState(false);
   const [selectedNote, setSelectedNote] = useState(null);
+  const [showAnnouncement, setShowAnnouncement] = useState(false);
 
   useEffect(() => {
-    chrome.storage.local.get(["notes", "settings"], (result) => {
+    chrome.storage.local.get(["notes", "settings", "hasSeenContextMenuAnnouncement"], (result) => {
       if (result.settings !== undefined) {
         if (result.settings.darkMode == "dark" || (result.settings.darkMode == "system" && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
           document.body.classList.add("dark-mode");
@@ -31,6 +32,9 @@ function Popup() {
       }
       if (result.notes) {
         setNotes(result.notes);
+      }
+      if (!result.hasSeenContextMenuAnnouncement) {
+        setShowAnnouncement(true);
       }
     });
   }, []);
@@ -153,7 +157,7 @@ function Popup() {
         >
           <div>
             <div className="note-text">
-              {note.text.split(" ").slice(0, 2).join(" ")}
+              {stripHtml(note.text).split(" ").slice(0, 2).join(" ")}
             </div>
             <span className="options" data-id={note.id}>
               <div className="icons">
@@ -255,6 +259,17 @@ function Popup() {
           <i className="fa-solid fa-bars" style={{ cursor: "pointer" }} onClick={openSettingsPage}></i>
         </div>
       </nav>
+      {showAnnouncement && (
+        <div className="announcement-banner">
+          <div className="announcement-text">
+            <strong>New feature:</strong> select text from any webpage and right click to save it directly in i Notes
+          </div>
+          <i className="fa-solid fa-xmark close-announcement" onClick={() => {
+            setShowAnnouncement(false);
+            chrome.storage.local.set({ hasSeenContextMenuAnnouncement: true });
+          }}></i>
+        </div>
+      )}
 
       {!detailedView ? (
           <div id="notes-list">{renderSimpleView()}</div>
