@@ -116,10 +116,21 @@ const NotesList = () => {
     setError("");
   
     let sanitizedHtml = sanitizeHtml(editorRef.current.innerHTML, {
-      allowedTags: ["b", "i", "u", "p", "br", "strong", "em", "ul", "ol", "li", "div"],
-      allowedAttributes: {},
+      allowedTags: ["b", "i", "u", "p", "br", "strong", "em", "ul", "ol", "li", "div", "img"],
+      allowedAttributes: {
+        img: ['src', 'alt', 'width', 'height']
+      },
+      allowedSchemes: ['http', 'https', 'ftp', 'mailto', 'data']
     });
     sanitizedHtml = sanitizedHtml.replace(/&nbsp;/g, ' ').replace(/&amp;nbsp;/g, ' ');
+
+    let base64Image = null;
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = sanitizedHtml;
+    const imgTag = tempDiv.querySelector("img");
+    if (imgTag && imgTag.src.startsWith("data:image")) {
+      base64Image = imgTag.src;
+    }
   
     if (editingId) {
       const updatedNotes = notes.map((n) =>
@@ -127,6 +138,7 @@ const NotesList = () => {
           ? { 
               ...n, 
               text: sanitizedHtml, 
+              image: base64Image,
               date: new Date().toISOString(), 
               alarmTime: note.alarmTime,
               alarmDays: selectedDays,
@@ -143,6 +155,7 @@ const NotesList = () => {
       const newNote = {
         id: Date.now().toString(),
         text: sanitizedHtml,
+        image: base64Image,
         date: new Date().toISOString(),
         alarmDays: selectedDays,
         alarmTime: note.alarmTime,

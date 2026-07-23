@@ -8,8 +8,11 @@ const saveNote = (editorRef, notes, setNotes, editingId, setEditingId, setError)
   setError("");
 
   let sanitizedHtml = sanitizeHtml(editorRef.current.innerHTML, {
-    allowedTags: ["b", "i", "u", "p", "br", "strong", "em", "ul", "ol", "li", "div"],
-    allowedAttributes: {},
+    allowedTags: ["b", "i", "u", "p", "br", "strong", "em", "ul", "ol", "li", "div", "img"],
+    allowedAttributes: {
+      img: ["src", "alt", "width", "height"],
+    },
+    allowedSchemes: ["http", "https", "ftp", "mailto", "data"],
   });
   sanitizedHtml = sanitizedHtml.replace(/&nbsp;/g, ' ').replace(/&amp;nbsp;/g, ' ');
 

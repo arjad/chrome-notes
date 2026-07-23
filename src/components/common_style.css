@@ -237,3 +237,8 @@ i.fa-thumbtack.pinned:hover {
   background-color: #474747;
   color: white;
 }
+
+#note-input img, .rich-text img, .note-text img {
+  max-width: 100%;
+  height: auto;
+}
