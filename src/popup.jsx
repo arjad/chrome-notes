@@ -262,7 +262,7 @@ function Popup() {
       {showAnnouncement && (
         <div className="announcement-banner">
           <div className="announcement-text">
-            <strong>New feature:</strong> select text from any webpage and right click to save it directly in i Notes
+            <strong>New feature:</strong> You can now add images with the image icon over the text box
           </div>
           <i className="fa-solid fa-xmark close-announcement" onClick={() => {
             setShowAnnouncement(false);
