@@ -17,8 +17,17 @@ function Popup() {
   const [detailedView, setDetailedView] = useState(false);
   const [selectedNote, setSelectedNote] = useState(null);
   const [showAnnouncement, setShowAnnouncement] = useState(false);
+  const [currentUrl, setCurrentUrl] = useState("");
+  const [linkToUrl, setLinkToUrl] = useState(false);
 
   useEffect(() => {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (tabs[0] && tabs[0].url) {
+        try {
+          setCurrentUrl(new URL(tabs[0].url).origin);
+        } catch (e) {}
+      }
+    });
     chrome.storage.local.get(["notes", "settings", "hasSeenContextMenuAnnouncement"], (result) => {
       if (result.settings !== undefined) {
         if (result.settings.darkMode == "dark" || (result.settings.darkMode == "system" && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
@@ -92,7 +101,7 @@ function Popup() {
   const openSettingsPage = () => {
     chrome.tabs.create({ url: chrome.runtime.getURL("settings.html") });
   };
-  
+
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value.toLowerCase());
   };
@@ -100,11 +109,11 @@ function Popup() {
   const handleFormat = (command) => {
     const selection = window.getSelection();
     if (!selection || selection.rangeCount === 0) return;
-  
+
     const range = selection.getRangeAt(0);
     if (command === "code") {
       if (range.collapsed) return;
-  
+
       const selectedText = range.toString();
       const isWrapped = selectedText.startsWith("`") && selectedText.endsWith("`");
       const newText = isWrapped
@@ -122,24 +131,24 @@ function Popup() {
       document.execCommand(command, false, null);
     }
   };
-  
+
   function renderDetailedView() {
     const filteredNotes = notes.filter((note) => {
-      const plainText = stripHtml(note.text).toLowerCase(); 
-
       if (note.deleted) return false;
+      if (note.url && note.url !== currentUrl) return false;
 
+      const plainText = stripHtml(note.text).toLowerCase();
       return plainText.includes(searchQuery.toLowerCase());
     });
     if (filteredNotes.length === 0) {
       return <div className="text-center my-2"> No notes found. </div>;
     }
-  
+
     return filteredNotes
       .sort((a, b) => {
         if (a.pinned && !b.pinned) return -1;
         if (!a.pinned && b.pinned) return 1;
-        
+
         if (sortOption === "date-desc") return new Date(b.date) - new Date(a.date);
         else if (sortOption === "date-asc") return new Date(a.date) - new Date(b.date);
         else if (sortOption === "alpha-asc") return stripHtml(a.text).localeCompare(stripHtml(b.text));
@@ -149,58 +158,60 @@ function Popup() {
       .map((note) => {
         const formatedText = note.text.replace(/`([^`]+)`/g, '<code class="inline-code highlight-code">$1</code>');
         return (
-        <div 
-          className="note-item"
-          key={note.id}
-          onClick={() => setSelectedNote(note)}
-          style={{ cursor: 'pointer' }}
-        >
-          <div>
-            <div className="note-text">
-              {stripHtml(note.text).split(" ").slice(0, 2).join(" ")}
-            </div>
-            <span className="options" data-id={note.id}>
-              <div className="icons">
-                <i
-                  className={`fa-solid ${note.pinned ? 'fa-thumbtack pinned' : 'fa-thumbtack'}`}
-                  style={{ cursor: "pointer" }}
-                  onClick={() => togglePinNoteById(note.id, notes, setNotes)}
-                  title={note.pinned ? "Unpin note" : "Pin note"}
-                ></i>
-                <i className="fas fa-trash delete-icon" onClick={() => deleteNoteById(note.id, notes, setNotes)}></i>
-                <i
-                  className="fas fa-solid fa-pen"
-                  onClick={() => editNoteById(note.id, note.text, setEditingId, setNote, editorRef)}
-                ></i>
-                <i
-                className="fa-solid fa-copy copy-icon"
-                data-id={note.id}
-                onClick={(e) => handleCopy(e, note.text)}
-              ></i>
+          <div
+            className="note-item"
+            key={note.id}
+            onClick={() => setSelectedNote(note)}
+            style={{ cursor: 'pointer' }}
+          >
+            <div>
+              <div className="note-text">
+                {stripHtml(note.text).split(" ").slice(0, 2).join(" ")}
               </div>
-            </span>
+              <span className="options" data-id={note.id}>
+                <div className="icons">
+                  <i
+                    className={`fa-solid ${note.pinned ? 'fa-thumbtack pinned' : 'fa-thumbtack'}`}
+                    style={{ cursor: "pointer" }}
+                    onClick={() => togglePinNoteById(note.id, notes, setNotes)}
+                    title={note.pinned ? "Unpin note" : "Pin note"}
+                  ></i>
+                  <i className="fas fa-trash delete-icon" onClick={() => deleteNoteById(note.id, notes, setNotes)}></i>
+                  <i
+                    className="fas fa-solid fa-pen"
+                    onClick={() => editNoteById(note.id, note.text, setEditingId, setNote, editorRef)}
+                  ></i>
+                  <i
+                    className="fa-solid fa-copy copy-icon"
+                    data-id={note.id}
+                    onClick={(e) => handleCopy(e, note.text)}
+                  ></i>
+                </div>
+              </span>
+            </div>
           </div>
-        </div>
-      )});
+        )
+      });
   }
 
 
   function renderSimpleView() {
     const filteredNotes = notes.filter((note) => {
-      const plainText = stripHtml(note.text).toLowerCase(); 
       if (note.deleted) return false;
+      if (note.url && note.url !== currentUrl) return false;
 
+      const plainText = stripHtml(note.text).toLowerCase();
       return plainText.includes(searchQuery.toLowerCase());
     });
     if (filteredNotes.length === 0) {
       return <div className="text-center my-2"> No notes found. </div>;
     }
-  
+
     return filteredNotes
       .sort((a, b) => {
         if (a.pinned && !b.pinned) return -1;
         if (!a.pinned && b.pinned) return 1;
-        
+
         if (sortOption === "date-desc") return new Date(b.date) - new Date(a.date);
         else if (sortOption === "date-asc") return new Date(a.date) - new Date(b.date);
         else if (sortOption === "alpha-asc") return stripHtml(a.text).localeCompare(stripHtml(b.text));
@@ -214,7 +225,14 @@ function Popup() {
             <div>
               <div className="note-text" dangerouslySetInnerHTML={{ __html: formatedText }}></div>
               <span className="options" data-id={note.id}>
-                <small className="date">{formatDate(note.date)}</small>
+                <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+                  <small className="date">{formatDate(note.date)}</small>
+                  {note.url && (
+                    <small style={{ fontSize: '0.6rem', color: 'white', background: '#684993', borderRadius: '12px', padding: '2px 6px', display: 'inline-block', maxWidth: '80px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={note.url}>
+                      {new URL(note.url).hostname.replace('www.', '')}
+                    </small>
+                  )}
+                </div>
                 <div className="icons">
                   <i
                     className={`fa-solid ${note.pinned ? 'fa-thumbtack pinned' : 'fa-thumbtack'}`}
@@ -233,7 +251,8 @@ function Popup() {
               </span>
             </div>
           </div>
-        )});
+        )
+      });
   }
 
   return (
@@ -272,8 +291,8 @@ function Popup() {
       )}
 
       {!detailedView ? (
-          <div id="notes-list">{renderSimpleView()}</div>
-        ) : (
+        <div id="notes-list">{renderSimpleView()}</div>
+      ) : (
         <div id="notes-list" className="row">
           <div className="col-4">
             {renderDetailedView()}
@@ -297,7 +316,8 @@ function Popup() {
         handleFormat={handleFormat}
         toggleVoiceInput={toggleVoiceInput}
         isListening={isListening}
-
+        onUrlToggle={() => setLinkToUrl(!linkToUrl)}
+        isUrlLinked={linkToUrl}
       />
 
       <div className="position-relative pb-4 mb-1 pt-2">
@@ -315,7 +335,7 @@ function Popup() {
               recognitionRef.current.stop();
             }
             setIsListening(false)
-            saveNote(editorRef, notes, setNotes, editingId, setEditingId, setError)
+            saveNote(editorRef, notes, setNotes, editingId, setEditingId, setError, linkToUrl ? currentUrl : undefined)
           }
           }
         >

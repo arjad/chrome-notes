@@ -191,7 +191,8 @@ chrome.storage.local.get(["settings"], (result) => {
       listOl: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="width: 16px; height: 16px; fill: currentColor;"><path d="M61.77 401l17.5-20.15a19.92 19.92 0 0 0 5.07-14.19v-3.31C84.34 356 80.5 352 73 352H16a8 8 0 0 0-8 8v16a8 8 0 0 0 8 8h22.83a157.41 157.41 0 0 0-11 12.31l-5.61 7c-4 5.07-5.25 10.13-2.8 14.88l1.05 1.93c3 5.76 6.29 7.88 12.25 7.88h4.73c10.33 0 15.94 2.44 15.94 9.09 0 4.72-4.2 8.22-14.36 8.22a41.54 41.54 0 0 1-15.47-3.12c-6.49-3.88-11.74-3.5-15.6 3.12l-5.59 9.31c-3.72 6.13-3.19 11.72 2.63 15.94 7.71 4.69 20.38 9.44 37 9.44 34.16 0 48.5-22.75 48.5-44.12-.03-14.38-9.12-29.76-28.73-34.88zM496 224H176a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h320a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16zm0-160H176a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h320a16 16 0 0 0 16-16V80a16 16 0 0 0-16-16zm0 320H176a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h320a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16zM16 160h64a8 8 0 0 0 8-8v-16a8 8 0 0 0-8-8H64V40a8 8 0 0 0-8-8H32a8 8 0 0 0-7.14 4.42l-8 16A8 8 0 0 0 24 64h8v64H16a8 8 0 0 0-8 8v16a8 8 0 0 0 8 8zm-3.91 160H80a8 8 0 0 0 8-8v-16a8 8 0 0 0-8-8H41.32c3.29-10.29 48.34-18.68 48.34-56.44 0-29.06-25-39.56-44.47-39.56-21.36 0-33.8 10-40.46 18.75-4.37 5.59-3 10.84 2.8 15.37l8.58 6.88c5.61 4.56 11 2.47 16.12-2.44a13.44 13.44 0 0 1 9.46-3.84c3.33 0 9.28 1.56 9.28 8.75C51 248.19 0 257.31 0 304.59v4C0 316 5.08 320 12.09 320z"/></svg>',
       code: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" style="width: 18px; height: 16px; fill: currentColor;"><path d="M278.9 511.5l-61-17.7c-6.4-1.8-10-8.5-8.2-14.9L346.2 8.7c1.8-6.4 8.5-10 14.9-8.2l61 17.7c6.4 1.8 10 8.5 8.2 14.9L293.8 503.3c-1.9 6.4-8.5 10.1-14.9 8.2zm-114-112.2l43.5-46.4c4.6-4.9 4.3-12.7-.8-17.2L117 256l90.6-79.7c5.1-4.5 5.5-12.3.8-17.2l-43.5-46.4c-4.5-4.8-12.1-5.1-17-.5L3.8 247.2c-5.1 4.7-5.1 12.8 0 17.5l144.1 135.1c4.9 4.6 12.5 4.4 17-.5zm327.2.6l144.1-135.1c5.1-4.7 5.1-12.8 0-17.5L492.1 112.1c-4.8-4.5-12.4-4.3-17 .5L431.6 159c-4.6 4.9-4.3 12.7.8 17.2L523 256l-90.6 79.7c-5.1 4.5-5.5 12.3-.8 17.2l43.5 46.4c4.5 4.9 12.1 5.1 17 .6z"/></svg>',
       image: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="width: 16px; height: 16px; fill: currentColor;"><path d="M464 448H48c-26.51 0-48-21.49-48-48V112c0-26.51 21.49-48 48-48h416c26.51 0 48 21.49 48 48v288c0 26.51-21.49 48-48 48zM112 120c-30.928 0-56 25.072-56 56s25.072 56 56 56 56-25.072 56-56-25.072-56-56-56zM64 384h384V272l-87.515-87.515c-4.686-4.686-12.284-4.686-16.971 0L208 320l-55.515-55.515c-4.686-4.686-12.284-4.686-16.971 0L64 336v48z"/></svg>',
-      mic: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512" style="width: 14px; height: 16px; fill: currentColor;"><path d="M176 352c53.02 0 96-42.98 96-96V96c0-53.02-42.98-96-96-96S80 42.98 80 96v160c0 53.02 42.98 96 96 96zm160-160h-16c-8.84 0-16 7.16-16 16v48c0 74.8-64.49 134.82-140.79 127.38C96.71 376.89 48 317.11 48 250.3V208c0-8.84-7.16-16-16-16H16c-8.84 0-16 7.16-16 16v40.16c0 89.64 63.97 169.55 152 181.69V464H96c-8.84 0-16 7.16-16 16v16c0 8.84 7.16 16 16 16h160c8.84 0 16-7.16 16-16v-16c0-8.84-7.16-16-16-16h-56v-33.77C285.71 418.47 352 344.9 352 256v-48c0-8.84-7.16-16-16-16z"/></svg>'
+      mic: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512" style="width: 14px; height: 16px; fill: currentColor;"><path d="M176 352c53.02 0 96-42.98 96-96V96c0-53.02-42.98-96-96-96S80 42.98 80 96v160c0 53.02 42.98 96 96 96zm160-160h-16c-8.84 0-16 7.16-16 16v48c0 74.8-64.49 134.82-140.79 127.38C96.71 376.89 48 317.11 48 250.3V208c0-8.84-7.16-16-16-16H16c-8.84 0-16 7.16-16 16v40.16c0 89.64 63.97 169.55 152 181.69V464H96c-8.84 0-16 7.16-16 16v16c0 8.84 7.16 16 16 16h160c8.84 0 16-7.16 16-16v-16c0-8.84-7.16-16-16-16h-56v-33.77C285.71 418.47 352 344.9 352 256v-48c0-8.84-7.16-16-16-16z"/></svg>',
+      link: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" style="width: 16px; height: 16px; fill: currentColor;"><path d="M579.8 267.7c56.5-56.5 56.5-148 0-204.5c-50-50-128.8-56.5-186.3-15.4l-1.6 1.1c-14.4 10.3-17.7 30.3-7.4 44.6s30.3 17.7 44.6 7.4l1.6-1.1c32.1-22.9 76-19.3 103.8 8.6c31.5 31.5 31.5 82.5 0 114l-96 96c-31.5 31.5-82.5 31.5-114 0c-27.9-27.9-31.5-71.8-8.6-103.8l1.1-1.6c10.3-14.4 6.9-34.4-7.4-44.6s-34.4-6.9-44.6 7.4l-1.1 1.6C206.5 251.2 213 330 263 380c56.5 56.5 148 56.5 204.5 0l112.3-112.3zM263 132c-56.5-56.5-148-56.5-204.5 0L-53.8 244.3c-56.5 56.5-56.5 148 0 204.5c50 50 128.8 56.5 186.3 15.4l1.6-1.1c14.4-10.3 17.7-30.3 7.4-44.6s-30.3-17.7-44.6-7.4l-1.6 1.1c-32.1 22.9-76 19.3-103.8-8.6c-31.5-31.5-31.5-82.5 0-114l96-96c31.5-31.5 82.5-31.5 114 0c27.9 27.9 31.5 71.8 8.6 103.8l-1.1 1.6c-10.3 14.4-6.9 34.4 7.4 44.6s34.4 6.9 44.6-7.4l1.1-1.6C433.5 260.8 427 182 377 132L263 132z"/></svg>'
     };
 
     // Toolbar Container
@@ -205,6 +206,7 @@ chrome.storage.local.get(["settings"], (result) => {
     });
 
     const formatGroup = createElement('div', { display: 'flex', gap: '4px', alignItems: 'center' });
+    let isUrlSpecific = false;
 
     const buttons = [
       { cmd: 'bold', icon: icons.bold },
@@ -294,52 +296,66 @@ chrome.storage.local.get(["settings"], (result) => {
             );
           }
         } else if (btn.cmd === 'insertImage') {
-          chrome.storage.local.get(['idToken'], (result) => {
-            if (result.idToken) {
-              fileInput.click();
-            } else {
-              // Create an overlay over the sidebar
-              const overlay = document.createElement('div');
-              overlay.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:10000;display:flex;justify-content:center;align-items:center;backdrop-filter:blur(2px);transition:opacity 0.3s;';
+            chrome.storage.local.get(["idToken"], (result) => {
+              if (result.idToken) {
+                fileInput.click();
+              } else {
+                // Create an overlay over the sidebar
+                const overlay = document.createElement('div');
+                overlay.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:10000;display:flex;justify-content:center;align-items:center;backdrop-filter:blur(2px);transition:opacity 0.3s;';
 
-              const toast = document.createElement('div');
-              toast.style.cssText = 'background:#1e1e2e;color:white;padding:20px;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.4);display:flex;flex-direction:column;align-items:center;gap:12px;border:1px solid rgba(255,255,255,0.15);text-align:center;max-width:85%;';
+                const toast = document.createElement('div');
+                toast.style.cssText = 'background:#1e1e2e;color:white;padding:20px;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.4);display:flex;flex-direction:column;align-items:center;gap:12px;border:1px solid rgba(255,255,255,0.15);text-align:center;max-width:85%;';
 
-              const lockIcon = document.createElement('span');
-              lockIcon.textContent = '🔒';
-              lockIcon.style.cssText = 'font-size:24px;margin-bottom:4px;';
+                const lockIcon = document.createElement('span');
+                lockIcon.textContent = '🔒';
+                lockIcon.style.cssText = 'font-size:24px;margin-bottom:4px;';
 
-              const msg = document.createElement('span');
-              msg.style.cssText = 'font-size:14px;color:white;line-height:1.4;';
-              msg.innerHTML = 'You need to <strong>log in</strong> to add images.';
+                const msg = document.createElement('span');
+                msg.style.cssText = 'font-size:14px;color:white;line-height:1.4;';
+                msg.innerHTML = 'You need to <strong>log in</strong> to add images.';
 
-              const loginBtn = document.createElement('button');
-              loginBtn.textContent = 'Go to Profile';
-              loginBtn.style.cssText = 'background:#684993;color:white;padding:8px 16px;border-radius:6px;border:none;font-size:13px;font-weight:bold;cursor:pointer;width:100%;margin-top:8px;';
-              loginBtn.addEventListener('click', () => {
-                chrome.runtime.sendMessage({ action: "openTab", url: chrome.runtime.getURL('settings.html?tab=profile') });
-                overlay.remove();
-              });
+                const loginBtn = document.createElement('button');
+                loginBtn.textContent = 'Go to Profile';
+                loginBtn.style.cssText = 'background:#684993;color:white;padding:8px 16px;border-radius:6px;border:none;font-size:13px;font-weight:bold;cursor:pointer;width:100%;margin-top:8px;';
+                loginBtn.addEventListener('click', () => {
+                  chrome.runtime.sendMessage({ action: "openTab", url: chrome.runtime.getURL('settings.html?tab=profile') });
+                  overlay.remove();
+                });
 
-              toast.appendChild(lockIcon);
-              toast.appendChild(msg);
-              toast.appendChild(loginBtn);
-              overlay.appendChild(toast);
-              sidebar.appendChild(overlay);
+                toast.appendChild(lockIcon);
+                toast.appendChild(msg);
+                toast.appendChild(loginBtn);
+                overlay.appendChild(toast);
+                sidebar.appendChild(overlay);
 
-              setTimeout(() => {
-                overlay.style.opacity = '0';
-                setTimeout(() => overlay.remove(), 300);
-              }, 5000);
-            }
-          });
-        } else {
-          document.execCommand(btn.cmd, false, null);
-        }
+                setTimeout(() => {
+                  overlay.style.opacity = '0';
+                  setTimeout(() => overlay.remove(), 300);
+                }, 5000);
+              }
+            });
+          } else {
+            document.execCommand(btn.cmd, false, null);
+          }
+        });
+
+        formatGroup.appendChild(button);
       });
 
-      formatGroup.appendChild(button);
-    });
+      const linkBtn = createElement('button', {
+        background: 'transparent', border: 'none', cursor: 'pointer', padding: '4px',
+        color: textColor, borderRadius: '4px'
+      });
+      linkBtn.innerHTML = icons.link;
+      linkBtn.title = "Link to Website URL";
+      linkBtn.addEventListener('click', () => {
+        isUrlSpecific = !isUrlSpecific;
+        linkBtn.style.color = isUrlSpecific ? 'white' : textColor;
+        linkBtn.style.backgroundColor = isUrlSpecific ? '#684993' : 'transparent';
+      });
+      formatGroup.appendChild(linkBtn);
+    
     toolbar.appendChild(formatGroup);
 
     // Voice input button in toolbar
@@ -483,7 +499,8 @@ chrome.storage.local.get(["settings"], (result) => {
 
     function displayNotes(notes) {
       notesList.innerHTML = '';
-      const activeNotes = notes.filter(n => !n.deleted);
+      const currentUrl = window.location.origin;
+      const activeNotes = notes.filter(n => !n.deleted && (!n.url || n.url === currentUrl));
       if (!activeNotes.length) {
         notesList.appendChild(createElement('li', { padding: '10px', textAlign: 'center', color: isDarkMode ? '#b8b8b8' : '#666', fontStyle: 'italic' }, { innerText: 'No notes yet' }));
         return;
@@ -510,9 +527,12 @@ chrome.storage.local.get(["settings"], (result) => {
             <div>
               <div class="note-text inotes-note-text">${note.text}</div>
               <span class="options" style="display:flex; justify-content:space-between; align-items:center;" data-id="${note.id}">
-                <small class="date" style="font-size:0.5rem; color:${itemBorderColor}; border:1px solid ${itemBorderColor}; border-radius:12px; padding:1px 8px;">
-                  ${new Date(note.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-                </small>
+                <div style="display: flex; gap: 4px; align-items: center;">
+                  <small class="date" style="font-size:0.5rem; color:${itemBorderColor}; border:1px solid ${itemBorderColor}; border-radius:12px; padding:1px 8px;">
+                    ${new Date(note.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                  </small>
+                  ${note.url ? `<small style="font-size:0.5rem; color:white; background:#684993; border-radius:12px; padding:1px 8px; display:inline-block; max-width:80px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${note.url}">${new URL(note.url).hostname.replace('www.','')}</small>` : ''}
+                </div>
                 <div class="icons">
                   <span class="pin-btn inotes-icon-btn inotes-pin-btn ${pinClass}" data-id="${note.id}" title="${titleText}">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" style="width: 10px; height: 10px; fill: currentColor; pointer-events: none;"><path d="M32 32C32 14.3 46.3 0 64 0H320c17.7 0 32 14.3 32 32s-14.3 32-32 32H290.5l11.4 148.2c.5 6.5 4.4 11.9 10.4 15L370.7 256H13.3l58.4-28.7c6-3 9.9-8.5 10.4-15L93.5 64H64c-17.7 0-32-14.3-32-32zM192 320L192 512l-48-48-48 48 0-192 192 0z"/></svg>
@@ -599,8 +619,10 @@ chrome.storage.local.get(["settings"], (result) => {
       const searchText = searchInput.value.toLowerCase();
       const tempDiv = document.createElement('div');
       
+      const currentUrl = window.location.origin;
       const filtered = allNotes.filter(note => {
         if (note.deleted) return false;
+        if (note.url && note.url !== currentUrl) return false;
         // Extract plain text to avoid matching base64 image strings
         tempDiv.innerHTML = note.text;
         return tempDiv.textContent.toLowerCase().includes(searchText);
@@ -616,11 +638,13 @@ chrome.storage.local.get(["settings"], (result) => {
       chrome.storage.local.get(["notes"], (result) => {
         let notes = result.notes || [];
         if (editingNoteId) {
-          notes = notes.map(note => note.id === editingNoteId ? { ...note, text: content } : note);
+          notes = notes.map(note => note.id === editingNoteId ? { ...note, text: content, ...(isUrlSpecific ? { url: window.location.origin } : {}) } : note);
           editingNoteId = null;
           saveBtn.innerText = "Save Note";
         } else {
-          notes.unshift({ id: Date.now(), text: content, date: new Date().toISOString(), deleted: false });
+          const newNote = { id: Date.now(), text: content, date: new Date().toISOString(), deleted: false };
+          if (isUrlSpecific) newNote.url = window.location.origin;
+          notes.unshift(newNote);
         }
         chrome.storage.local.set({ notes }, () => {
           editor.innerHTML = '';

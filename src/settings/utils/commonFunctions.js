@@ -1,6 +1,6 @@
 const sanitizeHtml = require("sanitize-html");
 
-const saveNote = (editorRef, notes, setNotes, editingId, setEditingId, setError) => {
+const saveNote = (editorRef, notes, setNotes, editingId, setEditingId, setError, url = undefined) => {
   if (editorRef.current.innerHTML.trim() === "") {
     setError("Please enter a note.");
     return;
@@ -17,9 +17,14 @@ const saveNote = (editorRef, notes, setNotes, editingId, setEditingId, setError)
   sanitizedHtml = sanitizedHtml.replace(/&nbsp;/g, ' ').replace(/&amp;nbsp;/g, ' ');
 
   if (editingId) {
-    const updatedNotes = notes.map((n) =>
-      n.id === editingId ? { ...n, text: sanitizedHtml, date: new Date().toISOString() } : n
-    );
+    const updatedNotes = notes.map((n) => {
+      if (n.id === editingId) {
+        const updatedNote = { ...n, text: sanitizedHtml, date: new Date().toISOString() };
+        if (url !== undefined) updatedNote.url = url;
+        return updatedNote;
+      }
+      return n;
+    });
     setNotes(updatedNotes);
     chrome.storage.local.set({ notes: updatedNotes });
     setEditingId(null);
@@ -30,6 +35,9 @@ const saveNote = (editorRef, notes, setNotes, editingId, setEditingId, setError)
       date: new Date().toISOString(),
       pinned: false,
     };
+    if (url) {
+      newNote.url = url;
+    }
 
     const updatedNotes = [newNote, ...notes];
     setNotes(updatedNotes);

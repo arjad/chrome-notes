@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { toast } from "react-toastify";
 
-const RichText = ({ editorRef, handleFormat, toggleVoiceInput, isListening }) => {
+const RichText = ({ editorRef, handleFormat, toggleVoiceInput, isListening, onUrlToggle, isUrlLinked }) => {
   const fileInputRef = useRef(null);
   const [isUploading, setIsUploading] = useState(false);
   const [showLoginOverlay, setShowLoginOverlay] = useState(false);
@@ -176,6 +176,18 @@ const RichText = ({ editorRef, handleFormat, toggleVoiceInput, isListening }) =>
           title="Insert Image"
         >
           <i className={`fa-solid ${isUploading ? 'fa-spinner fa-spin' : 'fa-image'}`}></i>
+        </button>
+        <button
+          onClick={() => onUrlToggle && onUrlToggle()}
+          className={`border-0 ${!isUrlLinked ? 'bg-transparent' : ''}`}
+          title="Link to Website URL"
+          style={{
+            color: isUrlLinked ? 'white' : 'inherit',
+            backgroundColor: isUrlLinked ? '#684993' : 'transparent',
+            borderRadius: '4px'
+          }}
+        >
+          <i className="fa-solid fa-link"></i>
         </button>
         <div className="voice-wrapper float-end d-flex align-items-center gap-2">
           {isListening && (
