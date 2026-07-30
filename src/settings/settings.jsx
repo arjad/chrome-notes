@@ -37,6 +37,17 @@ function Settings() {
         if (result.settings.hideSortNotes) setHideSortNotes(result.settings.hideSortNotes || false);
       }
     });
+
+    // Navigate to a specific tab if a query param or hash is present in the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const tabParam = urlParams.get('tab');
+    const hash = window.location.hash.replace('#', '');
+    
+    if (tabParam) {
+      setActiveTab(tabParam);
+    } else if (hash) {
+      setActiveTab(hash);
+    }
   }, []);
   const handleDarkModeChange = (value) => {
     setDarkMode(value);

@@ -1,8 +1,10 @@
 import React, { useState, useRef } from "react";
+import { toast } from "react-toastify";
 
 const RichText = ({ editorRef, handleFormat, toggleVoiceInput, isListening }) => {
   const fileInputRef = useRef(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [showLoginOverlay, setShowLoginOverlay] = useState(false);
 
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
@@ -70,7 +72,76 @@ const RichText = ({ editorRef, handleFormat, toggleVoiceInput, isListening }) =>
   };
 
   return (
-    <section className="border rich-text mb-2">
+    <section className="border rich-text mb-2" style={{ position: 'relative' }}>
+      {showLoginOverlay && (
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          background: 'rgba(0,0,0,0.6)',
+          zIndex: 10000,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          backdropFilter: 'blur(2px)',
+          borderRadius: '4px'
+        }}>
+          <div style={{
+            background: '#1e1e2e',
+            color: 'white',
+            padding: '20px',
+            borderRadius: '12px',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '12px',
+            border: '1px solid rgba(255,255,255,0.15)',
+            textAlign: 'center',
+            maxWidth: '85%'
+          }}>
+            <span style={{ fontSize: '24px', marginBottom: '4px' }}>🔒</span>
+            <span style={{ fontSize: '14px', color: 'white', lineHeight: '1.4' }}>
+              You need to <strong>log in</strong> to add images.
+            </span>
+            <button 
+              onClick={() => {
+                chrome.tabs.create({ url: chrome.runtime.getURL('settings.html?tab=profile') });
+                setShowLoginOverlay(false);
+              }}
+              style={{
+                background: '#684993',
+                color: 'white',
+                padding: '8px 16px',
+                borderRadius: '6px',
+                border: 'none',
+                fontSize: '13px',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                width: '100%',
+                marginTop: '8px'
+              }}
+            >
+              Go to Profile
+            </button>
+            <button
+              onClick={() => setShowLoginOverlay(false)}
+              style={{
+                background: 'transparent',
+                color: '#aaa',
+                border: 'none',
+                fontSize: '12px',
+                cursor: 'pointer',
+                marginTop: '4px'
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
       <nav className="flex w-100 border-bottom" aria-label="Text formatting options">
         <button onClick={() => handleFormat("bold")} className="border-0 bg-transparent">
           <i className="fa-solid fa-bold"></i>
@@ -91,7 +162,15 @@ const RichText = ({ editorRef, handleFormat, toggleVoiceInput, isListening }) =>
           <i className="fas fa-code"></i>
         </button>
         <button 
-          onClick={() => fileInputRef.current && fileInputRef.current.click()} 
+          onClick={() => {
+            chrome.storage.local.get(["idToken"], (result) => {
+              if (result.idToken) {
+                fileInputRef.current && fileInputRef.current.click();
+              } else {
+                setShowLoginOverlay(true);
+              }
+            });
+          }} 
           className="border-0 bg-transparent" 
           disabled={isUploading}
           title="Insert Image"

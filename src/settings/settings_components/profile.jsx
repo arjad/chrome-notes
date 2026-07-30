@@ -45,15 +45,18 @@ export default function Profile() {
                 setLoading(false);
               });
             } else {
+              chrome.storage.local.remove(["idToken", "accessToken", "refreshToken"]);
               setLoading(false);
               setIsSigningIn(true);
             }
           });
         } else {
+          chrome.storage.local.remove(["idToken", "accessToken", "refreshToken"]);
           setLoading(false);
           setIsSigningIn(true);
         }
       } else {
+        chrome.storage.local.remove(["idToken", "accessToken", "refreshToken"]);
         setLoading(false);
         setIsSigningIn(true);
       }
