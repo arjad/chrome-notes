@@ -19,6 +19,10 @@ function Popup() {
   const [showAnnouncement, setShowAnnouncement] = useState(false);
   const [currentUrl, setCurrentUrl] = useState("");
   const [linkToUrl, setLinkToUrl] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [userProfile, setUserProfile] = useState(null);
+  const [showLoginWarning, setShowLoginWarning] = useState(true);
+  const [showSearchInput, setShowSearchInput] = useState(false);
 
   useEffect(() => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -28,7 +32,19 @@ function Popup() {
         } catch (e) {}
       }
     });
-    chrome.storage.local.get(["notes", "settings", "hasSeenContextMenuAnnouncement"], (result) => {
+    chrome.storage.local.get(["notes", "settings", "hasSeenContextMenuAnnouncement", "idToken", "userProfile", "loginWarningDismissedAt"], (result) => {
+      const loggedIn = !!result.idToken;
+      setIsLoggedIn(loggedIn);
+      
+      const now = Date.now();
+      const oneWeek = 7 * 24 * 60 * 60 * 1000;
+      if (result.loginWarningDismissedAt && (now - result.loginWarningDismissedAt < oneWeek)) {
+        setShowLoginWarning(false);
+      }
+
+      if (result.userProfile) {
+        setUserProfile(result.userProfile);
+      }
       if (result.settings !== undefined) {
         if (result.settings.darkMode == "dark" || (result.settings.darkMode == "system" && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
           document.body.classList.add("dark-mode");
@@ -268,16 +284,46 @@ function Popup() {
           </h6>
         </div>
         <div className="d-flex align-items-center gap-2">
-          <input
-            type="text"
-            id="search-input"
-            onChange={handleSearchChange}
-            className="form-control form-control-sm input-tag"
-            placeholder="Search notes..."
-          />
+          <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+            <i 
+              className="fa-solid fa-magnifying-glass" 
+              style={{ cursor: "pointer", position: 'absolute', right: showSearchInput ? 'auto' : '0', left: showSearchInput ? '8px' : 'auto', zIndex: 1, color: showSearchInput ? '#999' : 'inherit', display: showSearchInput ? 'none' : 'block' }} 
+              onClick={() => { setShowSearchInput(true); setTimeout(() => document.getElementById('search-input').focus(), 100); }}
+            ></i>
+            <input
+              type="text"
+              id="search-input"
+              onChange={handleSearchChange}
+              className="form-control form-control-sm input-tag"
+              placeholder="Search notes..."
+              style={{ 
+                width: showSearchInput ? '150px' : '0px', 
+                padding: showSearchInput ? '4px 8px' : '0px', 
+                opacity: showSearchInput ? 1 : 0, 
+                transition: 'all 0.3s ease',
+                border: showSearchInput ? '' : 'none',
+                visibility: showSearchInput ? 'visible' : 'hidden'
+              }}
+            />
+          </div>
+          {userProfile && userProfile.picture ? (
+            <img src={userProfile.picture} alt="Profile" style={{ width: "16px", height: "16px", borderRadius: "50%", cursor: "pointer" }} onClick={() => chrome.tabs.create({ url: chrome.runtime.getURL("settings.html?tab=profile") })} />
+          ) : (
+            <i className="fa-solid fa-user" style={{ cursor: "pointer", fontSize: "14px" }} onClick={() => chrome.tabs.create({ url: chrome.runtime.getURL("settings.html?tab=profile") })}></i>
+          )}
           <i className="fa-solid fa-bars" style={{ cursor: "pointer" }} onClick={openSettingsPage}></i>
         </div>
       </nav>
+      {!isLoggedIn && showLoginWarning && (
+        <div style={{ backgroundColor: "#d8b4e2", color: "#333", padding: "8px", borderRadius: "4px", marginBottom: "10px", display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "12px" }}>
+          <span>
+            ⚠️ <span style={{ cursor: "pointer", textDecoration: "underline", color: "#684993", fontWeight: "bold" }} onClick={() => chrome.tabs.create({ url: chrome.runtime.getURL("settings.html?tab=profile") })}>Login</span> to make sure that notes are kept safe
+          </span>
+          <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+            <i className="fa-solid fa-xmark" style={{ cursor: "pointer" }} onClick={() => { setShowLoginWarning(false); chrome.storage.local.set({ loginWarningDismissedAt: Date.now() }); }}></i>
+          </div>
+        </div>
+      )}
       {showAnnouncement && (
         <div className="announcement-banner">
           <div className="announcement-text">

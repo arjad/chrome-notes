@@ -253,23 +253,7 @@ export default function Profile() {
     );
   }
   
-  if (needsConfirmation) {
-    return (
-      <form onSubmit={handleConfirm}>
-        <input
-          type="text"
-          className="bg-transparent border"
-          placeholder="Confirmation code"
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-          required
-        />
-        <br/>
-        <br/>
-        <button type="submit" className="btn btn-primary btn-sm rounded-pill px-3 text-white">Confirm</button>
-      </form>
-    );
-  }
+
 
   const goToSignUp = () => setIsSigningIn(false);
   const goToSignIn = () => setIsSigningIn(true);
@@ -289,6 +273,7 @@ export default function Profile() {
             placeholder="Full name"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            style={{ color: "black" }}
             required
           />
           <input
@@ -297,6 +282,7 @@ export default function Profile() {
             placeholder="Email address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            style={{ color: "black" }}
             required
           />
           <input
@@ -305,9 +291,11 @@ export default function Profile() {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            style={{ color: "black", marginBottom: "5px" }}
             required
           />
-          <br/>
+          <small style={{ color: "#666", fontSize: "0.75em", marginBottom: "15px", alignSelf: "flex-start", width: "100%", textAlign: "left" }}>* Must be at least 8 characters & contain a capital letter</small>
+
 
           <button type="submit" disabled={loadingSignIn}>
             {loadingSignIn ? (
@@ -329,6 +317,7 @@ export default function Profile() {
             value={email}
             className="bg-transparent border" 
             onChange={(e) => setEmail(e.target.value)}
+            style={{ color: "black" }}
             required
           />
           <input
@@ -337,6 +326,7 @@ export default function Profile() {
             value={password}
             className="bg-transparent border" 
             onChange={(e) => setPassword(e.target.value)}
+            style={{ color: "black" }}
             required
           />
           <br/>
@@ -364,6 +354,24 @@ export default function Profile() {
             </div>
         </div>
       </div>
+      {needsConfirmation && (
+        <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "rgba(255,255,255,0.9)", zIndex: 1000, display: "flex", justifyContent: "center", alignItems: "center", backdropFilter: "blur(4px)" }}>
+          <form onSubmit={handleConfirm} style={{ padding: "30px", background: "white", borderRadius: "8px", boxShadow: "0 10px 25px rgba(0,0,0,0.2)", textAlign: "center", minWidth: "300px" }}>
+            <h4 style={{ marginBottom: "20px" }}>Confirm your email</h4>
+            <input
+              type="text"
+              className="border"
+              placeholder="Confirmation code"
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+              style={{ color: "black", marginBottom: "20px", padding: "10px", width: "100%", borderRadius: "4px" }}
+              required
+            />
+            <br/>
+            <button type="submit" className="btn btn-primary rounded-pill px-4 py-2 text-white" style={{ width: "100%" }}>Confirm</button>
+          </form>
+        </div>
+      )}
     </div>
   );
 }

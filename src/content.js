@@ -18,8 +18,17 @@ let shouldRunNotes = false;
 let allNotes = [];
 let editingNoteId = null;
 
-chrome.storage.local.get(["settings"], (result) => {
+chrome.storage.local.get(["settings", "idToken", "loginWarningDismissedAt", "userProfile"], (result) => {
   const settings = result.settings || {};
+  const idToken = result.idToken;
+  let showBanner = !idToken;
+  if (result.loginWarningDismissedAt) {
+    const now = Date.now();
+    const oneWeek = 7 * 24 * 60 * 60 * 1000;
+    if (now - result.loginWarningDismissedAt < oneWeek) {
+      showBanner = false;
+    }
+  }
   shouldRunNotes = settings.hideSortNotes;
 
   if (!settings.hideSortNotes) {
@@ -144,23 +153,126 @@ chrome.storage.local.get(["settings"], (result) => {
     }, { innerText: '×' });
     sidebar.appendChild(closeBtn);
 
-    // Header with search
+    // Header with search and icons
     const imageUrl = chrome.runtime.getURL("assets/note.png");
     const content = document.createElement('div');
     content.style.marginBottom = '10px';
     content.style.display = 'flex';
     content.style.alignItems = 'center';
     content.style.justifyContent = 'space-between';
-    content.innerHTML = `
-      <div class="inline">
+    
+    const titleDiv = createElement('div', { display: 'flex', alignItems: 'center' });
+    titleDiv.innerHTML = `
+      <div class="inline" style="display: flex; align-items: center;">
         <img style="height: 20px; display: inline; margin-right: 2px;" src="${imageUrl}" />
-        <b><i style="color: #684993;">i</i>
-        <span>Notes</span></b>
+        <b style="display: flex; align-items: center;"><i style="color: #684993; margin-right: 2px;">i</i>
+        <span style="margin-left: 2px;">Notes</span></b>
       </div>
-      <input type="text" id="notes-search" placeholder="Search notes..." 
-        style="padding: 6px 8px; border-radius: 4px; font-size: 12px; flex:1; margin-left:5px; background-color: ${isDarkMode ? 'transparent' : 'white'}; color: ${textColor}; border: 1px solid ${borderColor};" />
     `;
+
+    const rightSideDiv = createElement('div', { display: 'flex', alignItems: 'center', gap: '10px' });
+
+    const searchContainer = createElement('div', { position: 'relative', display: 'flex', alignItems: 'center' });
+    
+    let showSearchInput = false;
+
+    const searchIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="width: 14px; height: 14px; fill: currentColor;"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>`;
+    const searchIcon = createElement('span', { cursor: 'pointer', display: 'flex', alignItems: 'center', color: textColor });
+    searchIcon.innerHTML = searchIconSvg;
+
+    const searchBox = createElement('input', {
+      padding: '0px',
+      borderRadius: '4px',
+      fontSize: '12px',
+      backgroundColor: isDarkMode ? 'transparent' : 'white',
+      color: textColor,
+      border: 'none',
+      width: '0px',
+      opacity: '0',
+      transition: 'all 0.3s ease',
+      visibility: 'hidden',
+      outline: 'none'
+    }, { type: 'text', id: 'notes-search', placeholder: 'Search notes...' });
+
+    searchIcon.addEventListener('click', () => {
+      showSearchInput = true;
+      searchIcon.style.display = 'none';
+      searchBox.style.width = '120px';
+      searchBox.style.padding = '4px 8px';
+      searchBox.style.opacity = '1';
+      searchBox.style.border = `1px solid ${borderColor}`;
+      searchBox.style.visibility = 'visible';
+      setTimeout(() => searchBox.focus(), 100);
+    });
+    
+    searchContainer.appendChild(searchIcon);
+    searchContainer.appendChild(searchBox);
+
+    const profileIcon = createElement('span', { cursor: 'pointer', display: 'flex', alignItems: 'center', color: textColor });
+    const userProfile = result.userProfile;
+    if (userProfile && userProfile.picture) {
+      profileIcon.innerHTML = `<img src="${userProfile.picture}" alt="Profile" style="width: 16px; height: 16px; border-radius: 50%;" />`;
+    } else {
+      profileIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="width: 14px; height: 14px; fill: currentColor;"><path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z"/></svg>`;
+    }
+    profileIcon.addEventListener('click', () => {
+      chrome.runtime.sendMessage({ action: "openTab", url: chrome.runtime.getURL('settings.html?tab=profile') });
+    });
+
+    const settingsIcon = createElement('span', { cursor: 'pointer', display: 'flex', alignItems: 'center', color: textColor });
+    settingsIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="width: 14px; height: 14px; fill: currentColor;"><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg>`;
+    settingsIcon.addEventListener('click', () => {
+      chrome.runtime.sendMessage({ action: "openTab", url: chrome.runtime.getURL('settings.html') });
+    });
+
+    rightSideDiv.appendChild(searchContainer);
+    rightSideDiv.appendChild(profileIcon);
+    rightSideDiv.appendChild(settingsIcon);
+    
+    content.appendChild(titleDiv);
+    content.appendChild(rightSideDiv);
+    
     sidebar.appendChild(content);
+
+    if (showBanner) {
+      const banner = createElement('div', {
+        backgroundColor: '#d8b4e2',
+        color: '#333',
+        padding: '8px',
+        borderRadius: '4px',
+        marginBottom: '10px',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        fontSize: '12px'
+      });
+      const bannerText = createElement('span');
+      bannerText.innerHTML = `⚠️ <span id="sidebar-login-link" style="cursor: pointer; text-decoration: underline; color: #684993; font-weight: bold;">Login</span> to make sure that notes are kept safe`;
+      
+      const rightDiv = createElement('div', { display: 'flex', gap: '8px', alignItems: 'center' });
+      
+      const closeIcon = createElement('span', {
+        cursor: 'pointer',
+        fontWeight: 'bold',
+        fontSize: '14px'
+      }, { innerText: '×' });
+      closeIcon.addEventListener('click', () => {
+        banner.style.display = 'none';
+        chrome.storage.local.set({ loginWarningDismissedAt: Date.now() });
+      });
+
+      rightDiv.appendChild(closeIcon);
+      banner.appendChild(bannerText);
+      banner.appendChild(rightDiv);
+      sidebar.appendChild(banner);
+
+      const loginLink = banner.querySelector('#sidebar-login-link');
+      if (loginLink) {
+        loginLink.addEventListener('click', () => {
+          chrome.runtime.sendMessage({ action: "openTab", url: chrome.runtime.getURL('settings.html?tab=profile') });
+        });
+      }
+    }
 
     // Notes list container
     const notesList = createElement('ul', {
@@ -180,7 +292,8 @@ chrome.storage.local.get(["settings"], (result) => {
       width: '100%',
       background: bgColor,
       padding: '10px',
-      borderTop: `1px solid ${borderColor}`
+      borderTop: `1px solid ${borderColor}`,
+      boxSizing: 'border-box'
     });
 
     const icons = {
