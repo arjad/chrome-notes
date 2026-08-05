@@ -234,46 +234,6 @@ chrome.storage.local.get(["settings", "idToken", "loginWarningDismissedAt", "use
     
     sidebar.appendChild(content);
 
-    if (showBanner) {
-      const banner = createElement('div', {
-        backgroundColor: '#d8b4e2',
-        color: '#333',
-        padding: '8px',
-        borderRadius: '4px',
-        marginBottom: '10px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        fontSize: '12px'
-      });
-      const bannerText = createElement('span');
-      bannerText.innerHTML = `⚠️ <span id="sidebar-login-link" style="cursor: pointer; text-decoration: underline; color: #684993; font-weight: bold;">Login</span> to make sure that notes are kept safe`;
-      
-      const rightDiv = createElement('div', { display: 'flex', gap: '8px', alignItems: 'center' });
-      
-      const closeIcon = createElement('span', {
-        cursor: 'pointer',
-        fontWeight: 'bold',
-        fontSize: '14px'
-      }, { innerText: '×' });
-      closeIcon.addEventListener('click', () => {
-        banner.style.display = 'none';
-        chrome.storage.local.set({ loginWarningDismissedAt: Date.now() });
-      });
-
-      rightDiv.appendChild(closeIcon);
-      banner.appendChild(bannerText);
-      banner.appendChild(rightDiv);
-      sidebar.appendChild(banner);
-
-      const loginLink = banner.querySelector('#sidebar-login-link');
-      if (loginLink) {
-        loginLink.addEventListener('click', () => {
-          chrome.runtime.sendMessage({ action: "openTab", url: chrome.runtime.getURL('settings.html?tab=profile') });
-        });
-      }
-    }
-
     // Notes list container
     const notesList = createElement('ul', {
       listStyle: 'none',
@@ -562,6 +522,113 @@ chrome.storage.local.get(["settings", "idToken", "loginWarningDismissedAt", "use
       border: 'none',
       outline: 'none'
     }, { contentEditable: true, id: 'note-editor' });
+
+    function showSidebarBlockOverlay() {
+      if (document.getElementById('sidebar-block-overlay')) return;
+
+      const overlayBg = isDarkMode ? 'rgba(0,0,0,0.85)' : 'rgba(255,255,255,0.85)';
+      const dialogBg = isDarkMode ? '#1e1e2e' : '#ffffff';
+      const dialogTextColor = isDarkMode ? 'white' : 'black';
+      const dialogBorderColor = isDarkMode ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.15)';
+
+      const overlay = createElement('div', {
+        position: 'absolute',
+        top: '0',
+        left: '0',
+        width: '100%',
+        height: '100%',
+        background: overlayBg,
+        zIndex: '10000',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backdropFilter: 'blur(3px)',
+        borderRadius: '6px'
+      }, { id: 'sidebar-block-overlay' });
+
+      const dialog = createElement('div', {
+        background: dialogBg,
+        color: dialogTextColor,
+        padding: '20px',
+        borderRadius: '12px',
+        boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '12px',
+        border: `1px solid ${dialogBorderColor}`,
+        textAlign: 'center',
+        maxWidth: '85%',
+        position: 'relative'
+      });
+
+      dialog.innerHTML = `
+        <span id="sidebar-block-close" style="position: absolute; top: 8px; right: 12px; cursor: pointer; font-size: 18px; color: ${dialogTextColor}; font-weight: bold;">×</span>
+        <span style="font-size: 14px; color: ${dialogTextColor}; line-height: 1.4;">
+          <strong>Login Required</strong><br/>
+          Login to make sure that notes are kept safe.
+        </span>
+      `;
+
+      setTimeout(() => {
+        const closeBtn = dialog.querySelector('#sidebar-block-close');
+        if (closeBtn) {
+          closeBtn.addEventListener('click', () => {
+            overlay.remove();
+            chrome.storage.local.set({ loginBlockDismissedAt: Date.now() });
+          });
+        }
+      }, 0);
+
+      const loginBtn = createElement('button', {
+        background: '#684993',
+        color: 'white',
+        padding: '8px 16px',
+        borderRadius: '6px',
+        border: 'none',
+        fontSize: '13px',
+        fontWeight: 'bold',
+        cursor: 'pointer',
+        width: '100%',
+        marginTop: '8px'
+      }, { innerText: 'Login' });
+
+      loginBtn.addEventListener('click', () => {
+        chrome.runtime.sendMessage({ action: "openTab", url: chrome.runtime.getURL('settings.html?tab=profile') });
+      });
+
+      dialog.appendChild(loginBtn);
+      overlay.appendChild(dialog);
+      editorWrapper.style.position = 'relative';
+      editorWrapper.appendChild(overlay);
+    }
+
+    editor.addEventListener('focus', (e) => {
+      chrome.storage.local.get(["idToken", "loginBlockDismissedAt"], (result) => {
+        if (!result.idToken) {
+          const now = Date.now();
+          const oneDay = 24 * 60 * 60 * 1000;
+          if (!result.loginBlockDismissedAt || (now - result.loginBlockDismissedAt > oneDay)) {
+            editor.blur();
+            showSidebarBlockOverlay();
+          }
+        }
+      });
+    });
+
+    editor.addEventListener('keydown', (e) => {
+      chrome.storage.local.get(["idToken", "loginBlockDismissedAt"], (result) => {
+        if (!result.idToken) {
+          const now = Date.now();
+          const oneDay = 24 * 60 * 60 * 1000;
+          if (!result.loginBlockDismissedAt || (now - result.loginBlockDismissedAt > oneDay)) {
+            e.preventDefault();
+            showSidebarBlockOverlay();
+          }
+        }
+      });
+    });
+
     editorWrapper.appendChild(editor);
 
     editorSection.appendChild(editorWrapper);

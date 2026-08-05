@@ -1,10 +1,11 @@
 import React, { useState, useRef } from "react";
 import { toast } from "react-toastify";
 
-const RichText = ({ editorRef, handleFormat, toggleVoiceInput, isListening, onUrlToggle, isUrlLinked }) => {
+const RichText = ({ editorRef, handleFormat, toggleVoiceInput, isListening, onUrlToggle, isUrlLinked, isLoggedIn }) => {
   const fileInputRef = useRef(null);
   const [isUploading, setIsUploading] = useState(false);
   const [showLoginOverlay, setShowLoginOverlay] = useState(false);
+  const [showBlockOverlay, setShowBlockOverlay] = useState(false);
 
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
@@ -71,8 +72,78 @@ const RichText = ({ editorRef, handleFormat, toggleVoiceInput, isListening, onUr
     }
   };
 
+  const isDark = document.body.classList.contains("dark-mode");
+  const overlayBg = isDark ? 'rgba(0,0,0,0.85)' : 'rgba(255,255,255,0.85)';
+  const dialogBg = isDark ? '#1e1e2e' : '#ffffff';
+  const overlayTextColor = isDark ? 'white' : 'black';
+  const overlayBorderColor = isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.15)';
+
   return (
     <section className="border rich-text mb-2" style={{ position: 'relative' }}>
+      {showBlockOverlay && (
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          background: overlayBg,
+          zIndex: 10000,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          backdropFilter: 'blur(3px)',
+          borderRadius: '4px'
+        }}>
+          <div style={{
+            background: dialogBg,
+            color: overlayTextColor,
+            padding: '20px',
+            borderRadius: '12px',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '12px',
+            border: `1px solid ${overlayBorderColor}`,
+            textAlign: 'center',
+            maxWidth: '85%',
+            position: 'relative'
+          }}>
+            <i 
+              className="fa-solid fa-xmark" 
+              style={{ cursor: 'pointer', position: 'absolute', top: '12px', right: '12px', color: overlayTextColor, fontSize: '16px' }} 
+              onClick={() => {
+                setShowBlockOverlay(false);
+                chrome.storage.local.set({ loginBlockDismissedAt: Date.now() });
+              }}
+            ></i>
+            <span style={{ fontSize: '14px', color: overlayTextColor, lineHeight: '1.4' }}>
+              <strong>Login Required</strong><br/>
+              Login to make sure that notes are kept safe.
+            </span>
+            <button 
+              onClick={() => {
+                chrome.tabs.create({ url: chrome.runtime.getURL('settings.html?tab=profile') });
+              }}
+              style={{
+                background: '#684993',
+                color: 'white',
+                padding: '8px 16px',
+                borderRadius: '6px',
+                border: 'none',
+                fontSize: '13px',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                width: '100%',
+                marginTop: '8px'
+              }}
+            >
+              Login
+            </button>
+          </div>
+        </div>
+      )}
       {showLoginOverlay && (
         <div style={{
           position: 'absolute',
@@ -102,7 +173,6 @@ const RichText = ({ editorRef, handleFormat, toggleVoiceInput, isListening, onUr
             textAlign: 'center',
             maxWidth: '85%'
           }}>
-            <span style={{ fontSize: '24px', marginBottom: '4px' }}>🔒</span>
             <span style={{ fontSize: '14px', color: 'white', lineHeight: '1.4' }}>
               You need to <strong>log in</strong> to add images.
             </span>
@@ -226,6 +296,30 @@ const RichText = ({ editorRef, handleFormat, toggleVoiceInput, isListening, onUr
         className="bg-transparent input-tag"
         id="note-input"
         placeholder="Enter your note here..."
+        onFocus={(e) => {
+          if (!isLoggedIn) {
+            chrome.storage.local.get(["loginBlockDismissedAt"], (result) => {
+              const now = Date.now();
+              const oneDay = 24 * 60 * 60 * 1000;
+              if (!result.loginBlockDismissedAt || (now - result.loginBlockDismissedAt > oneDay)) {
+                e.target.blur();
+                setShowBlockOverlay(true);
+              }
+            });
+          }
+        }}
+        onKeyDown={(e) => {
+          if (!isLoggedIn) {
+            chrome.storage.local.get(["loginBlockDismissedAt"], (result) => {
+              const now = Date.now();
+              const oneDay = 24 * 60 * 60 * 1000;
+              if (!result.loginBlockDismissedAt || (now - result.loginBlockDismissedAt > oneDay)) {
+                e.preventDefault();
+                setShowBlockOverlay(true);
+              }
+            });
+          }
+        }}
       ></div>
     </section>
   );

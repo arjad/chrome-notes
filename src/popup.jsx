@@ -29,13 +29,13 @@ function Popup() {
       if (tabs[0] && tabs[0].url) {
         try {
           setCurrentUrl(new URL(tabs[0].url).origin);
-        } catch (e) {}
+        } catch (e) { }
       }
     });
     chrome.storage.local.get(["notes", "settings", "hasSeenContextMenuAnnouncement", "idToken", "userProfile", "loginWarningDismissedAt"], (result) => {
       const loggedIn = !!result.idToken;
       setIsLoggedIn(loggedIn);
-      
+
       const now = Date.now();
       const oneWeek = 7 * 24 * 60 * 60 * 1000;
       if (result.loginWarningDismissedAt && (now - result.loginWarningDismissedAt < oneWeek)) {
@@ -285,9 +285,9 @@ function Popup() {
         </div>
         <div className="d-flex align-items-center gap-2">
           <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-            <i 
-              className="fa-solid fa-magnifying-glass" 
-              style={{ cursor: "pointer", position: 'absolute', right: showSearchInput ? 'auto' : '0', left: showSearchInput ? '8px' : 'auto', zIndex: 1, color: showSearchInput ? '#999' : 'inherit', display: showSearchInput ? 'none' : 'block' }} 
+            <i
+              className="fa-solid fa-magnifying-glass"
+              style={{ cursor: "pointer", position: 'absolute', right: showSearchInput ? 'auto' : '0', left: showSearchInput ? '8px' : 'auto', zIndex: 1, color: showSearchInput ? '#999' : 'inherit', display: showSearchInput ? 'none' : 'block' }}
               onClick={() => { setShowSearchInput(true); setTimeout(() => document.getElementById('search-input').focus(), 100); }}
             ></i>
             <input
@@ -296,10 +296,10 @@ function Popup() {
               onChange={handleSearchChange}
               className="form-control form-control-sm input-tag"
               placeholder="Search notes..."
-              style={{ 
-                width: showSearchInput ? '150px' : '0px', 
-                padding: showSearchInput ? '4px 8px' : '0px', 
-                opacity: showSearchInput ? 1 : 0, 
+              style={{
+                width: showSearchInput ? '150px' : '0px',
+                padding: showSearchInput ? '4px 8px' : '0px',
+                opacity: showSearchInput ? 1 : 0,
                 transition: 'all 0.3s ease',
                 border: showSearchInput ? '' : 'none',
                 visibility: showSearchInput ? 'visible' : 'hidden'
@@ -314,16 +314,6 @@ function Popup() {
           <i className="fa-solid fa-bars" style={{ cursor: "pointer" }} onClick={openSettingsPage}></i>
         </div>
       </nav>
-      {!isLoggedIn && showLoginWarning && (
-        <div style={{ backgroundColor: "#d8b4e2", color: "#333", padding: "8px", borderRadius: "4px", marginBottom: "10px", display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "12px" }}>
-          <span>
-            ⚠️ <span style={{ cursor: "pointer", textDecoration: "underline", color: "#684993", fontWeight: "bold" }} onClick={() => chrome.tabs.create({ url: chrome.runtime.getURL("settings.html?tab=profile") })}>Login</span> to make sure that notes are kept safe
-          </span>
-          <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-            <i className="fa-solid fa-xmark" style={{ cursor: "pointer" }} onClick={() => { setShowLoginWarning(false); chrome.storage.local.set({ loginWarningDismissedAt: Date.now() }); }}></i>
-          </div>
-        </div>
-      )}
       {showAnnouncement && (
         <div className="announcement-banner">
           <div className="announcement-text">
@@ -364,6 +354,7 @@ function Popup() {
         isListening={isListening}
         onUrlToggle={() => setLinkToUrl(!linkToUrl)}
         isUrlLinked={linkToUrl}
+        isLoggedIn={isLoggedIn}
       />
 
       <div className="position-relative pb-4 mb-1 pt-2">

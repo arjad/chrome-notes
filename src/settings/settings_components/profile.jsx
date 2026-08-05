@@ -18,6 +18,8 @@ export default function Profile() {
   const [loadingSignIn, setLoadingSignIn] = useState(false);
 
   const [loading, setLoading] = useState(true); // NEW
+  const [showSignUpPassword, setShowSignUpPassword] = useState(false);
+  const [showSignInPassword, setShowSignInPassword] = useState(false);
 
   useEffect(() => {
     chrome.storage.local.get(["idToken", "accessToken", "notes"], (result) => {
@@ -285,15 +287,29 @@ export default function Profile() {
             style={{ color: "black" }}
             required
           />
-          <input
-            type="password"
-            className="bg-transparent border"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            style={{ color: "black", marginBottom: "5px" }}
-            required
-          />
+          <div style={{ position: "relative", width: "100%", marginBottom: "5px" }}>
+            <input
+              type={showSignUpPassword ? "text" : "password"}
+              className="bg-transparent border"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              style={{ color: "black", width: "100%", paddingRight: "40px" }}
+              required
+            />
+            <i
+              className={`fa-solid ${showSignUpPassword ? "fa-eye-slash" : "fa-eye"}`}
+              style={{
+                position: "absolute",
+                right: "12px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                cursor: "pointer",
+                color: "#666"
+              }}
+              onClick={() => setShowSignUpPassword(!showSignUpPassword)}
+            ></i>
+          </div>
           <small style={{ color: "#666", fontSize: "0.75em", marginBottom: "15px", alignSelf: "flex-start", width: "100%", textAlign: "left" }}>* Must be at least 8 characters & contain a capital letter</small>
 
 
@@ -320,15 +336,29 @@ export default function Profile() {
             style={{ color: "black" }}
             required
           />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            className="bg-transparent border" 
-            onChange={(e) => setPassword(e.target.value)}
-            style={{ color: "black" }}
-            required
-          />
+          <div style={{ position: "relative", width: "100%" }}>
+            <input
+              type={showSignInPassword ? "text" : "password"}
+              placeholder="Password"
+              value={password}
+              className="bg-transparent border" 
+              onChange={(e) => setPassword(e.target.value)}
+              style={{ color: "black", width: "100%", paddingRight: "40px" }}
+              required
+            />
+            <i
+              className={`fa-solid ${showSignInPassword ? "fa-eye-slash" : "fa-eye"}`}
+              style={{
+                position: "absolute",
+                right: "12px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                cursor: "pointer",
+                color: "#666"
+              }}
+              onClick={() => setShowSignInPassword(!showSignInPassword)}
+            ></i>
+          </div>
           <br/>
           <button type="submit" disabled={loadingSignIn}>
             {loadingSignIn ? (
