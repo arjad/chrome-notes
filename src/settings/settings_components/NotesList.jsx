@@ -452,6 +452,7 @@ const NotesList = () => {
               body: JSON.stringify({ userId, notes: localNotes })
             }
           );
+          chrome.storage.local.set({ lastSyncedAt: new Date().toISOString() });
           toast.success("Local Notes saved successfully to cloud!");
         } catch (err) {
           toast.error("Failed to save notes. Try again after some time");

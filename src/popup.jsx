@@ -32,7 +32,7 @@ function Popup() {
         } catch (e) { }
       }
     });
-    chrome.storage.local.get(["notes", "settings", "hasSeenContextMenuAnnouncement", "idToken", "userProfile", "loginWarningDismissedAt"], (result) => {
+    chrome.storage.local.get(["notes", "settings", "hasSeenContextMenuAnnouncement", "idToken", "userProfile", "loginWarningDismissedAt", "lastSyncedAt", "deviceUserId"], (result) => {
       const loggedIn = !!result.idToken;
       setIsLoggedIn(loggedIn);
 
@@ -60,6 +60,45 @@ function Popup() {
       }
       if (!result.hasSeenContextMenuAnnouncement) {
         setShowAnnouncement(true);
+      }
+
+      // Auto-sync if not synced yet and there are notes
+      if (!result.lastSyncedAt && result.notes && result.notes.length > 0) {
+        let idToken = result.idToken || "none";
+        let userId;
+        if (result.idToken) {
+          try {
+            const payload = JSON.parse(atob(idToken.split(".")[1]));
+            userId = payload.sub;
+          } catch (e) {
+            userId = result.deviceUserId || "device-unknown";
+          }
+        } else {
+          if (result.deviceUserId) {
+            userId = result.deviceUserId;
+          } else {
+            const platform = (navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || "UnknownOS";
+            let browser = "Chrome";
+            if (navigator.userAgent.includes("Edg")) browser = "Edge";
+            else if (navigator.userAgent.includes("Firefox")) browser = "Firefox";
+            const randomDeviceId = "device-" + Math.random().toString(36).substring(2, 10);
+            userId = `${randomDeviceId},${platform},${browser}`;
+            chrome.storage.local.set({ deviceUserId: userId });
+          }
+        }
+
+        fetch(process.env.LAMBDA_URL + "sync_notes", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: idToken
+          },
+          body: JSON.stringify({ userId, notes: result.notes })
+        })
+        .then(() => {
+          chrome.storage.local.set({ lastSyncedAt: new Date().toISOString() });
+        })
+        .catch(err => console.log("Auto-sync failed:", err));
       }
     });
   }, []);
@@ -359,8 +398,8 @@ function Popup() {
 
       <div className="position-relative pb-4 mb-1 pt-2">
         {error && (
-          <div className="text-danger small">
-            <i className="fa-solid fa-circle-info"></i>
+          <div className="text-danger small position-absolute start-0 top-0" style={{ maxWidth: '60%', wordBreak: 'break-word', lineHeight: '1.2' }}>
+            <i className="fa-solid fa-circle-info me-1"></i>
             <span>{error}</span>
           </div>
         )}

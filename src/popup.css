@@ -2,6 +2,7 @@ body {
   width: 20rem;
   padding: 0.7rem;
   color: black;
+  overflow-x: hidden;
 }
 body[data-size="small"] {
   width: 20rem;
