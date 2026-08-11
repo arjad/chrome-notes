@@ -1,6 +1,6 @@
 {
   "name": "chrome-notes",
-  "version": "2.0.8",
+  "version": "2.0.9",
   "description": "Boost your productivity with Quick Notes, a simple and efficient Chrome extension that lets you manage notes effortlessly.",
   "main": "popup.js",
   "scripts": {
