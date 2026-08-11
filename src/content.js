@@ -369,45 +369,7 @@ chrome.storage.local.get(["settings", "idToken", "loginWarningDismissedAt", "use
             );
           }
         } else if (btn.cmd === 'insertImage') {
-            chrome.storage.local.get(["idToken"], (result) => {
-              if (result.idToken) {
-                fileInput.click();
-              } else {
-                // Create an overlay over the sidebar
-                const overlay = document.createElement('div');
-                overlay.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:10000;display:flex;justify-content:center;align-items:center;backdrop-filter:blur(2px);transition:opacity 0.3s;';
-
-                const toast = document.createElement('div');
-                toast.style.cssText = 'background:#1e1e2e;color:white;padding:20px;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.4);display:flex;flex-direction:column;align-items:center;gap:12px;border:1px solid rgba(255,255,255,0.15);text-align:center;max-width:85%;';
-
-                const lockIcon = document.createElement('span');
-                lockIcon.textContent = '🔒';
-                lockIcon.style.cssText = 'font-size:24px;margin-bottom:4px;';
-
-                const msg = document.createElement('span');
-                msg.style.cssText = 'font-size:14px;color:white;line-height:1.4;';
-                msg.innerHTML = 'You need to <strong>log in</strong> to add images.';
-
-                const loginBtn = document.createElement('button');
-                loginBtn.textContent = 'Go to Profile';
-                loginBtn.style.cssText = 'background:#684993;color:white;padding:8px 16px;border-radius:6px;border:none;font-size:13px;font-weight:bold;cursor:pointer;width:100%;margin-top:8px;';
-                loginBtn.addEventListener('click', () => {
-                  chrome.runtime.sendMessage({ action: "openTab", url: chrome.runtime.getURL('settings.html?tab=profile') });
-                  overlay.remove();
-                });
-
-                toast.appendChild(lockIcon);
-                toast.appendChild(msg);
-                toast.appendChild(loginBtn);
-                overlay.appendChild(toast);
-                sidebar.appendChild(overlay);
-
-                setTimeout(() => {
-                  overlay.style.opacity = '0';
-                  setTimeout(() => overlay.remove(), 300);
-                }, 5000);
-              }
-            });
+          fileInput.click();
           } else {
             document.execCommand(btn.cmd, false, null);
           }
@@ -523,110 +485,10 @@ chrome.storage.local.get(["settings", "idToken", "loginWarningDismissedAt", "use
       outline: 'none'
     }, { contentEditable: true, id: 'note-editor' });
 
-    function showSidebarBlockOverlay() {
-      if (document.getElementById('sidebar-block-overlay')) return;
-
-      const overlayBg = isDarkMode ? 'rgba(0,0,0,0.85)' : 'rgba(255,255,255,0.85)';
-      const dialogBg = isDarkMode ? '#1e1e2e' : '#ffffff';
-      const dialogTextColor = isDarkMode ? 'white' : 'black';
-      const dialogBorderColor = isDarkMode ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.15)';
-
-      const overlay = createElement('div', {
-        position: 'absolute',
-        top: '0',
-        left: '0',
-        width: '100%',
-        height: '100%',
-        background: overlayBg,
-        zIndex: '10000',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backdropFilter: 'blur(3px)',
-        borderRadius: '6px'
-      }, { id: 'sidebar-block-overlay' });
-
-      const dialog = createElement('div', {
-        background: dialogBg,
-        color: dialogTextColor,
-        padding: '20px',
-        borderRadius: '12px',
-        boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: '12px',
-        border: `1px solid ${dialogBorderColor}`,
-        textAlign: 'center',
-        maxWidth: '85%',
-        position: 'relative'
-      });
-
-      dialog.innerHTML = `
-        <span id="sidebar-block-close" style="position: absolute; top: 8px; right: 12px; cursor: pointer; font-size: 18px; color: ${dialogTextColor}; font-weight: bold;">×</span>
-        <span style="font-size: 14px; color: ${dialogTextColor}; line-height: 1.4;">
-          <strong>Login Required</strong><br/>
-          Login to make sure that notes are kept safe.
-        </span>
-      `;
-
-      setTimeout(() => {
-        const closeBtn = dialog.querySelector('#sidebar-block-close');
-        if (closeBtn) {
-          closeBtn.addEventListener('click', () => {
-            overlay.remove();
-            chrome.storage.local.set({ loginBlockDismissedAt: Date.now() });
-          });
-        }
-      }, 0);
-
-      const loginBtn = createElement('button', {
-        background: '#684993',
-        color: 'white',
-        padding: '8px 16px',
-        borderRadius: '6px',
-        border: 'none',
-        fontSize: '13px',
-        fontWeight: 'bold',
-        cursor: 'pointer',
-        width: '100%',
-        marginTop: '8px'
-      }, { innerText: 'Login' });
-
-      loginBtn.addEventListener('click', () => {
-        chrome.runtime.sendMessage({ action: "openTab", url: chrome.runtime.getURL('settings.html?tab=profile') });
-      });
-
-      dialog.appendChild(loginBtn);
-      overlay.appendChild(dialog);
-      editorWrapper.style.position = 'relative';
-      editorWrapper.appendChild(overlay);
-    }
-
     editor.addEventListener('focus', (e) => {
-      chrome.storage.local.get(["idToken", "loginBlockDismissedAt"], (result) => {
-        if (!result.idToken) {
-          const now = Date.now();
-          const oneDay = 24 * 60 * 60 * 1000;
-          if (!result.loginBlockDismissedAt || (now - result.loginBlockDismissedAt > oneDay)) {
-            editor.blur();
-            showSidebarBlockOverlay();
-          }
-        }
-      });
     });
 
     editor.addEventListener('keydown', (e) => {
-      chrome.storage.local.get(["idToken", "loginBlockDismissedAt"], (result) => {
-        if (!result.idToken) {
-          const now = Date.now();
-          const oneDay = 24 * 60 * 60 * 1000;
-          if (!result.loginBlockDismissedAt || (now - result.loginBlockDismissedAt > oneDay)) {
-            e.preventDefault();
-            showSidebarBlockOverlay();
-          }
-        }
-      });
     });
 
     editorWrapper.appendChild(editor);

@@ -405,18 +405,28 @@ const NotesList = () => {
   
   const handleSyncClick = async () => {
     try {
-      chrome.storage.local.get(["idToken", "notes"], async (result) => {
-        const idToken = result.idToken;
+      chrome.storage.local.get(["idToken", "notes", "deviceUserId"], async (result) => {
+        let idToken = result.idToken || "none";
         const notes = result.notes || [];
       
-        if (!idToken) {
-          console.log("Missing idToken");
-          toast.warning("First Need to login");
-
-          return;
+        let userId;
+        if (result.idToken) {
+          userId = getUserIdFromIdToken(result.idToken);
+        } else {
+          const isUuid = result.deviceUserId && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(result.deviceUserId);
+          if (result.deviceUserId && !isUuid) {
+            userId = result.deviceUserId;
+          } else {
+            const platform = (navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || "UnknownOS";
+            let browser = "Chrome";
+            if (navigator.userAgent.includes("Edg")) browser = "Edge";
+            else if (navigator.userAgent.includes("Firefox")) browser = "Firefox";
+            
+            const randomDeviceId = "device-" + Math.random().toString(36).substring(2, 10);
+            userId = `${randomDeviceId},${platform},${browser}`;
+            chrome.storage.local.set({ deviceUserId: userId });
+          }
         }
-      
-        const userId = getUserIdFromIdToken(idToken);
       
         await syncNotesToAWS(idToken, userId);
       });
