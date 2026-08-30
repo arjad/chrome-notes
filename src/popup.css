@@ -21,7 +21,7 @@ body[data-size="large"] {
   color: var(--primary-color);
 }
 #notes-list {
-  max-height: 60vh;
+  max-height: 350px;
   overflow-y: auto;
 }
 #notes-list::-webkit-scrollbar {
